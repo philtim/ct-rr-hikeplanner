@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.17](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.16...v0.1.17) (2026-09-22)
+
+
+### Features
+
+* hint that organisators are set despite member list permissions ([3ab8346](https://github.com/philtim/ct-rr-hikeplanner/commit/3ab83466aed96d2060949a448bbaaf171926276b))
+
 ## [0.1.16](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.15...v0.1.16) (2026-09-22)
 
 
