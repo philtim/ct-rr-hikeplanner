@@ -75,17 +75,9 @@ export interface FormState {
      * erst nach Veröffentlichung.
      */
     publishNow: boolean;
-    /** IDs der gewählten Vorlagen-Felder. */
-    selectedFieldIds: number[];
 }
 
-export type ProvisionStepId =
-    | 'duplicate'
-    | 'configure'
-    | 'fields'
-    | 'parents'
-    | 'members'
-    | 'calendar';
+export type ProvisionStepId = 'duplicate' | 'configure' | 'parents' | 'members' | 'calendar';
 
 export type StepStatus = 'pending' | 'running' | 'done' | 'failed';
 
@@ -95,7 +87,7 @@ export interface ProvisionProgress {
 }
 
 export type ProvisionOutcome =
-    | { ok: true; groupId: number; calendarWarning: boolean; fieldsWarning: boolean }
+    | { ok: true; groupId: number; calendarWarning: boolean }
     | {
           ok: false;
           failedStep: ProvisionStepId | 'precheck';

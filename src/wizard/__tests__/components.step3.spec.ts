@@ -63,7 +63,6 @@ const form: FormState = {
     titleSuffix: '',
     publicSignup: false,
     publishNow: true,
-    selectedFieldIds: [3508, 3502],
 };
 
 const idleProgress: ProvisionProgress[] = [];
@@ -168,14 +167,13 @@ describe('ProgressList', () => {
         const progress: ProvisionProgress[] = [
             { step: 'duplicate', status: 'done' },
             { step: 'configure', status: 'done' },
-            { step: 'fields', status: 'running' },
-            { step: 'parents', status: 'pending' },
+            { step: 'parents', status: 'running' },
             { step: 'members', status: 'pending' },
             { step: 'calendar', status: 'pending' },
         ];
         const w = mount(ProgressList, { props: { progress } });
         const items = w.findAll('li');
-        expect(items).toHaveLength(6);
+        expect(items).toHaveLength(5);
         expect(items[0].text()).toContain('✓');
         expect(items[0].text()).toContain('Vorlage dupliziert');
         expect(items[2].text()).toContain('◌');

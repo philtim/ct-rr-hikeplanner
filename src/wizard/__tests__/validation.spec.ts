@@ -14,7 +14,6 @@ const base: FormState = {
     titleSuffix: '',
     publicSignup: false,
     publishNow: true,
-    selectedFieldIds: [],
 };
 
 describe('validateStep1', () => {

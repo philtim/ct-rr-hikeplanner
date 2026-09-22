@@ -6,7 +6,6 @@ defineProps<{
     groupHref: string;
     summary: string[];
     calendarWarning: boolean;
-    fieldsWarning: boolean;
     /** Öffentlicher Anmelde-Link; null, wenn die Anmeldung nicht öffentlich ist. */
     signupUrl: string | null;
     /** false = Gruppe blieb Entwurf; der Link funktioniert erst nach Veröffentlichung. */
@@ -48,11 +47,6 @@ async function copySignupUrl(url: string) {
         <p class="hp-hint" data-testid="org-hint">
             ⓘ Hinweis: Je nach deinen Berechtigungen kann es sein, dass du die Organisatoren in der
             Mitgliederliste der Gruppe nicht siehst — eingetragen sind sie auf jeden Fall.
-        </p>
-
-        <p v-if="fieldsWarning" class="hp-warning-box">
-            ⚠ Wichtig: Nicht gewählte Anmeldefelder konnten nicht entfernt werden — bitte prüfe die
-            Felder in der Gruppe oder melde es der Stammleitung.
         </p>
 
         <p v-if="calendarWarning" class="hp-warning-box">

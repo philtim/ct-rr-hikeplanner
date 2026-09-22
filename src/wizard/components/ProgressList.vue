@@ -6,7 +6,6 @@ defineProps<{ progress: ProvisionProgress[] }>();
 const labels: Record<ProvisionStepId, string> = {
     duplicate: 'Vorlage dupliziert',
     configure: 'Eckdaten gesetzt',
-    fields: 'Anmeldefelder eingerichtet',
     parents: 'Gruppe einsortiert',
     members: 'Organisatoren und Leiter eingetragen',
     calendar: 'Kalendertermin angelegt',

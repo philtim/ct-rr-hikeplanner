@@ -289,7 +289,6 @@ describe('provisionApi', () => {
             titleSuffix: '',
             publicSignup: false,
             publishNow: true,
-            selectedFieldIds: [],
         });
         const [url, body] = (api.apiPatch as Mock).mock.calls[0] as [
             string,
@@ -320,7 +319,6 @@ describe('provisionApi', () => {
             titleSuffix: '',
             publicSignup: false,
             publishNow: true,
-            selectedFieldIds: [],
         });
         const body = (api.apiPatch as Mock).mock.calls[0][1] as Record<string, unknown>;
         expect(body.signUpOpeningDate).toBeNull();
@@ -343,7 +341,6 @@ describe('provisionApi', () => {
             titleSuffix: '',
             publicSignup: true,
             publishNow: true,
-            selectedFieldIds: [],
         });
         const body = (api.apiPatch as Mock).mock.calls[0][1] as Record<string, unknown>;
         expect(body.visibility).toBe('public');
@@ -365,49 +362,9 @@ describe('provisionApi', () => {
             titleSuffix: '',
             publicSignup: true,
             publishNow: false,
-            selectedFieldIds: [],
         });
         const body = (api.apiPatch as Mock).mock.calls[0][1] as Record<string, unknown>;
         expect(body.groupStatusId).toBeUndefined();
-    });
-
-    it('listMemberFields keeps the full PUT payload; hideMemberField sends it back', async () => {
-        (api.apiGet as Mock).mockResolvedValue([
-            {
-                type: 'group',
-                field: {
-                    id: 184,
-                    name: 'Vegetarisch',
-                    referenceName: 'vegetarisch',
-                    fieldTypeCode: 'radioselect',
-                    fieldTypeId: 9,
-                    note: null,
-                    sortKey: 0,
-                    securityLevel: 1,
-                    defaultValue: null,
-                    options: [],
-                    useInRegistrationForm: true,
-                    requiredInRegistrationForm: true,
-                    nameInSignupForm: null,
-                    noteInSignupForm: null,
-                },
-            },
-        ]);
-        const fields = await provisionApi.listMemberFields(99);
-        expect(fields[0]).toMatchObject({ id: 184, name: 'Vegetarisch' });
-
-        (api.apiPut as Mock).mockResolvedValue({});
-        await provisionApi.hideMemberField(99, fields[0]);
-        const [url, body] = (api.apiPut as Mock).mock.calls[0] as [string, Record<string, unknown>];
-        expect(url).toBe('/groups/99/memberfields/group/184');
-        // Die API verlangt das komplette Feld-Objekt (Teil-Updates → 400).
-        expect(body).toMatchObject({
-            name: 'Vegetarisch',
-            referenceName: 'vegetarisch',
-            fieldTypeId: 9,
-            requiredInRegistrationForm: true,
-            useInRegistrationForm: false,
-        });
     });
 
     it('listParentIds parses domainIdentifier strings', async () => {

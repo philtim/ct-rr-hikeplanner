@@ -48,8 +48,11 @@ UNTER KEINER Eltern-Gruppe: Duplikate würden die Ablagen erben, und Leiter
 dürfen fremde Zuordnungen nicht entfernen. Dort — und nur dort — werden
 gepflegt (normale CT-Oberfläche, keine Code-Änderung nötig):
 
-- **Anmeldefelder**: der komplette wählbare Katalog inkl. Pflicht-Markierung und
-  Optionen. Neue Wunschfelder in der Vorlage anlegen, NIE in einzelnen Hajk-Gruppen.
+- **Anmeldefelder**: der komplette Katalog inkl. Pflicht-Markierung und Optionen —
+  er gilt IMMER vollständig für jede neue Veranstaltung (keine Auswahl im Wizard;
+  CT erlaubt Leitern kein Feld-Schreiben). Neue Wunschfelder in der Vorlage anlegen,
+  NIE in einzelnen Hajk-Gruppen; Ausnahmen je Event entfernt die Stammleitung
+  nachträglich in der Gruppe.
 - **Settings**: Sichtbarkeit (intern), Auto-Accept usw. — Duplikate erben sie.
 - **Organisatoren**: primär in der Extension-Konfiguration gepflegt (Mehrfachauswahl
   von Personen; Namen werden mitgespeichert, damit Leiter keine Personen-Leserechte

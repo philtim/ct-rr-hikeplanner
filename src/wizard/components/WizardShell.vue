@@ -40,9 +40,7 @@ const resultSummary = computed(() => {
     const team = w.selectedTeam.value;
     const ctx = w.context.value;
     if (!team || !ctx) return [];
-    const fieldNames = ctx.template.fields
-        .filter((f) => w.form.selectedFieldIds.includes(f.id))
-        .map((f) => f.name);
+    const fieldNames = ctx.template.fields.map((f) => f.name);
     const modus =
         w.form.mode === 'manual'
             ? 'Du trägst die Teilnehmer selbst ein'
@@ -126,7 +124,6 @@ const resultSummary = computed(() => {
                 :group-href="groupUrl(w.state.value.outcome.groupId)"
                 :summary="resultSummary"
                 :calendar-warning="w.state.value.outcome.calendarWarning"
-                :fields-warning="w.state.value.outcome.fieldsWarning"
                 :signup-url="
                     w.form.mode === 'self' && w.form.publicSignup
                         ? `${getOriginUrl()}/publicgroup/${w.state.value.outcome.groupId}`

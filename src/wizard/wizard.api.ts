@@ -48,18 +48,9 @@ interface MemberFieldRes {
     field: {
         id: number;
         name: string;
-        referenceName: string;
         fieldTypeCode: string;
-        fieldTypeId: number;
-        note: string | null;
-        sortKey: number;
-        securityLevel: number;
-        defaultValue: string | null;
         options: { id: number | string; name: string }[] | null;
-        useInRegistrationForm: boolean;
         requiredInRegistrationForm: boolean;
-        nameInSignupForm: string | null;
-        noteInSignupForm: string | null;
     };
 }
 interface MemberRes {
@@ -208,21 +199,10 @@ export async function loadWizardContext(): Promise<WizardContext> {
     };
 }
 
-export interface GroupMemberFieldInfo {
-    id: number;
-    name: string;
-    /** Volles Feld-Objekt für PUT — die API akzeptiert keine Teil-Updates. */
-    putPayload: Record<string, unknown>;
-}
-
 export interface ProvisionApi {
     findGroupIdByName(name: string): Promise<number | null>;
     duplicateGroup(templateId: number, newName: string, copyMembers: boolean): Promise<number>;
     configureGroup(groupId: number, form: FormState): Promise<void>;
-    listMemberFields(groupId: number): Promise<GroupMemberFieldInfo[]>;
-    deleteMemberField(groupId: number, fieldId: number): Promise<void>;
-    /** Fallback, wenn Löschen am Recht scheitert: Feld aus dem Anmeldeformular ausblenden. */
-    hideMemberField(groupId: number, field: GroupMemberFieldInfo): Promise<void>;
     listParentIds(groupId: number): Promise<number[]>;
     removeParent(groupId: number, parentId: number): Promise<void>;
     addParent(groupId: number, parentId: number): Promise<void>;
@@ -269,39 +249,6 @@ export const provisionApi: ProvisionApi = {
             ...(form.mode === 'self' && form.publicSignup && !form.publishNow
                 ? {}
                 : { groupStatusId: 1 }),
-        });
-    },
-
-    async listMemberFields(groupId) {
-        const fields = await apiGet<MemberFieldRes[]>(`/groups/${groupId}/memberfields`);
-        return fields.map(({ field }) => ({
-            id: field.id,
-            name: field.name,
-            // Der PUT-Endpoint verlangt das komplette Feld-Objekt (verifiziert
-            // auf rr-demo) — für den Ausblenden-Fallback vorbereitet.
-            putPayload: {
-                name: field.name,
-                referenceName: field.referenceName,
-                fieldTypeId: field.fieldTypeId,
-                note: field.note,
-                sortKey: field.sortKey,
-                securityLevel: field.securityLevel,
-                defaultValue: field.defaultValue,
-                requiredInRegistrationForm: field.requiredInRegistrationForm,
-                nameInSignupForm: field.nameInSignupForm,
-                noteInSignupForm: field.noteInSignupForm,
-            },
-        }));
-    },
-
-    async deleteMemberField(groupId, fieldId) {
-        await apiDelete(`/groups/${groupId}/memberfields/group/${fieldId}`);
-    },
-
-    async hideMemberField(groupId, field) {
-        await apiPut(`/groups/${groupId}/memberfields/group/${field.id}`, {
-            ...field.putPayload,
-            useInRegistrationForm: false,
         });
     },
 

@@ -184,8 +184,16 @@ Teamwahl-Dropdown (Stammleiter) gruppiert nach Stufe:
 
 **Purpose:** Anmeldemodus, Grenzen und Anmeldefelder festlegen (US-2, US-3).
 
+> **Geändert 22.09.2026 (PRD v0.2):** Die Feld-Checkliste ist entfallen — Felder
+> kommen immer vollständig aus der Vorlage (CT-Rechte erlauben Leitern kein
+> Feld-Schreiben). Statt der Checkliste zeigt Schritt 2 eine reine Info-Liste der
+> Vorlagen-Felder mit Pflicht-Markierung und dem Hinweis „Die Felder kommen
+> automatisch aus der Vorlage — Änderungen daran macht die Stammleitung.“
+> Außerdem seitdem ergänzt: Checkbox „Anmeldung ohne ChurchTools-Konto
+> ermöglichen“ + nachgelagerte Checkbox „Veranstaltung sofort veröffentlichen“.
+
 **States required:**
-- Default: Modus „Selbstanmeldung“ vorausgewählt (häufigster Fall); Feld-Checkliste aus der Vorlage, alle Felder **abgewählt** (bewusste Auswahl statt Abwahl-Arbeit).
+- Default: Modus „Selbstanmeldung“ vorausgewählt (häufigster Fall); Anmeldefelder als Info-Liste (siehe Änderungshinweis oben).
 - Empty: Vorlage hat keine Felder → statt Checkliste ein Hinweis: „Die Vorlage enthält aktuell keine Anmeldefelder. Der Feldkatalog wird in der Vorlagengruppe gepflegt.“ Flow bleibt fortsetzbar.
 - Loading: n/a (Felder kamen im Gate).
 - Error: Inline-Validierung (Anmeldeschluss nach Startdatum; max. Teilnehmerzahl keine Zahl).

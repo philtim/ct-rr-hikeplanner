@@ -11,6 +11,7 @@
 
 | Datum | Version | Autor | Änderung |
 |---|---|---|---|
+| 2026-09-22 | 0.2 | Philipp | US-3 geändert: keine Feld-Auswahl mehr, alle Vorlagen-Felder werden übernommen (CT-Rechte erlauben Leitern kein Feld-Schreiben) |
 | 2026-09-22 | 0.1 | Philipp | Initiales Draft nach Discovery-Interview und CT-Recon vom 21.09.2026 |
 
 ## TL;DR
@@ -161,25 +162,32 @@ Ein einzelnes Formular erfasst alle Angaben: Datum von/bis, Anmeldemodus, Anmeld
 
 ---
 
-### US-3: Anmeldefelder aus der Vorlage auswählen
+### US-3: Anmeldefelder aus der Vorlage übernehmen
+
+> **Geändert 22.09.2026:** Ursprünglich war eine An-/Abwahl der Felder pro Hajk
+> vorgesehen. ChurchTools erlaubt Leitern jedoch keinerlei Schreiboperationen an
+> Gruppen-Anmeldefeldern (siehe docs/PERMISSIONS.md, final untersucht) — eine
+> Abwahl konnte daher nie wirken. Entscheidung mit Phil: Der Assistent übernimmt
+> IMMER alle Vorlagen-Felder und zeigt sie nur noch an; Ausnahmen macht die
+> Stammleitung nachträglich in der Gruppe.
 
 **Priorität:** P0
-**Story:** Als Team-Leiter möchte ich aus einer vorgegebenen Liste ankreuzen, welche Angaben ich von Teilnehmern brauche (z. B. Vegetarisch, T-Shirt-Größe), damit die Anmeldung genau die nötigen Daten erhebt.
+**Story:** Als Team-Leiter möchte ich sehen, welche Angaben von Teilnehmern erhoben werden (z. B. Vegetarisch, Allergien), damit ich weiß, welche Daten die Anmeldung liefert.
 
 #### Beschreibung
 
-Der Assistent liest die Anmeldefelder der Vorlagengruppe aus und zeigt sie als Checkliste. Die Vorlage ist die Single Source of Truth: Neue Wunschfelder werden von Berechtigten in der Vorlagengruppe gepflegt und erscheinen ohne Code-Änderung im Assistenten.
+Der Assistent liest die Anmeldefelder der Vorlagengruppe aus und zeigt sie als Info-Liste (inkl. Pflicht-Markierung). Die Vorlage ist die Single Source of Truth: Neue Wunschfelder werden von Berechtigten in der Vorlagengruppe gepflegt und erscheinen ohne Code-Änderung im Assistenten — und gelten für jede neue Veranstaltung.
 
 #### Acceptance Criteria (Given/When/Then)
 
 - **GIVEN** die Vorlagengruppe enthält Anmeldefelder
-  **WHEN** der Leiter die Feldauswahl öffnet
-  **THEN** sieht er jedes Feld der Vorlage mit Name und ggf. Optionen als an-/abwählbaren Eintrag.
-- **GIVEN** der Leiter wählt eine Teilmenge der Felder
-  **WHEN** die Gruppe provisioniert wird (US-4)
-  **THEN** enthält die neue Gruppe genau die gewählten Felder — nicht gewählte Felder sind entfernt.
+  **WHEN** der Leiter Schritt 2 öffnet
+  **THEN** sieht er jedes Feld der Vorlage mit Name und Pflicht-Markierung als reine Anzeige (keine Auswahl) samt Hinweis, dass Änderungen die Stammleitung macht.
+- **GIVEN** die Gruppe wird provisioniert (US-4)
+  **WHEN** das Duplikat entsteht
+  **THEN** enthält die neue Gruppe alle Vorlagen-Felder unverändert.
 - **GIVEN** die Vorlagengruppe enthält keine Felder
-  **WHEN** der Leiter die Feldauswahl öffnet
+  **WHEN** der Leiter Schritt 2 öffnet
   **THEN** erscheint ein Hinweis, dass der Feldkatalog in der Vorlage gepflegt wird, und der Flow bleibt fortsetzbar.
 
 #### Edge Cases

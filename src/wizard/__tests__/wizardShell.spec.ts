@@ -18,7 +18,6 @@ const fake = {
         titleSuffix: '',
         publicSignup: false,
         publishNow: true,
-        selectedFieldIds: [],
     }),
     maxVisited: ref(1),
     progress: ref([]),
@@ -108,7 +107,7 @@ describe('WizardShell', () => {
         fake.form.teamId = 2156 as never;
         fake.state.value = {
             phase: 'done',
-            outcome: { ok: true, groupId: 99, calendarWarning: true, fieldsWarning: false },
+            outcome: { ok: true, groupId: 99, calendarWarning: true },
             groupName: 'RR Hajk Eisbären 10.04.–12.04.2027',
         };
         const w = mount(WizardShell);

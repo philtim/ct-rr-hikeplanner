@@ -376,6 +376,22 @@
     text-overflow: initial;
 }
 
+/* Anmeldefelder-Info (Schritt 2, nicht wählbar) */
+.rr-hikeplanner-root .hp-fields-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+.rr-hikeplanner-root .hp-fields-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 4px;
+}
+.rr-hikeplanner-root .hp-fields-list li {
+    padding: 6px 4px;
+    border-bottom: 1px solid var(--hp-border);
+}
+
 .rr-hikeplanner-root .hp-footer {
     margin-top: 32px;
     text-align: center;

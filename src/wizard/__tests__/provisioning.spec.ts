@@ -49,7 +49,6 @@ const input: ProvisionInput = {
         titleSuffix: '',
         publicSignup: false,
         publishNow: true,
-        selectedFieldIds: [3508], // nur Vegetarisch
     },
     team: {
         groupId: 2156,
@@ -69,12 +68,6 @@ function makeApi(overrides: Partial<ProvisionApi> = {}): ProvisionApi {
         findGroupIdByName: vi.fn().mockResolvedValue(null),
         duplicateGroup: vi.fn().mockResolvedValue(99),
         configureGroup: vi.fn().mockResolvedValue(undefined),
-        listMemberFields: vi.fn().mockResolvedValue([
-            { id: 47, name: 'Vegetarisch', putPayload: { name: 'Vegetarisch' } },
-            { id: 48, name: 'T-Shirt-Größe', putPayload: { name: 'T-Shirt-Größe' } },
-        ]),
-        deleteMemberField: vi.fn().mockResolvedValue(undefined),
-        hideMemberField: vi.fn().mockResolvedValue(undefined),
         listParentIds: vi.fn().mockResolvedValue([2612, 2600]),
         removeParent: vi.fn().mockResolvedValue(undefined),
         addParent: vi.fn().mockResolvedValue(undefined),
@@ -100,7 +93,6 @@ describe('executeProvisioning', () => {
             ok: true,
             groupId: 99,
             calendarWarning: false,
-            fieldsWarning: false,
         });
 
         expect(api.duplicateGroup).toHaveBeenCalledWith(
@@ -109,9 +101,6 @@ describe('executeProvisioning', () => {
             false,
         );
         expect(api.configureGroup).toHaveBeenCalledWith(99, input.form);
-        // nur das NICHT gewählte Feld wird gelöscht — gematcht über den Namen im Duplikat
-        expect(api.deleteMemberField).toHaveBeenCalledTimes(1);
-        expect(api.deleteMemberField).toHaveBeenCalledWith(99, 48);
         // geerbte Parents raus, Ziel-Sammelgruppe rein
         expect(api.removeParent).toHaveBeenCalledWith(99, 2612);
         expect(api.removeParent).toHaveBeenCalledWith(99, 2600);
@@ -131,49 +120,7 @@ describe('executeProvisioning', () => {
         });
 
         const doneSteps = progress.filter((p) => p.status === 'done').map((p) => p.step);
-        expect(doneSteps).toEqual([
-            'duplicate',
-            'members',
-            'configure',
-            'fields',
-            'parents',
-            'calendar',
-        ]);
-    });
-
-    it('hides the field from the signup form when deletion is forbidden', async () => {
-        const api = makeApi({ deleteMemberField: vi.fn().mockRejectedValue(new Error('403')) });
-        const outcome = await executeProvisioning(input, api, onProgress);
-        expect(outcome).toEqual({
-            ok: true,
-            groupId: 99,
-            calendarWarning: false,
-            fieldsWarning: false,
-        });
-        // Fallback greift nur für das NICHT gewählte Feld
-        expect(api.hideMemberField).toHaveBeenCalledTimes(1);
-        expect(api.hideMemberField).toHaveBeenCalledWith(
-            99,
-            expect.objectContaining({ id: 48, name: 'T-Shirt-Größe' }),
-        );
-    });
-
-    it('keeps the group and warns when deleting AND hiding fail', async () => {
-        const api = makeApi({
-            deleteMemberField: vi.fn().mockRejectedValue(new Error('403')),
-            hideMemberField: vi.fn().mockRejectedValue(new Error('403')),
-        });
-        const outcome = await executeProvisioning(input, api, onProgress);
-        expect(outcome).toEqual({
-            ok: true,
-            groupId: 99,
-            calendarWarning: false,
-            fieldsWarning: true,
-        });
-        expect(api.deleteGroup).not.toHaveBeenCalled();
-        // parents und calendar laufen trotzdem weiter
-        expect(api.addParent).toHaveBeenCalled();
-        expect(api.createAppointment).toHaveBeenCalled();
+        expect(doneSteps).toEqual(['duplicate', 'members', 'configure', 'parents', 'calendar']);
     });
 
     it('copies members server-side when the organisator list is unreadable', async () => {
@@ -239,7 +186,6 @@ describe('executeProvisioning', () => {
             ok: true,
             groupId: 99,
             calendarWarning: true,
-            fieldsWarning: false,
         });
         expect(api.createAppointment).not.toHaveBeenCalled();
         expect(progress.at(-1)).toEqual({ step: 'calendar', status: 'failed' });
@@ -254,7 +200,6 @@ describe('executeProvisioning', () => {
             ok: true,
             groupId: 99,
             calendarWarning: true,
-            fieldsWarning: false,
         });
         expect(api.deleteGroup).not.toHaveBeenCalled();
         expect(progress.at(-1)).toEqual({ step: 'calendar', status: 'failed' });

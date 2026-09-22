@@ -15,7 +15,6 @@ function makeWrapper(props: Record<string, unknown> = {}) {
                 'Du bist als Leiter eingetragen',
             ],
             calendarWarning: false,
-            fieldsWarning: false,
             signupUrl: null,
             published: true,
             ...props,
@@ -38,13 +37,6 @@ describe('ResultView', () => {
         const w = makeWrapper({ calendarWarning: true });
         expect(w.text()).toContain('Wichtig: Kalendertermin konnte nicht angelegt werden');
         expect(w.text()).toContain('Royal Rangers');
-    });
-
-    it('shows the fields warning only when set', () => {
-        expect(makeWrapper().text()).not.toContain('Anmeldefelder konnten nicht entfernt');
-        expect(makeWrapper({ fieldsWarning: true }).text()).toContain(
-            'Anmeldefelder konnten nicht entfernt',
-        );
     });
 
     it('shows the public signup link with copy button when provided', async () => {

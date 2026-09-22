@@ -35,11 +35,11 @@ nicht vergeben). Auch der Umweg „Felder frisch anlegen statt löschen" scheite
 selben Check (POST ebenfalls 403; Validierung läuft vor der Rechteprüfung, daher
 täuscht ein 400 bei unvollständigem Payload Schreibrecht nur vor).
 
-**Konsequenz:** Der Wizard versucht Löschen, dann Ausblenden
-(`useInRegistrationForm: false`), und zeigt bei 403 die Felder-Warnung; nicht
-gewählte Felder entfernt die Stammleitung. Bei Admin-Nutzern des Wizards greift das
-Löschen normal. Ggf. als Feature-Wunsch an ChurchTools: feingranulares Recht für
-Gruppen-Anmeldefelder.
+**Konsequenz (Produktentscheidung 22.09.2026):** Der Wizard bietet keine Feld-Auswahl
+mehr an und fasst Felder gar nicht an — jede neue Veranstaltung übernimmt alle
+Vorlagen-Felder; Schritt 2 zeigt sie nur noch als Info-Liste. Ausnahmen je Event
+entfernt die Stammleitung nachträglich in der Gruppe. Ggf. als Feature-Wunsch an
+ChurchTools: feingranulares Recht für Gruppen-Anmeldefelder.
 
 ## Deploy-Dienstkonto „RR CICD" (je Instanz; verifiziert 22.09.2026)
 

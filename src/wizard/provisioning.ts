@@ -72,7 +72,6 @@ export async function executeProvisioning(
     const copyMembers = context.template.organisators.length === 0;
 
     let groupId: number | null = null;
-    let fieldsWarning = false;
     try {
         groupId = await run('duplicate', () =>
             api.duplicateGroup(context.template.id, name, copyMembers),
@@ -90,32 +89,9 @@ export async function executeProvisioning(
 
         await run('configure', () => api.configureGroup(newGroupId, form));
 
-        // Feld-Reduktion ist nicht fatal: Scheitert das Löschen an Rechten
-        // (Leiter bekommen dort 403), wird das Feld stattdessen aus dem
-        // Anmeldeformular ausgeblendet; erst wenn auch das scheitert, bleibt
-        // die Gruppe bestehen und das Ergebnis zeigt eine Warnung.
-        try {
-            await run('fields', async () => {
-                // Die Feld-IDs des Duplikats sind neu — Auswahl über Namen mappen.
-                const selectedNames = new Set(
-                    context.template.fields
-                        .filter((f) => form.selectedFieldIds.includes(f.id))
-                        .map((f) => f.name),
-                );
-                const duplicateFields = await api.listMemberFields(newGroupId);
-                for (const field of duplicateFields) {
-                    if (!selectedNames.has(field.name)) {
-                        try {
-                            await api.deleteMemberField(newGroupId, field.id);
-                        } catch {
-                            await api.hideMemberField(newGroupId, field);
-                        }
-                    }
-                }
-            });
-        } catch {
-            fieldsWarning = true;
-        }
+        // Anmeldefelder werden bewusst NICHT angefasst: Das Duplikat übernimmt
+        // immer alle Vorlagen-Felder. CT erlaubt Leitern keinerlei Schreiben an
+        // Gruppen-Anmeldefeldern (docs/PERMISSIONS.md, final untersucht 22.09.).
 
         await run('parents', async () => {
             // Geerbte Eltern (konventionsgemäß keine — die Vorlage hängt
@@ -155,7 +131,7 @@ export async function executeProvisioning(
     if (calendarId === null) {
         // Kalender fehlt auf der Instanz — Gruppe bleibt, Termin manuell (US-5).
         onProgress({ step: 'calendar', status: 'failed' });
-        return { ok: true, groupId, calendarWarning: true, fieldsWarning };
+        return { ok: true, groupId, calendarWarning: true };
     }
     try {
         const finalGroupId = groupId;
@@ -171,5 +147,5 @@ export async function executeProvisioning(
         calendarWarning = true;
     }
 
-    return { ok: true, groupId, calendarWarning, fieldsWarning };
+    return { ok: true, groupId, calendarWarning };
 }

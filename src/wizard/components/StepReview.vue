@@ -40,9 +40,7 @@ const modusLine = computed(() => {
     return props.form.publicSignup ? `${base} · Link ohne ChurchTools-Konto` : base;
 });
 const felderLine = computed(() => {
-    const names = props.context.template.fields
-        .filter((f) => props.form.selectedFieldIds.includes(f.id))
-        .map((f) => f.name);
+    const names = props.context.template.fields.map((f) => f.name);
     return names.length > 0 ? names.join(' · ') : 'keine';
 });
 const organisatorenLine = computed(() => {

@@ -75,7 +75,6 @@ const form: FormState = {
     titleSuffix: 'E2E-Lauf',
     publicSignup: true,
     publishNow: true,
-    selectedFieldIds: [],
 };
 const EXPECTED_NAME = 'RR Hajk Testbären 18.06.–20.06.2027 E2E-Lauf';
 
@@ -140,14 +139,12 @@ describe.runIf(RUN)('E2E gegen rr-demo', () => {
         expect(ctx.calendarId).not.toBeNull();
 
         form.teamId = team!.groupId;
-        form.selectedFieldIds = [ctx.template.fields.find((f) => f.name === 'Vegetarisch')!.id];
     }, 30_000);
 
     it('provisioniert einen echten Hajk end-to-end', async () => {
         const ctx = await loadWizardContext();
         const team = ctx.leader.teams.find((t) => t.shortName === 'Testbären')!;
         form.teamId = team.groupId;
-        form.selectedFieldIds = [ctx.template.fields.find((f) => f.name === 'Vegetarisch')!.id];
 
         const progress: ProvisionProgress[] = [];
         const outcome = await executeProvisioning(
@@ -166,7 +163,6 @@ describe.runIf(RUN)('E2E gegen rr-demo', () => {
         if (!outcome.ok) return;
         createdGroupId = outcome.groupId;
         expect(outcome.calendarWarning).toBe(false);
-        expect(outcome.fieldsWarning).toBe(false);
 
         // Gruppe: Name, Settings, Beschreibung
         const group = await call<{

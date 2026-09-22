@@ -32,14 +32,7 @@ export type WizardPhase =
 // Reihenfolge = Provisionierungs-Reihenfolge: Der Leiter wird direkt nach dem
 // Duplizieren eingetragen, damit die Folgeschritte mit Gruppenleiter-Rechten
 // laufen können.
-const ALL_STEPS: ProvisionStepId[] = [
-    'duplicate',
-    'members',
-    'configure',
-    'fields',
-    'parents',
-    'calendar',
-];
+const ALL_STEPS: ProvisionStepId[] = ['duplicate', 'members', 'configure', 'parents', 'calendar'];
 
 function emptyForm(): FormState {
     return {
@@ -54,7 +47,6 @@ function emptyForm(): FormState {
         titleSuffix: '',
         publicSignup: false,
         publishNow: true,
-        selectedFieldIds: [],
     };
 }
 

@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { reactive } from 'vue';
 import StepAnmeldung from '@/wizard/components/StepAnmeldung.vue';
-import FieldChecklist from '@/wizard/components/FieldChecklist.vue';
 import type { FormState, TemplateField } from '@/wizard/types';
 
 const fields: TemplateField[] = [
@@ -42,7 +41,6 @@ function makeForm(overrides: Partial<FormState> = {}): FormState {
         titleSuffix: '',
         publicSignup: false,
         publishNow: true,
-        selectedFieldIds: [],
         ...overrides,
     }) as FormState;
 }
@@ -100,47 +98,27 @@ describe('StepAnmeldung', () => {
         expect(form.publishNow).toBe(false);
     });
 
+    it('lists the template fields read-only with required markers', () => {
+        const w = makeWrapper();
+        const info = w.find('[data-testid="fields-info"]');
+        expect(info.text()).toContain('Vegetarisch');
+        expect(info.text()).toContain('Pflichtfeld');
+        expect(info.text()).toContain('kommen automatisch aus der Vorlage');
+        expect(info.find('input').exists()).toBe(false);
+    });
+
+    it('shows a hint when the template has no fields', () => {
+        const w = mount(StepAnmeldung, { props: { form: makeForm(), fields: [], errors: {} } });
+        expect(w.find('[data-testid="fields-info"]').text()).toContain(
+            'Keine Felder in der Vorlage hinterlegt',
+        );
+    });
+
     it('emits next and back', async () => {
         const w = makeWrapper();
         await w.find('form').trigger('submit');
         expect(w.emitted('next')).toHaveLength(1);
         await w.find('[data-testid="back"]').trigger('click');
         expect(w.emitted('back')).toHaveLength(1);
-    });
-});
-
-describe('FieldChecklist', () => {
-    function makeWrapper(form = makeForm(), fieldList = fields) {
-        return mount(FieldChecklist, { props: { form, fields: fieldList } });
-    }
-
-    it('toggles selectedFieldIds via checkbox', async () => {
-        const form = makeForm();
-        const w = makeWrapper(form);
-        const boxes = w.findAll('input[type="checkbox"]');
-        await boxes[0].setValue(true);
-        expect(form.selectedFieldIds).toEqual([3508]);
-        await boxes[0].setValue(false);
-        expect(form.selectedFieldIds).toEqual([]);
-    });
-
-    it('renders option summaries: enumerated, counted, freetext', () => {
-        const w = makeWrapper();
-        const text = w.text();
-        expect(text).toContain('(Ja / Nein)');
-        expect(text).toContain('(7 Optionen)');
-        expect(text).toContain('(Freitext)');
-    });
-
-    it('shows the Pflicht badge only for required fields', () => {
-        const w = makeWrapper();
-        const rows = w.findAll('.hp-check-row');
-        expect(rows[0].text()).toContain('Pflicht');
-        expect(rows[2].text()).not.toContain('Pflicht');
-    });
-
-    it('shows the empty catalog hint', () => {
-        const w = makeWrapper(makeForm(), []);
-        expect(w.text()).toContain('Die Vorlage enthält aktuell keine Anmeldefelder');
     });
 });

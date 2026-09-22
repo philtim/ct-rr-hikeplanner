@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import FieldChecklist from './FieldChecklist.vue';
 import type { Step2Errors } from '@/wizard/validation';
 import type { FormState, TemplateField } from '@/wizard/types';
 
@@ -29,7 +28,7 @@ const emit = defineEmits<{ next: []; back: [] }>();
 
         <p v-if="form.mode === 'manual'" class="hp-info-box">
             ⓘ Es gibt keine Selbstanmeldung. Du fügst die Teilnehmer nach dem Anlegen in der Gruppe
-            hinzu. Die gewählten Felder stehen dir dort zur Datenpflege zur Verfügung.
+            hinzu. Die Anmeldefelder stehen dir dort zur Datenpflege zur Verfügung.
         </p>
 
         <div
@@ -85,7 +84,24 @@ const emit = defineEmits<{ next: []; back: [] }>();
             </p>
         </div>
 
-        <FieldChecklist :form="form" :fields="fields" />
+        <!-- Felder sind bewusst nicht wählbar: CT erlaubt Leitern kein
+             Feld-Schreiben in der neuen Gruppe (docs/PERMISSIONS.md). -->
+        <div class="hp-field" data-testid="fields-info">
+            <span class="hp-fields-label">Anmeldefelder</span>
+            <ul v-if="fields.length" class="hp-fields-list">
+                <li v-for="f in fields" :key="f.id">
+                    {{ f.name
+                    }}<span v-if="f.requiredInRegistrationForm" class="hp-hint">
+                        · Pflichtfeld</span
+                    >
+                </li>
+            </ul>
+            <p v-else class="hp-hint">Keine Felder in der Vorlage hinterlegt.</p>
+            <p class="hp-hint">
+                Die Felder kommen automatisch aus der Vorlage — Änderungen daran macht die
+                Stammleitung.
+            </p>
+        </div>
 
         <div class="hp-actions">
             <button type="button" class="hp-btn" data-testid="back" @click="emit('back')">

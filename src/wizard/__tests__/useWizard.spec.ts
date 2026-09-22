@@ -55,7 +55,6 @@ const okOutcome: ProvisionOutcome = {
     ok: true,
     groupId: 99,
     calendarWarning: false,
-    fieldsWarning: false,
 };
 
 beforeEach(() => {
