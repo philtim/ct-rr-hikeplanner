@@ -19,17 +19,27 @@ sind für Leiter unantastbar. Auch Vorlage und Sammelgruppen haben diesen Typ.
 | Kalender → Termine erstellen im Kalender „Royal Rangers" | Hajk-Termin anlegen | ✅ |
 | Alles andere (andere Gruppentypen, Personen-Admin, andere Kalender) | — | ➖ nicht nötig |
 
-Bekannte Lücke (nicht blockierend): **Anmeldefelder löschen** in der frisch angelegten
-Gruppe liefert für Leiter 403 (auch als Gruppenleiter); welches Recht CT dafür verlangt,
-ist offen (Kandidat: „Gruppen verwalten/administer groups" — bewusst nicht vergeben).
-Der Wizard versucht seit v0.1.14 als Fallback, nicht gewählte Felder per
-`PUT …/memberfields/group/{id}` mit `useInRegistrationForm: false` aus dem
-Anmeldeformular auszublenden; nur wenn auch das scheitert, bleibt die Warnung und die
-Stammleitung räumt die Felder. **Stand 22.09.2026: Für Leiter scheitert BEIDES (403).**
-Der churchdb-Rechtekatalog kennt kein eigenes Memberfield-Recht; verbleibende
-Kandidaten: churchdb **„Sicherheitslevel Gruppe“ (security level group)** — Leitern
-Stufe 1 geben und erneut testen — oder „Gruppen verwalten (administer groups)"
-(bewusst nicht vergeben, gälte global).
+### Bekannte, akzeptierte Lücke: Anmeldefelder (final untersucht 22.09.2026)
+
+**Alle Schreiboperationen auf Gruppen-Anmeldefeldern (POST/PUT/DELETE
+`…/memberfields/group/…`) liefern für Leiter 403** mit der generischen Meldung
+„Forbidden to update groupMemberFields[{groupId}]" — auch als Gruppenleiter der frisch
+erstellten Gruppe. Erschöpfend getestet und wirkungslos:
+
+- churchdb „Sicherheitslevel Gruppe" Stufe 1 UND Stufe 4 (je mit frischer Session)
+- Gruppenleiter-Rolle, Typ-Rechte sehen/erstellen/bearbeiten/löschen/Mitgliedschaften
+
+Der churchdb-Rechtekatalog kennt kein eigenes Memberfield-Recht; der Zugriff ist
+faktisch an **„Gruppen verwalten (administer groups)"** gebunden (global — bewusst
+nicht vergeben). Auch der Umweg „Felder frisch anlegen statt löschen" scheitert am
+selben Check (POST ebenfalls 403; Validierung läuft vor der Rechteprüfung, daher
+täuscht ein 400 bei unvollständigem Payload Schreibrecht nur vor).
+
+**Konsequenz:** Der Wizard versucht Löschen, dann Ausblenden
+(`useInRegistrationForm: false`), und zeigt bei 403 die Felder-Warnung; nicht
+gewählte Felder entfernt die Stammleitung. Bei Admin-Nutzern des Wizards greift das
+Löschen normal. Ggf. als Feature-Wunsch an ChurchTools: feingranulares Recht für
+Gruppen-Anmeldefelder.
 
 ## Deploy-Dienstkonto „RR CICD" (je Instanz; verifiziert 22.09.2026)
 
