@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.10](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.9...v0.1.10) (2026-09-22)
+
+
+### Features
+
+* title suffix, public signup link, and robust provisioning order ([d260020](https://github.com/philtim/ct-rr-hikeplanner/commit/d2600209979e07ece968f98b35efe57eacbc9f5e))
+
 ## [0.1.9](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.8...v0.1.9) (2026-09-22)
 
 
