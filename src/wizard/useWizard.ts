@@ -5,7 +5,7 @@
  * für Tests injizierbar (Default: echte Implementierung).
  */
 import { computed, reactive, ref } from 'vue';
-import { getOriginUrl } from '@/shared/api';
+import { ChurchToolsApiError, getOriginUrl } from '@/shared/api';
 import { buildGroupName } from './naming';
 import { executeProvisioning } from './provisioning';
 import { fewNightsWarning, validateStep1, validateStep2 } from './validation';
@@ -94,9 +94,18 @@ export function useWizard(deps: UseWizardDeps = {}) {
             state.value = { phase: 'form', step: 1 };
         } catch (e) {
             const raw = e instanceof Error ? e.message : String(e);
-            const message = raw.startsWith('template-invalid: ')
-                ? `Die Vorlagengruppe ist nicht nutzbar: ${raw.replace('template-invalid: ', '')}. Bitte melde das der Stammleitung.`
-                : 'ChurchTools ist gerade nicht erreichbar. Bitte versuche es erneut.';
+            let message: string;
+            if (raw.startsWith('template-invalid: ')) {
+                message = `Die Vorlagengruppe ist nicht nutzbar: ${raw.replace('template-invalid: ', '')}. Bitte melde das der Stammleitung.`;
+            } else if (e instanceof ChurchToolsApiError && e.status > 0) {
+                // Konkreten Endpoint + Status nennen — meist fehlt ein Recht
+                // (siehe docs/PERMISSIONS.md), und ohne diese Info ist der
+                // Fehler aus der Ferne nicht diagnostizierbar.
+                message = `ChurchTools hat eine Anfrage abgelehnt (HTTP ${e.status} bei ${e.endpoint}). Vermutlich fehlt eine Berechtigung — bitte melde das der Stammleitung.`;
+            } else {
+                message = 'ChurchTools ist gerade nicht erreichbar. Bitte versuche es erneut.';
+            }
+            console.error('[rr-hikeplanner] Gate-Fehler:', e);
             state.value = { phase: 'gate-error', message };
         }
     }

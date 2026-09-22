@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ChurchToolsApiError } from '@/shared/api';
 import { useWizard } from '@/wizard/useWizard';
 import type { ProvisionOutcome, WizardContext } from '@/wizard/types';
 
@@ -82,6 +83,22 @@ describe('useWizard gate', () => {
         });
         await w.start();
         expect(w.state.value).toEqual({ phase: 'no-access' });
+    });
+
+    it('names endpoint and status when an API call is rejected', async () => {
+        const w = useWizard({
+            load: vi
+                .fn()
+                .mockRejectedValue(
+                    new ChurchToolsApiError('/groups/hierarchies', 403, 'Forbidden'),
+                ),
+        });
+        await w.start();
+        expect(w.state.value.phase).toBe('gate-error');
+        if (w.state.value.phase === 'gate-error') {
+            expect(w.state.value.message).toContain('HTTP 403');
+            expect(w.state.value.message).toContain('/groups/hierarchies');
+        }
     });
 
     it('maps template-invalid to a gate error with hint', async () => {
