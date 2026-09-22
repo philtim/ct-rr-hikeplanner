@@ -64,6 +64,12 @@ describe('ResultView', () => {
         expect(makeWrapper().find('[data-testid="signup-link"]').exists()).toBe(false);
     });
 
+    it('explains that organisators are set even when member lists hide them', () => {
+        expect(makeWrapper().find('[data-testid="org-hint"]').text()).toContain(
+            'eingetragen sind sie auf jeden Fall',
+        );
+    });
+
     it('shows the draft hint only when the group was not published', () => {
         const draft = makeWrapper({
             signupUrl: 'https://x.tools/publicgroup/99',

@@ -45,6 +45,11 @@ async function copySignupUrl(url: string) {
             </li>
         </ul>
 
+        <p class="hp-hint" data-testid="org-hint">
+            ⓘ Hinweis: Je nach deinen Berechtigungen kann es sein, dass du die Organisatoren in der
+            Mitgliederliste der Gruppe nicht siehst — eingetragen sind sie auf jeden Fall.
+        </p>
+
         <p v-if="fieldsWarning" class="hp-warning-box">
             ⚠ Wichtig: Nicht gewählte Anmeldefelder konnten nicht entfernt werden — bitte prüfe die
             Felder in der Gruppe oder melde es der Stammleitung.
