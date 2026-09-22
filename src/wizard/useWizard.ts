@@ -105,7 +105,11 @@ export function useWizard(deps: UseWizardDeps = {}) {
     function validateCurrentStep(step: 1 | 2 | 3): boolean {
         if (step === 1) {
             const errors = validateStep1(form);
-            if (!errors.teamId && selectedTeam.value && selectedTeam.value.sammelgruppeId === null) {
+            if (
+                !errors.teamId &&
+                selectedTeam.value &&
+                selectedTeam.value.sammelgruppeId === null
+            ) {
                 errors.teamId =
                     'Für dieses Team fehlt die Sammelgruppe „Camps und Aktionen“. Bitte melde das der Stammleitung.';
             }
@@ -154,9 +158,7 @@ export function useWizard(deps: UseWizardDeps = {}) {
             },
             provisionApi,
             (p) => {
-                progress.value = progress.value.map((entry) =>
-                    entry.step === p.step ? p : entry,
-                );
+                progress.value = progress.value.map((entry) => (entry.step === p.step ? p : entry));
             },
         );
         if (outcome.ok) {

@@ -38,7 +38,9 @@ describe('validateStep1', () => {
 
 describe('fewNightsWarning', () => {
     it('warns below two nights', () => {
-        expect(fewNightsWarning({ ...base, dateTo: '2027-04-11' })).toContain('zwei Übernachtungen');
+        expect(fewNightsWarning({ ...base, dateTo: '2027-04-11' })).toContain(
+            'zwei Übernachtungen',
+        );
     });
     it('is silent from two nights on and on empty or invalid dates', () => {
         expect(fewNightsWarning(base)).toBeNull();
@@ -62,7 +64,9 @@ describe('validateStep2', () => {
         );
     });
     it('ignores deadline in manual mode', () => {
-        expect(validateStep2({ ...base, mode: 'manual', signupDeadline: '2027-04-11' })).toEqual({});
+        expect(validateStep2({ ...base, mode: 'manual', signupDeadline: '2027-04-11' })).toEqual(
+            {},
+        );
     });
     it('rejects non-positive or non-numeric maxMembers', () => {
         const msg = 'Bitte eine Zahl größer 0 eingeben — oder das Feld leer lassen.';

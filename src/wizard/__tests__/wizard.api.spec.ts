@@ -28,14 +28,37 @@ const roles = [
 
 const hierarchies = [
     { groupId: 950, group: { title: 'RR Gesamt-Stammleitung' }, parents: [], children: [123] },
-    { groupId: 123, group: { title: 'RR Kundschafterstamm-MA' }, parents: [950], children: [2156, 2612] },
-    { groupId: 2156, group: { title: 'RR Kundschafterteam Eisbären' }, parents: [123], children: [] },
-    { groupId: 2612, group: { title: 'RR | Camps und Aktionen - Kundschafter' }, parents: [123], children: [] },
+    {
+        groupId: 123,
+        group: { title: 'RR Kundschafterstamm-MA' },
+        parents: [950],
+        children: [2156, 2612],
+    },
+    {
+        groupId: 2156,
+        group: { title: 'RR Kundschafterteam Eisbären' },
+        parents: [123],
+        children: [],
+    },
+    {
+        groupId: 2612,
+        group: { title: 'RR | Camps und Aktionen - Kundschafter' },
+        parents: [123],
+        children: [],
+    },
 ];
 
 const templateMembers = [
-    { personId: 1050, groupTypeRoleId: 26, person: { domainAttributes: { firstName: 'Irma', lastName: 'Betz' } } },
-    { personId: 2223, groupTypeRoleId: 23, person: { domainAttributes: { firstName: 'Philipp', lastName: 'T' } } },
+    {
+        personId: 1050,
+        groupTypeRoleId: 26,
+        person: { domainAttributes: { firstName: 'Irma', lastName: 'Betz' } },
+    },
+    {
+        personId: 2223,
+        groupTypeRoleId: 23,
+        person: { domainAttributes: { firstName: 'Philipp', lastName: 'T' } },
+    },
 ];
 
 const templateFields = [
@@ -83,7 +106,10 @@ function mockContextEndpoints(overrides: Record<string, unknown> = {}) {
     (api.fetchAllPages as Mock).mockImplementation((url: string) => {
         if (url.startsWith('/persons/42/groups'))
             return Promise.resolve([
-                { group: { domainIdentifier: '2156', title: 'RR Kundschafterteam Eisbären' }, groupTypeRoleId: 9 },
+                {
+                    group: { domainIdentifier: '2156', title: 'RR Kundschafterteam Eisbären' },
+                    groupTypeRoleId: 9,
+                },
             ]);
         if (url.startsWith(`/groups/${T}/members`)) return Promise.resolve(templateMembers);
         return Promise.reject(new Error(`unmocked pages ${url}`));
@@ -104,8 +130,20 @@ describe('loadWizardContext', () => {
         expect(ctx.template.id).toBe(T);
         expect(ctx.template.parentIds).toEqual([2612]);
         expect(ctx.template.fields).toEqual([
-            { id: 3508, name: 'Vegetarisch', fieldTypeCode: 'radioselect', options: ['Ja', 'Nein'], requiredInRegistrationForm: true },
-            { id: 3502, name: 'Bemerkung', fieldTypeCode: 'text', options: [], requiredInRegistrationForm: false },
+            {
+                id: 3508,
+                name: 'Vegetarisch',
+                fieldTypeCode: 'radioselect',
+                options: ['Ja', 'Nein'],
+                requiredInRegistrationForm: true,
+            },
+            {
+                id: 3502,
+                name: 'Bemerkung',
+                fieldTypeCode: 'text',
+                options: [],
+                requiredInRegistrationForm: false,
+            },
         ]);
         expect(ctx.template.organisators).toEqual([{ personId: 1050, name: 'Irma Betz' }]);
         expect(ctx.eventLeaderRoleId).toBe(23);
@@ -158,7 +196,10 @@ describe('provisionApi', () => {
             maxMembers: '20',
             selectedFieldIds: [],
         });
-        const [url, body] = (api.apiPatch as Mock).mock.calls[0] as [string, Record<string, unknown>];
+        const [url, body] = (api.apiPatch as Mock).mock.calls[0] as [
+            string,
+            Record<string, unknown>,
+        ];
         expect(url).toBe('/groups/99');
         expect(body.dateOfFoundation).toBe('2027-04-10');
         expect(body.endDate).toBe('2027-04-12');
@@ -204,8 +245,15 @@ describe('provisionApi', () => {
             endDate: '2027-04-12',
             description: 'Info + Link',
         });
-        const [url, body] = (api.apiPost as Mock).mock.calls[0] as [string, Record<string, unknown>];
+        const [url, body] = (api.apiPost as Mock).mock.calls[0] as [
+            string,
+            Record<string, unknown>,
+        ];
         expect(url).toBe('/calendars/69/appointments');
-        expect(body).toMatchObject({ allDay: true, isInternal: false, caption: 'RR Hajk Eisbären 10.04.–12.04.2027' });
+        expect(body).toMatchObject({
+            allDay: true,
+            isInternal: false,
+            caption: 'RR Hajk Eisbären 10.04.–12.04.2027',
+        });
     });
 });

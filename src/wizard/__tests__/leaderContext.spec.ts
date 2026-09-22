@@ -12,12 +12,22 @@ const roles: RoleIn[] = [
 
 const hierarchy: HierarchyIn[] = [
     { groupId: 950, title: 'RR Gesamt-Stammleitung', parents: [], children: [123, 129] },
-    { groupId: 123, title: 'RR Kundschafterstamm-MA', parents: [950], children: [2156, 1930, 2612] },
+    {
+        groupId: 123,
+        title: 'RR Kundschafterstamm-MA',
+        parents: [950],
+        children: [2156, 1930, 2612],
+    },
     { groupId: 129, title: 'RR Pfadfinderstamm-MA', parents: [950], children: [1015, 2615] },
     { groupId: 2156, title: 'RR Kundschafterteam Eisbären', parents: [123], children: [] },
     { groupId: 1930, title: 'RR Kundschafterteam Löwen', parents: [123], children: [] },
     { groupId: 1015, title: 'RR Pfadfinderteam Schneeleoparden', parents: [129], children: [] },
-    { groupId: 2612, title: 'RR | Camps und Aktionen - Kundschafter', parents: [123], children: [] },
+    {
+        groupId: 2612,
+        title: 'RR | Camps und Aktionen - Kundschafter',
+        parents: [123],
+        children: [],
+    },
     { groupId: 2615, title: 'RR | Camps und Aktionen - Pfadfinder', parents: [129], children: [] },
 ];
 

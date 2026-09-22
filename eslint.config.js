@@ -27,6 +27,11 @@ export default [
             // Page-level components (App, Example, ...) are unlikely to clash
             // with native HTML elements; the warning adds noise without value.
             'vue/multi-word-component-names': 'off',
+            // The wizard shares one reactive form object across its step
+            // components (single source of truth in useWizard). Mutating its
+            // properties via v-model is deliberate; replacing the prop itself
+            // stays forbidden.
+            'vue/no-mutating-props': ['error', { shallowOnly: true }],
             // Single-seam rule: only src/shared/api/ may import the raw client.
             // Everything else uses `@/shared/api` (which adds timeout + error
             // normalization) or goes through a feature's *.api.ts file.

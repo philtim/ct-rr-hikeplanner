@@ -54,6 +54,7 @@ export function deriveLeaderContext(
                 shortName: teamShortName(team.title),
                 stufe,
                 sammelgruppeId: sammelgruppe?.groupId ?? null,
+                sammelgruppeName: sammelgruppe?.title ?? null,
             });
         }
     }

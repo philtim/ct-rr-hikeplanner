@@ -82,7 +82,9 @@ export async function loadWizardContext(): Promise<WizardContext> {
     const eventLeaderRoleId = eventRoles.find((r) => r.isLeader && r.name === 'Leiter')?.id;
     const organisatorRoleId = eventRoles.find((r) => r.name === 'Organisator')?.id;
     if (!eventLeaderRoleId || !organisatorRoleId)
-        throw templateInvalid('Rollen „Leiter“/„Organisator“ am Gruppentyp der Vorlage nicht gefunden');
+        throw templateInvalid(
+            'Rollen „Leiter“/„Organisator“ am Gruppentyp der Vorlage nicht gefunden',
+        );
 
     const organisators = membersRaw
         .filter((m) => m.groupTypeRoleId === organisatorRoleId)

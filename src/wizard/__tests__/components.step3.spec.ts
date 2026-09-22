@@ -2,7 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
 import StepReview from '@/wizard/components/StepReview.vue';
 import ProgressList from '@/wizard/components/ProgressList.vue';
-import type { FormState, ProvisionOutcome, ProvisionProgress, TeamOption, WizardContext } from '@/wizard/types';
+import type {
+    FormState,
+    ProvisionOutcome,
+    ProvisionProgress,
+    TeamOption,
+    WizardContext,
+} from '@/wizard/types';
 
 const team: TeamOption = {
     groupId: 2156,
@@ -10,6 +16,7 @@ const team: TeamOption = {
     shortName: 'Eisbären',
     stufe: 'Kundschafter',
     sammelgruppeId: 2612,
+    sammelgruppeName: 'RR | Camps und Aktionen - Kundschafter',
 };
 
 const context: WizardContext = {
@@ -19,8 +26,20 @@ const context: WizardContext = {
         id: 2587,
         parentIds: [2612],
         fields: [
-            { id: 3508, name: 'Vegetarisch', fieldTypeCode: 'radioselect', options: ['Ja', 'Nein'], requiredInRegistrationForm: true },
-            { id: 3502, name: 'T-Shirt-Größe', fieldTypeCode: 'radioselect', options: ['S', 'M'], requiredInRegistrationForm: false },
+            {
+                id: 3508,
+                name: 'Vegetarisch',
+                fieldTypeCode: 'radioselect',
+                options: ['Ja', 'Nein'],
+                requiredInRegistrationForm: true,
+            },
+            {
+                id: 3502,
+                name: 'T-Shirt-Größe',
+                fieldTypeCode: 'radioselect',
+                options: ['S', 'M'],
+                requiredInRegistrationForm: false,
+            },
         ],
         organisators: [
             { personId: 1050, name: 'Irma Betz' },

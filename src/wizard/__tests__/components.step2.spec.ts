@@ -6,9 +6,27 @@ import FieldChecklist from '@/wizard/components/FieldChecklist.vue';
 import type { FormState, TemplateField } from '@/wizard/types';
 
 const fields: TemplateField[] = [
-    { id: 3508, name: 'Vegetarisch', fieldTypeCode: 'radioselect', options: ['Ja', 'Nein'], requiredInRegistrationForm: true },
-    { id: 3505, name: 'Mitfahrgelegenheit', fieldTypeCode: 'radioselect', options: ['A', 'B', 'C', 'D', 'E', 'F', 'G'], requiredInRegistrationForm: true },
-    { id: 3502, name: 'Bemerkung', fieldTypeCode: 'text', options: [], requiredInRegistrationForm: false },
+    {
+        id: 3508,
+        name: 'Vegetarisch',
+        fieldTypeCode: 'radioselect',
+        options: ['Ja', 'Nein'],
+        requiredInRegistrationForm: true,
+    },
+    {
+        id: 3505,
+        name: 'Mitfahrgelegenheit',
+        fieldTypeCode: 'radioselect',
+        options: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+        requiredInRegistrationForm: true,
+    },
+    {
+        id: 3502,
+        name: 'Bemerkung',
+        fieldTypeCode: 'text',
+        options: [],
+        requiredInRegistrationForm: false,
+    },
 ];
 
 function makeForm(overrides: Partial<FormState> = {}): FormState {

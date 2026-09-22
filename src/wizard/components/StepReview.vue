@@ -2,7 +2,13 @@
 import { computed } from 'vue';
 import ProgressList from './ProgressList.vue';
 import { countNights, formatDateRange } from '@/wizard/naming';
-import type { FormState, ProvisionOutcome, ProvisionProgress, TeamOption, WizardContext } from '@/wizard/types';
+import type {
+    FormState,
+    ProvisionOutcome,
+    ProvisionProgress,
+    TeamOption,
+    WizardContext,
+} from '@/wizard/types';
 
 const props = defineProps<{
     form: FormState;
@@ -46,13 +52,20 @@ const organisatorenLine = computed(() =>
 <template>
     <section>
         <h2>Prüfen &amp; Anlegen</h2>
-        <p><strong>{{ groupName }}</strong></p>
+        <p>
+            <strong>{{ groupName }}</strong>
+        </p>
 
         <template v-if="phase === 'form'">
             <div class="hp-summary">
                 <div class="hp-summary-head">
                     <h3>Team &amp; Termin</h3>
-                    <button type="button" class="hp-btn" data-testid="edit-1" @click="emit('edit', 1)">
+                    <button
+                        type="button"
+                        class="hp-btn"
+                        data-testid="edit-1"
+                        @click="emit('edit', 1)"
+                    >
                         Ändern
                     </button>
                 </div>
@@ -69,7 +82,12 @@ const organisatorenLine = computed(() =>
 
                 <div class="hp-summary-head">
                     <h3>Anmeldung</h3>
-                    <button type="button" class="hp-btn" data-testid="edit-2" @click="emit('edit', 2)">
+                    <button
+                        type="button"
+                        class="hp-btn"
+                        data-testid="edit-2"
+                        @click="emit('edit', 2)"
+                    >
                         Ändern
                     </button>
                 </div>
@@ -132,8 +150,8 @@ const organisatorenLine = computed(() =>
                 <template v-else>
                     <p>{{ failedOutcome?.message }}</p>
                     <p v-if="failedOutcome?.rollback === 'done'">
-                        Die angelegte Gruppe wurde wieder entfernt — es ist kein halbfertiger
-                        Hajk zurückgeblieben.
+                        Die angelegte Gruppe wurde wieder entfernt — es ist kein halbfertiger Hajk
+                        zurückgeblieben.
                     </p>
                     <p v-else-if="failedOutcome?.rollback === 'failed'">
                         Die unfertige Gruppe konnte nicht gelöscht werden. Bitte melde das der
@@ -147,7 +165,12 @@ const organisatorenLine = computed(() =>
                     <p>Deine Eingaben sind noch da.</p>
                 </template>
                 <div class="hp-actions">
-                    <button type="button" class="hp-btn" data-testid="back-to-form" @click="emit('edit', 1)">
+                    <button
+                        type="button"
+                        class="hp-btn"
+                        data-testid="back-to-form"
+                        @click="emit('edit', 1)"
+                    >
                         Zurück zu den Eingaben
                     </button>
                     <button

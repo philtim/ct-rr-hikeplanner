@@ -16,12 +16,8 @@ const emit = defineEmits<{ retry: [] }>();
 
     <div v-else-if="state === 'no-access'" class="hp-card" role="status">
         <h2>ⓘ Dieser Assistent ist für Team-Leiter</h2>
-        <p>
-            Hajks anlegen können Leiter und Co-Leiter eines Stufenteams sowie die Stammleitung.
-        </p>
-        <p>
-            Du planst einen Hajk? Wende dich an die Leiter deines Teams oder an die Stammleitung.
-        </p>
+        <p>Hajks anlegen können Leiter und Co-Leiter eines Stufenteams sowie die Stammleitung.</p>
+        <p>Du planst einen Hajk? Wende dich an die Leiter deines Teams oder an die Stammleitung.</p>
     </div>
 
     <div v-else class="hp-card" role="alert">

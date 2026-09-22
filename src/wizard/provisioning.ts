@@ -112,7 +112,13 @@ export async function executeProvisioning(
             await api.deleteGroup(groupId);
             return { ok: false, failedStep: step, message, rollback: 'done' };
         } catch {
-            return { ok: false, failedStep: step, message, rollback: 'failed', orphanGroupId: groupId };
+            return {
+                ok: false,
+                failedStep: step,
+                message,
+                rollback: 'failed',
+                orphanGroupId: groupId,
+            };
         }
     }
 

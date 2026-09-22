@@ -8,6 +8,7 @@ const teamEisbaeren = {
     shortName: 'Eisbären',
     stufe: 'Kundschafter' as const,
     sammelgruppeId: 2612,
+    sammelgruppeName: 'RR | Camps und Aktionen - Kundschafter',
 };
 const teamLoewen = {
     groupId: 1930,
@@ -15,6 +16,7 @@ const teamLoewen = {
     shortName: 'Löwen',
     stufe: 'Kundschafter' as const,
     sammelgruppeId: 2612,
+    sammelgruppeName: 'RR | Camps und Aktionen - Kundschafter',
 };
 
 function makeContext(overrides: Partial<WizardContext['leader']> = {}): WizardContext {
@@ -25,7 +27,13 @@ function makeContext(overrides: Partial<WizardContext['leader']> = {}): WizardCo
             id: 2587,
             parentIds: [2612],
             fields: [
-                { id: 3508, name: 'Vegetarisch', fieldTypeCode: 'radioselect', options: ['Ja', 'Nein'], requiredInRegistrationForm: true },
+                {
+                    id: 3508,
+                    name: 'Vegetarisch',
+                    fieldTypeCode: 'radioselect',
+                    options: ['Ja', 'Nein'],
+                    requiredInRegistrationForm: true,
+                },
             ],
             organisators: [{ personId: 1050, name: 'Irma Betz' }],
         },
@@ -57,14 +65,20 @@ describe('useWizard gate', () => {
 
     it('does not preselect with multiple teams', async () => {
         const w = useWizard({
-            load: vi.fn().mockResolvedValue(makeContext({ kind: 'stammleiter', teams: [teamEisbaeren, teamLoewen] })),
+            load: vi
+                .fn()
+                .mockResolvedValue(
+                    makeContext({ kind: 'stammleiter', teams: [teamEisbaeren, teamLoewen] }),
+                ),
         });
         await w.start();
         expect(w.form.teamId).toBeNull();
     });
 
     it('shows no-access for non-leaders', async () => {
-        const w = useWizard({ load: vi.fn().mockResolvedValue(makeContext({ kind: 'none', teams: [] })) });
+        const w = useWizard({
+            load: vi.fn().mockResolvedValue(makeContext({ kind: 'none', teams: [] })),
+        });
         await w.start();
         expect(w.state.value).toEqual({ phase: 'no-access' });
     });
@@ -102,7 +116,7 @@ describe('useWizard navigation', () => {
     });
 
     it('rejects a team without Sammelgruppe', async () => {
-        const noSammel = { ...teamEisbaeren, sammelgruppeId: null };
+        const noSammel = { ...teamEisbaeren, sammelgruppeId: null, sammelgruppeName: null };
         const w = useWizard({
             load: vi.fn().mockResolvedValue(makeContext({ teams: [noSammel] })),
         });
@@ -153,7 +167,10 @@ describe('useWizard submit', () => {
 
     it('enters failed state on provisioning failure and retries', async () => {
         const failed: ProvisionOutcome = {
-            ok: false, failedStep: 'parents', message: 'boom', rollback: 'done',
+            ok: false,
+            failedStep: 'parents',
+            message: 'boom',
+            rollback: 'done',
         };
         const execute = vi.fn().mockResolvedValueOnce(failed).mockResolvedValueOnce(okOutcome);
         const { w } = await wizardOnStep3(execute);

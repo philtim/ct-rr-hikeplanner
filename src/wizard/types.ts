@@ -15,6 +15,7 @@ export interface TeamOption {
     stufe: Stufe;
     /** "RR | Camps und Aktionen – <Stufe>"; null, wenn die Sammelgruppe fehlt. */
     sammelgruppeId: number | null;
+    sammelgruppeName: string | null;
 }
 
 export type AccessKind = 'none' | 'teamleiter' | 'stammleiter';

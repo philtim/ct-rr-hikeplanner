@@ -28,8 +28,8 @@ const emit = defineEmits<{ next: []; back: [] }>();
         </fieldset>
 
         <p v-if="form.mode === 'manual'" class="hp-info-box">
-            ⓘ Es gibt keine Selbstanmeldung. Du fügst die Teilnehmer nach dem Anlegen in der
-            Gruppe hinzu. Die gewählten Felder stehen dir dort zur Datenpflege zur Verfügung.
+            ⓘ Es gibt keine Selbstanmeldung. Du fügst die Teilnehmer nach dem Anlegen in der Gruppe
+            hinzu. Die gewählten Felder stehen dir dort zur Datenpflege zur Verfügung.
         </p>
 
         <div

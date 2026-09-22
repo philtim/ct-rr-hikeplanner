@@ -25,7 +25,9 @@ function toggle(fieldId: number, checked: boolean) {
     <fieldset class="hp-checklist">
         <legend>Welche Angaben brauchst du von den Teilnehmern?</legend>
         <p class="hp-hint">
-            <template v-if="form.mode === 'self'">Diese Felder fragt das Anmeldeformular ab.</template>
+            <template v-if="form.mode === 'self'"
+                >Diese Felder fragt das Anmeldeformular ab.</template
+            >
             <template v-else>Diese Felder kannst du je Teilnehmer pflegen.</template>
         </p>
 

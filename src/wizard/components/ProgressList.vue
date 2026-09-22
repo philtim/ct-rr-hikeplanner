@@ -23,7 +23,8 @@ const symbols: Record<StepStatus, string> = {
 <template>
     <ul class="hp-progress" aria-live="polite">
         <li v-for="p in progress" :key="p.step" :class="`hp-status--${p.status}`">
-            {{ symbols[p.status] }} {{ labels[p.step] }}<template v-if="p.status === 'running'"> …</template>
+            {{ symbols[p.status] }} {{ labels[p.step]
+            }}<template v-if="p.status === 'running'"> …</template>
         </li>
     </ul>
 </template>

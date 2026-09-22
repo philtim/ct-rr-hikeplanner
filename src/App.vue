@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import Example from '@/example/Example.vue';
+import WizardShell from '@/wizard/components/WizardShell.vue';
 </script>
 
 <template>
-    <Example />
+    <WizardShell />
 </template>

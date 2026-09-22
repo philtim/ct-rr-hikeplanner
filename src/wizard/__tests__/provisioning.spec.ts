@@ -11,8 +11,20 @@ const context: WizardContext = {
         id: 2587,
         parentIds: [2612, 2600],
         fields: [
-            { id: 3508, name: 'Vegetarisch', fieldTypeCode: 'radioselect', options: ['Ja', 'Nein'], requiredInRegistrationForm: true },
-            { id: 3502, name: 'T-Shirt-Größe', fieldTypeCode: 'radioselect', options: ['S', 'M'], requiredInRegistrationForm: false },
+            {
+                id: 3508,
+                name: 'Vegetarisch',
+                fieldTypeCode: 'radioselect',
+                options: ['Ja', 'Nein'],
+                requiredInRegistrationForm: true,
+            },
+            {
+                id: 3502,
+                name: 'T-Shirt-Größe',
+                fieldTypeCode: 'radioselect',
+                options: ['S', 'M'],
+                requiredInRegistrationForm: false,
+            },
         ],
         organisators: [
             { personId: 1050, name: 'Irma Betz' },
@@ -35,7 +47,14 @@ const input: ProvisionInput = {
         maxMembers: '20',
         selectedFieldIds: [3508], // nur Vegetarisch
     },
-    team: { groupId: 2156, name: 'RR Kundschafterteam Eisbären', shortName: 'Eisbären', stufe: 'Kundschafter', sammelgruppeId: 2612 },
+    team: {
+        groupId: 2156,
+        name: 'RR Kundschafterteam Eisbären',
+        shortName: 'Eisbären',
+        stufe: 'Kundschafter',
+        sammelgruppeId: 2612,
+        sammelgruppeName: 'RR | Camps und Aktionen - Kundschafter',
+    },
     context,
     calendarId: 69,
     groupUrl: (id) => `https://x.church.tools/groups/${id}`,
@@ -98,7 +117,14 @@ describe('executeProvisioning', () => {
         });
 
         const doneSteps = progress.filter((p) => p.status === 'done').map((p) => p.step);
-        expect(doneSteps).toEqual(['duplicate', 'configure', 'fields', 'parents', 'members', 'calendar']);
+        expect(doneSteps).toEqual([
+            'duplicate',
+            'configure',
+            'fields',
+            'parents',
+            'members',
+            'calendar',
+        ]);
     });
 
     it('aborts on name collision before duplicating', async () => {
@@ -137,7 +163,9 @@ describe('executeProvisioning', () => {
     });
 
     it('treats a calendar failure as success with warning and keeps the group', async () => {
-        const api = makeApi({ createAppointment: vi.fn().mockRejectedValue(new Error('no rights')) });
+        const api = makeApi({
+            createAppointment: vi.fn().mockRejectedValue(new Error('no rights')),
+        });
         const outcome = await executeProvisioning(input, api, onProgress);
         expect(outcome).toEqual({ ok: true, groupId: 99, calendarWarning: true });
         expect(api.deleteGroup).not.toHaveBeenCalled();
