@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.16](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.15...v0.1.16) (2026-09-22)
+
+
+### Bug Fixes
+
+* send full category payload when updating settings ([2151009](https://github.com/philtim/ct-rr-hikeplanner/commit/215100960b5c119975717915cdfe65d13105d6ab))
+
 ## [0.1.15](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.14...v0.1.15) (2026-09-22)
 
 
