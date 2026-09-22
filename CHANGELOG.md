@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.3...v0.1.4) (2026-09-22)
+
+
+### Bug Fixes
+
+* constrain date pickers to valid ranges ([de28b9b](https://github.com/philtim/ct-rr-hikeplanner/commit/de28b9b4f56189db1a1cd5a26bc77aab90c0d217))
+
 ## [0.1.3](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.2...v0.1.3) (2026-09-22)
 
 
