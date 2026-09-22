@@ -135,7 +135,7 @@ const resultSummary = computed(() => {
         </template>
 
         <footer class="hp-footer" :title="`RR HikePlanner v${appVersion} (build ${appCommit})`">
-            v{{ appVersion }} · {{ appCommit }}
+            v{{ appVersion }} · {{ appCommit }} · <a href="?admin=1">Konfiguration</a>
         </footer>
     </div>
 </template>

@@ -168,6 +168,42 @@ describe('loadWizardContext', () => {
     });
 });
 
+describe('template resolution via KV settings', () => {
+    it('prefers the configured template group over the name convention', async () => {
+        mockContextEndpoints({
+            '/custommodules': [{ id: 5, shorty: 'rr-hikeplanner' }],
+            '/custommodules/5/customdatacategories': [
+                { id: 2, shorty: 'settings', data: `{"hajkTemplateGroupId":${T}}` },
+            ],
+            // Namenssuche würde nichts finden — darf gar nicht nötig sein.
+            '/groups': [],
+        });
+        const ctx = await loadWizardContext();
+        expect(ctx.template.id).toBe(T);
+    });
+
+    it('fails with a config hint when the configured group is unreadable', async () => {
+        mockContextEndpoints({
+            '/custommodules': [{ id: 5, shorty: 'rr-hikeplanner' }],
+            '/custommodules/5/customdatacategories': [
+                { id: 2, shorty: 'settings', data: '{"hajkTemplateGroupId":404404}' },
+            ],
+        });
+        await expect(loadWizardContext()).rejects.toThrow(/konfigurierte Vorlage.*404404/);
+    });
+
+    it('falls back to the name convention when settings are unreadable', async () => {
+        mockContextEndpoints(); // kein /custommodules-Mock → loadSettings ergibt null
+        const ctx = await loadWizardContext();
+        expect(ctx.template.id).toBe(T);
+    });
+
+    it('points to the config page when the template name is not found either', async () => {
+        mockContextEndpoints({ '/groups': [] });
+        await expect(loadWizardContext()).rejects.toThrow(/Konfiguration/);
+    });
+});
+
 describe('loadWizardContext with english default role names', () => {
     it('falls back to the first isLeader role when no role is named Leiter', async () => {
         const englishRoles = [

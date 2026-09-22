@@ -6,6 +6,12 @@
  * lokale Tests gedacht.
  */
 
+/**
+ * Key des Custom-Moduls — identifiziert den KV-Store der Extension.
+ * Der CI-Build läuft ohne .env, daher greift dort der Default.
+ */
+export const EXTENSION_KEY = import.meta.env.VITE_KEY || 'rr-hikeplanner';
+
 /** Name der Hajk-Vorlagengruppe (auf beiden Instanzen identisch). */
 export const TEMPLATE_GROUP_NAME = import.meta.env.VITE_TEMPLATE_GROUP_NAME || '=== Vorlage Hajks';
 

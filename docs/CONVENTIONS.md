@@ -34,7 +34,14 @@ sie; Abweichungen brechen die automatische Erkennung.
 
 ## Vorlagengruppe = Single Source of Truth
 
-Die Gruppe `=== Vorlage Hajks` steuert den Assistenten. Sie hängt bewusst
+Welche Gruppe als Vorlage dient, bestimmt zuerst die **Extension-Konfiguration**
+(`…/ccm/rr-hikeplanner/?admin=1`, Link „Konfiguration“ im Footer): Ein Admin wählt
+dort die Vorlagen-Gruppe; gespeichert wird ihre ID im KV-Store des Custom-Moduls —
+Umbenennen der Vorlage bricht dann nichts. Ohne Konfiguration fällt der Assistent
+auf die Namenskonvention `=== Vorlage Hajks` zurück. Speichern der Konfiguration
+verlangt ChurchTools-Admin-Rechte (Leiter bekommen 403).
+
+Die Vorlagen-Gruppe steuert den Assistenten. Sie hängt bewusst
 UNTER KEINER Eltern-Gruppe: Duplikate würden die Ablagen erben, und Leiter
 dürfen fremde Zuordnungen nicht entfernen. Dort — und nur dort — werden
 gepflegt (normale CT-Oberfläche, keine Code-Änderung nötig):
@@ -61,5 +68,6 @@ Hierarchie regelmäßig auf Ausreißer.
 
 ## Erweiterung um neue Aktionstypen (nach MVP)
 
-Je neuer Typ (Tagesaktion, Übernachtung, Camp): eigene Vorlagengruppe `=== Vorlage <Typ>`
-anlegen und in `src/wizard/config.ts` registrieren; Namensschema `RR <Typ> <Team> <Datum>`.
+Je neuer Typ (Tagesaktion, Übernachtung, Camp): eigene Vorlagengruppe anlegen und als
+weiteres Feld in der Extension-Konfiguration ergänzen (z. B. `campTemplateGroupId` in
+`src/wizard/settings.api.ts`); Namensschema `RR <Typ> <Team> <Datum>`.

@@ -84,7 +84,8 @@ describe('WizardShell', () => {
     it('shows version and commit in the footer', () => {
         fake.state.value = { phase: 'loading' };
         const w = mount(WizardShell);
-        expect(w.find('.hp-footer').text()).toBe('v0.0.0-test · testsha');
+        expect(w.find('.hp-footer').text()).toContain('v0.0.0-test · testsha');
+        expect(w.find('.hp-footer a').attributes('href')).toBe('?admin=1');
     });
 
     it('renders step 2 in form phase', () => {

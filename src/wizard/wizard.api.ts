@@ -9,6 +9,7 @@
  */
 import { apiDelete, apiGet, apiPatch, apiPost, apiPut, fetchAllPages } from '@/shared/api';
 import { CALENDAR_NAME, TEMPLATE_GROUP_NAME } from './config';
+import { loadSettings } from './settings.api';
 import { deriveLeaderContext } from './leaderContext';
 import type { HierarchyIn, MembershipIn, RoleIn } from './leaderContext';
 import type { FormState, TemplateField, WizardContext } from './types';
@@ -75,32 +76,46 @@ async function findGroupIdByNameRaw(name: string): Promise<number | null> {
     return groups.find((g) => g.name === name)?.id ?? null;
 }
 
+/**
+ * Vorlage auflösen: die im KV-Store konfigurierte Gruppen-ID gewinnt, sonst
+ * greift die Namenskonvention. Beide Fehlerfälle verweisen auf die
+ * Konfigurationsseite (Link im Footer), wo ein Admin die Vorlage festlegt.
+ */
+async function resolveTemplate(): Promise<GroupRes> {
+    const settings = await loadSettings();
+    if (settings) {
+        try {
+            return await apiGet<GroupRes>(`/groups/${settings.hajkTemplateGroupId}`);
+        } catch {
+            throw templateInvalid(
+                `die konfigurierte Vorlage (Gruppe ${settings.hajkTemplateGroupId}) existiert nicht mehr oder ist nicht lesbar — bitte unter „Konfiguration“ (Link im Footer) neu festlegen`,
+            );
+        }
+    }
+    const templateId = await findGroupIdByNameRaw(TEMPLATE_GROUP_NAME);
+    if (templateId === null)
+        throw templateInvalid(
+            `Vorlagengruppe „${TEMPLATE_GROUP_NAME}“ wurde nicht gefunden — ein Admin kann die Vorlage unter „Konfiguration“ (Link im Footer) festlegen`,
+        );
+    return apiGet<GroupRes>(`/groups/${templateId}`);
+}
+
 export async function loadWizardContext(): Promise<WizardContext> {
     const me = await apiGet<WhoamiRes>('/whoami');
 
-    const templateId = await findGroupIdByNameRaw(TEMPLATE_GROUP_NAME);
-    if (templateId === null)
-        throw templateInvalid(`Vorlagengruppe „${TEMPLATE_GROUP_NAME}“ wurde nicht gefunden`);
+    const template = await resolveTemplate();
+    const templateId = template.id;
 
-    const [
-        memberships,
-        hierarchiesRaw,
-        roles,
-        template,
-        fieldsRaw,
-        membersRaw,
-        parentsRaw,
-        calendars,
-    ] = await Promise.all([
-        fetchAllPages<PersonGroupRes>(`/persons/${me.id}/groups`, { limit: 100 }),
-        apiGet<HierarchyRes[]>('/groups/hierarchies'),
-        apiGet<RoleRes[]>('/group/roles'),
-        apiGet<GroupRes>(`/groups/${templateId}`),
-        apiGet<MemberFieldRes[]>(`/groups/${templateId}/memberfields`),
-        fetchAllPages<MemberRes>(`/groups/${templateId}/members`, { limit: 100 }),
-        apiGet<ParentRes[]>(`/groups/${templateId}/parents`),
-        apiGet<CalendarRes[]>('/calendars'),
-    ]);
+    const [memberships, hierarchiesRaw, roles, fieldsRaw, membersRaw, parentsRaw, calendars] =
+        await Promise.all([
+            fetchAllPages<PersonGroupRes>(`/persons/${me.id}/groups`, { limit: 100 }),
+            apiGet<HierarchyRes[]>('/groups/hierarchies'),
+            apiGet<RoleRes[]>('/group/roles'),
+            apiGet<MemberFieldRes[]>(`/groups/${templateId}/memberfields`),
+            fetchAllPages<MemberRes>(`/groups/${templateId}/members`, { limit: 100 }),
+            apiGet<ParentRes[]>(`/groups/${templateId}/parents`),
+            apiGet<CalendarRes[]>('/calendars'),
+        ]);
 
     const templateTypeId = template.information?.groupTypeId;
     if (!templateTypeId) throw templateInvalid('Gruppentyp der Vorlage nicht lesbar');

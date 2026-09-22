@@ -375,6 +375,9 @@
     font-size: 0.8rem;
     color: var(--hp-muted);
 }
+.rr-hikeplanner-root .hp-footer a {
+    color: inherit;
+}
 
 @media (max-width: 767px) {
     .rr-hikeplanner-root .hp-actions {
