@@ -168,6 +168,37 @@ describe('loadWizardContext', () => {
     });
 });
 
+describe('loadWizardContext with english default role names', () => {
+    it('falls back to the first isLeader role when no role is named Leiter', async () => {
+        const englishRoles = [
+            { id: 9, groupTypeId: 1, isLeader: true, name: 'Leiter', type: 'leader' },
+            { id: 49, groupTypeId: 7, isLeader: false, name: 'participant', type: 'participant' },
+            { id: 52, groupTypeId: 7, isLeader: true, name: 'leader', type: 'leader' },
+            { id: 55, groupTypeId: 7, isLeader: true, name: 'Co-Leiter', type: 'leader' },
+            { id: 58, groupTypeId: 7, isLeader: false, name: 'Organisator', type: 'participant' },
+        ];
+        mockContextEndpoints({
+            '/group/roles': englishRoles,
+            [`/groups/${T}`]: { id: T, name: '=== Vorlage Hajks', information: { groupTypeId: 7 } },
+        });
+        (api.fetchAllPages as Mock).mockImplementation((url: string) => {
+            if (url.startsWith('/persons/42/groups')) return Promise.resolve([]);
+            if (url.startsWith(`/groups/${T}/members`))
+                return Promise.resolve([
+                    {
+                        personId: 1050,
+                        groupTypeRoleId: 58,
+                        person: { domainAttributes: { firstName: 'Irma', lastName: 'Betz' } },
+                    },
+                ]);
+            return Promise.reject(new Error(`unmocked pages ${url}`));
+        });
+        const ctx = await loadWizardContext();
+        expect(ctx.eventLeaderRoleId).toBe(52);
+        expect(ctx.organisatorRoleId).toBe(58);
+    });
+});
+
 describe('provisionApi', () => {
     it('findGroupIdByName matches exact names only', async () => {
         (api.apiGet as Mock).mockResolvedValue([

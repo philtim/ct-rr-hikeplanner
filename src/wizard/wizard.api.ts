@@ -106,7 +106,12 @@ export async function loadWizardContext(): Promise<WizardContext> {
     if (!templateTypeId) throw templateInvalid('Gruppentyp der Vorlage nicht lesbar');
 
     const eventRoles = roles.filter((r) => r.groupTypeId === templateTypeId);
-    const eventLeaderRoleId = eventRoles.find((r) => r.isLeader && r.name === 'Leiter')?.id;
+    // Leiter-Rolle bevorzugt über den Namen, sonst die erste isLeader-Rolle —
+    // neue Gruppentypen haben teils englische Default-Rollennamen ("leader").
+    const eventLeaderRoleId = (
+        eventRoles.find((r) => r.isLeader && r.name === 'Leiter') ??
+        eventRoles.find((r) => r.isLeader)
+    )?.id;
     const organisatorRoleId = eventRoles.find((r) => r.name === 'Organisator')?.id;
     if (!eventLeaderRoleId || !organisatorRoleId)
         throw templateInvalid(
