@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.6](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.5...v0.1.6) (2026-09-22)
+
+
+### Bug Fixes
+
+* tolerate hidden groups in hierarchy and membership responses ([0ee0449](https://github.com/philtim/ct-rr-hikeplanner/commit/0ee044968304edc06294fed87f23ec25109342c1))
+
 ## [0.1.5](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.4...v0.1.5) (2026-09-22)
 
 
