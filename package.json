@@ -23,7 +23,8 @@
         "deploy": "npm run build && node scripts/package.js",
         "gen:types": "node scripts/gen-ct-types.js",
         "test": "vitest run",
-        "test:watch": "vitest"
+        "test:watch": "vitest",
+        "seed:demo": "node scripts/seed-demo.mjs"
     },
     "dependencies": {
         "@churchtools/churchtools-client": "^1.4.0",
