@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.11](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.10...v0.1.11) (2026-09-22)
+
+
+### Bug Fixes
+
+* tolerate forbidden removal of inherited parent groups ([193880e](https://github.com/philtim/ct-rr-hikeplanner/commit/193880e07c62f9e02b583ae18c8781f29ec5e514))
+
 ## [0.1.10](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.9...v0.1.10) (2026-09-22)
 
 
