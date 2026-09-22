@@ -110,8 +110,9 @@ if (!stammMa) {
     process.exit(1);
 }
 
-console.log('Team:');
+console.log('Teams:');
 const teamId = await ensureGroup('RR Kundschafterteam Testbären', 1, stammMa.id);
+const team2Id = await ensureGroup('RR Kundschafterteam Testfüchse', 1, stammMa.id);
 console.log('Sammelgruppe:');
 const sammelId = await ensureGroup('RR | Camps und Aktionen - Kundschafter', 4, stammMa.id);
 console.log('Vorlage:');
@@ -149,7 +150,8 @@ await ensureField(templateId, {
 
 console.log('Mitgliedschaften:');
 await put(`/groups/${teamId}/members/${myId}`, { groupTypeRoleId: teamLeaderRole });
-console.log(`  Person ${myId} ist Leiter im Testteam`);
+await put(`/groups/${team2Id}/members/${myId}`, { groupTypeRoleId: teamLeaderRole });
+console.log(`  Person ${myId} ist Leiter in beiden Testteams (→ Team-Dropdown im Wizard)`);
 await put(`/groups/${templateId}/members/${myId}`, { groupTypeRoleId: eventOrganisatorRole });
 console.log(`  Person ${myId} ist Organisator der Vorlage`);
 
