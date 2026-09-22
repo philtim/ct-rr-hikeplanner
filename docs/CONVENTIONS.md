@@ -35,7 +35,9 @@ sie; Abweichungen brechen die automatische Erkennung.
 ## Vorlagengruppe = Single Source of Truth
 
 Welche Gruppe als Vorlage dient, bestimmt zuerst die **Extension-Konfiguration**
-(`…/ccm/rr-hikeplanner/?admin=1`, Link „Konfiguration“ im Footer): Ein Admin wählt
+(Link „Konfiguration“ im Footer bzw. `…/ccm/rr-hikeplanner/#admin`; der Wechsel ist
+reiner Client-State, weil ChurchTools' SPA-Router echte Navigation mit Query-Params
+auf /ccm/-Seiten zur Startseite umleitet): Ein Admin wählt
 dort die Vorlagen-Gruppe; gespeichert wird ihre ID im KV-Store des Custom-Moduls —
 Umbenennen der Vorlage bricht dann nichts. Ohne Konfiguration fällt der Assistent
 auf die Namenskonvention `=== Vorlage Hajks` zurück. Speichern der Konfiguration

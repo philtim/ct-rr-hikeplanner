@@ -93,4 +93,10 @@ describe('AdminView', () => {
         const w = await makeWrapper();
         expect(w.find('[data-testid="save"]').attributes('disabled')).toBeDefined();
     });
+
+    it('emits back for the return button (no real navigation, CT router!)', async () => {
+        const w = await makeWrapper();
+        await w.find('[data-testid="back"]').trigger('click');
+        expect(w.emitted('back')).toHaveLength(1);
+    });
 });

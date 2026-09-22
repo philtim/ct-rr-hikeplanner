@@ -10,6 +10,8 @@ import StepReview from './StepReview.vue';
 import ResultView from './ResultView.vue';
 import '../wizard.css';
 
+const emit = defineEmits<{ admin: [] }>();
+
 const w = useWizard();
 onMounted(() => void w.start());
 
@@ -135,7 +137,11 @@ const resultSummary = computed(() => {
         </template>
 
         <footer class="hp-footer" :title="`RR HikePlanner v${appVersion} (build ${appCommit})`">
-            v{{ appVersion }} · {{ appCommit }} · <a href="?admin=1">Konfiguration</a>
+            v{{ appVersion }} · {{ appCommit }} ·
+            <!-- Kein echter Link: Navigation würde vom CT-Router abgefangen. -->
+            <a href="#admin" data-testid="open-admin" @click.prevent="emit('admin')"
+                >Konfiguration</a
+            >
         </footer>
     </div>
 </template>

@@ -10,6 +10,8 @@ import { TEMPLATE_GROUP_NAME } from '@/wizard/config';
 import { getGroupName, loadSettings, saveSettings, searchGroups } from '@/wizard/settings.api';
 import '../wizard.css';
 
+const emit = defineEmits<{ back: [] }>();
+
 const loading = ref(true);
 const currentId = ref<number | null>(null);
 const currentName = ref<string | null>(null);
@@ -121,7 +123,9 @@ async function save(): Promise<void> {
             <p v-if="error" class="hp-error-text" data-testid="save-error">{{ error }}</p>
 
             <div class="hp-actions">
-                <a class="hp-btn" href="?">← Zurück zum Assistenten</a>
+                <button type="button" class="hp-btn" data-testid="back" @click="emit('back')">
+                    ← Zurück zum Assistenten
+                </button>
                 <button
                     type="button"
                     class="hp-btn hp-btn--primary"

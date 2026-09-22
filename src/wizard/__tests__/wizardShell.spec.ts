@@ -85,7 +85,14 @@ describe('WizardShell', () => {
         fake.state.value = { phase: 'loading' };
         const w = mount(WizardShell);
         expect(w.find('.hp-footer').text()).toContain('v0.0.0-test · testsha');
-        expect(w.find('.hp-footer a').attributes('href')).toBe('?admin=1');
+        expect(w.find('[data-testid="open-admin"]').text()).toBe('Konfiguration');
+    });
+
+    it('emits admin from the footer link without navigating', async () => {
+        fake.state.value = { phase: 'loading' };
+        const w = mount(WizardShell);
+        await w.find('[data-testid="open-admin"]').trigger('click');
+        expect(w.emitted('admin')).toHaveLength(1);
     });
 
     it('renders step 2 in form phase', () => {
