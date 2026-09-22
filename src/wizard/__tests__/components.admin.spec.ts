@@ -17,6 +17,7 @@ vi.mock('@/wizard/settings.api', () => ({
     loadSettings: vi.fn(),
     saveSettings: vi.fn(),
     searchGroups: vi.fn(),
+    searchPersons: vi.fn(),
     getGroupName: vi.fn(),
 }));
 
@@ -38,7 +39,10 @@ beforeEach(() => {
 
 describe('AdminView', () => {
     it('shows the configured template with its resolved name', async () => {
-        (settingsApi.loadSettings as Mock).mockResolvedValue({ hajkTemplateGroupId: 2587 });
+        (settingsApi.loadSettings as Mock).mockResolvedValue({
+            hajkTemplateGroupId: 2587,
+            organisators: [],
+        });
         (settingsApi.getGroupName as Mock).mockResolvedValue('=== Vorlage Hajks');
         const w = await makeWrapper();
         expect(w.find('[data-testid="current-template"]').text()).toContain('=== Vorlage Hajks');
@@ -68,7 +72,10 @@ describe('AdminView', () => {
         await w.find('[data-testid="save"]').trigger('click');
         await flushPromises();
 
-        expect(settingsApi.saveSettings).toHaveBeenCalledWith({ hajkTemplateGroupId: 11 });
+        expect(settingsApi.saveSettings).toHaveBeenCalledWith({
+            hajkTemplateGroupId: 11,
+            organisators: [],
+        });
         expect(w.find('[data-testid="saved"]').exists()).toBe(true);
         expect(w.find('[data-testid="current-template"]').text()).toContain('Vorlage B');
     });
@@ -89,9 +96,33 @@ describe('AdminView', () => {
         expect(w.find('[data-testid="save-error"]').text()).toContain('Keine Berechtigung');
     });
 
-    it('disables save until a group is selected', async () => {
+    it('adds and removes organisators and saves them', async () => {
+        (settingsApi.loadSettings as Mock).mockResolvedValue({
+            hajkTemplateGroupId: 5,
+            organisators: [{ personId: 1050, name: 'Irma Betz' }],
+        });
+        (settingsApi.getGroupName as Mock).mockResolvedValue('Vorlage');
+        (settingsApi.searchPersons as Mock).mockResolvedValue([
+            { personId: 1050, name: 'Irma Betz' }, // schon gewählt → gefiltert
+            { personId: 2226, name: 'Julia Timmalog' },
+        ]);
+        (settingsApi.saveSettings as Mock).mockResolvedValue(undefined);
         const w = await makeWrapper();
-        expect(w.find('[data-testid="save"]').attributes('disabled')).toBeDefined();
+        expect(w.find('[data-testid="organisators"]').text()).toContain('Irma Betz');
+
+        await w.find('#hp-person-query').setValue('Timmalog');
+        await w.find('[data-testid="search-person"]').trigger('click');
+        await flushPromises();
+        expect(w.find('[data-testid="person-results"]').text()).not.toContain('Irma');
+        await w.find('[data-testid="add-organisator-2226"]').trigger('click');
+        await w.find('[data-testid="remove-organisator-1050"]').trigger('click');
+
+        await w.find('[data-testid="save"]').trigger('click');
+        await flushPromises();
+        expect(settingsApi.saveSettings).toHaveBeenCalledWith({
+            hajkTemplateGroupId: 5,
+            organisators: [{ personId: 2226, name: 'Julia Timmalog' }],
+        });
     });
 
     it('emits back for the return button (no real navigation, CT router!)', async () => {

@@ -10,6 +10,7 @@
 import { apiDelete, apiGet, apiPatch, apiPost, apiPut, fetchAllPages } from '@/shared/api';
 import { CALENDAR_NAME, TEMPLATE_GROUP_NAME } from './config';
 import { loadSettings } from './settings.api';
+import type { ExtensionSettings } from './settings.api';
 import { deriveLeaderContext } from './leaderContext';
 import type { HierarchyIn, MembershipIn, RoleIn } from './leaderContext';
 import type { FormState, TemplateField, WizardContext } from './types';
@@ -90,9 +91,8 @@ async function findGroupIdByNameRaw(name: string): Promise<number | null> {
  * greift die Namenskonvention. Beide Fehlerfälle verweisen auf die
  * Konfigurationsseite (Link im Footer), wo ein Admin die Vorlage festlegt.
  */
-async function resolveTemplate(): Promise<GroupRes> {
-    const settings = await loadSettings();
-    if (settings) {
+async function resolveTemplate(settings: ExtensionSettings | null): Promise<GroupRes> {
+    if (settings?.hajkTemplateGroupId != null) {
         try {
             return await apiGet<GroupRes>(`/groups/${settings.hajkTemplateGroupId}`);
         } catch {
@@ -112,7 +112,8 @@ async function resolveTemplate(): Promise<GroupRes> {
 export async function loadWizardContext(): Promise<WizardContext> {
     const me = await apiGet<WhoamiRes>('/whoami');
 
-    const template = await resolveTemplate();
+    const settings = await loadSettings();
+    const template = await resolveTemplate(settings);
     const templateId = template.id;
 
     const [memberships, hierarchiesRaw, roles, fieldsRaw, membersRaw, parentsRaw, calendars] =
@@ -142,20 +143,26 @@ export async function loadWizardContext(): Promise<WizardContext> {
             'Rollen „Leiter“/„Organisator“ am Gruppentyp der Vorlage nicht gefunden',
         );
 
-    const organisators = membersRaw
-        .filter((m) => m.groupTypeRoleId === organisatorRoleId)
-        .map((m) => ({
-            personId: m.personId,
-            name: [
-                m.person?.domainAttributes?.firstName ?? '',
-                m.person?.domainAttributes?.lastName ?? '',
-            ]
-                .join(' ')
-                .trim(),
-        }));
-    // Leer heißt hier meist: der Leiter darf die Mitgliederliste der Vorlage
-    // nicht lesen. Kein Fehler — die Provisionierung kopiert die Organisatoren
-    // dann serverseitig mit (duplicate?copyMembers=true).
+    // Konfigurierte Organisatoren (KV-Store) gewinnen — sie sind für alle
+    // Nutzer lesbar (Namen liegen in den Settings, keine Personen-Leserechte
+    // nötig). Fallback: Organisator-Mitglieder der Vorlage.
+    const organisators = settings?.organisators?.length
+        ? settings.organisators
+        : membersRaw
+              .filter((m) => m.groupTypeRoleId === organisatorRoleId)
+              .map((m) => ({
+                  personId: m.personId,
+                  name: [
+                      m.person?.domainAttributes?.firstName ?? '',
+                      m.person?.domainAttributes?.lastName ?? '',
+                  ]
+                      .join(' ')
+                      .trim(),
+              }));
+    // Leer heißt hier meist: keine Konfiguration UND der Leiter darf die
+    // Mitgliederliste der Vorlage nicht lesen. Kein Fehler — die
+    // Provisionierung kopiert die Organisatoren dann serverseitig mit
+    // (duplicate?copyMembers=true).
 
     const fields: TemplateField[] = fieldsRaw.map((f) => ({
         id: f.field.id,

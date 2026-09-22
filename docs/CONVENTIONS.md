@@ -51,8 +51,10 @@ gepflegt (normale CT-Oberfläche, keine Code-Änderung nötig):
 - **Anmeldefelder**: der komplette wählbare Katalog inkl. Pflicht-Markierung und
   Optionen. Neue Wunschfelder in der Vorlage anlegen, NIE in einzelnen Hajk-Gruppen.
 - **Settings**: Sichtbarkeit (intern), Auto-Accept usw. — Duplikate erben sie.
-- **Organisatoren**: alle Mitglieder mit Rolle „Organisator“ (aktuell Irma Betz,
-  Julia Timmalog) werden in jede neue Hajk-Gruppe übernommen (Förderanträge!).
+- **Organisatoren**: primär in der Extension-Konfiguration gepflegt (Mehrfachauswahl
+  von Personen; Namen werden mitgespeichert, damit Leiter keine Personen-Leserechte
+  brauchen). Nur ohne Konfiguration gelten die Organisator-Mitglieder der Vorlage
+  (aktuell Irma Betz, Julia Timmalog) — Förderanträge!
 - **Wichtig:** Die Vorlage darf AUSSCHLIESSLICH Organisatoren als Mitglieder
   enthalten. Können Leiter die Mitgliederliste nicht lesen, kopiert der Wizard
   beim Duplizieren ALLE Vorlagen-Mitglieder serverseitig mit — jedes weitere

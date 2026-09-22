@@ -198,6 +198,21 @@ describe('template resolution via KV settings', () => {
         expect(ctx.template.id).toBe(T);
     });
 
+    it('uses configured organisators instead of the template member list', async () => {
+        mockContextEndpoints({
+            '/custommodules': [{ id: 5, shorty: 'rr-hikeplanner' }],
+            '/custommodules/5/customdatacategories': [
+                {
+                    id: 2,
+                    shorty: 'settings',
+                    data: `{"hajkTemplateGroupId":${T},"organisators":[{"personId":7,"name":"Irma Betz"}]}`,
+                },
+            ],
+        });
+        const ctx = await loadWizardContext();
+        expect(ctx.template.organisators).toEqual([{ personId: 7, name: 'Irma Betz' }]);
+    });
+
     it('points to the config page when the template name is not found either', async () => {
         mockContextEndpoints({ '/groups': [] });
         await expect(loadWizardContext()).rejects.toThrow(/Konfiguration/);

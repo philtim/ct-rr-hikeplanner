@@ -9,9 +9,17 @@
 import { apiGet, apiPost, apiPut } from '@/shared/api';
 import { EXTENSION_KEY } from './config';
 
+export interface OrganisatorRef {
+    personId: number;
+    /** Anzeigename, gespeichert damit Leiter keine Personen-Leserechte brauchen. */
+    name: string;
+}
+
 export interface ExtensionSettings {
-    /** Gruppen-ID der Hajk-Vorlage; ID statt Name, damit Umbenennen nichts bricht. */
-    hajkTemplateGroupId: number;
+    /** Gruppen-ID der Hajk-Vorlage; ID statt Name, damit Umbenennen nichts bricht. null = Namenskonvention. */
+    hajkTemplateGroupId: number | null;
+    /** Personen, die bei jeder Veranstaltung als Organisator eingetragen werden. */
+    organisators: OrganisatorRef[];
 }
 
 const CATEGORY_SHORTY = 'settings';
@@ -51,9 +59,22 @@ export async function loadSettings(): Promise<ExtensionSettings | null> {
         const moduleId = await getModuleId();
         const category = await getSettingsCategory(moduleId);
         if (!category?.data) return null;
-        const parsed: unknown = JSON.parse(category.data);
-        const id = (parsed as { hajkTemplateGroupId?: unknown }).hajkTemplateGroupId;
-        return typeof id === 'number' ? { hajkTemplateGroupId: id } : null;
+        const parsed = JSON.parse(category.data) as {
+            hajkTemplateGroupId?: unknown;
+            organisators?: unknown;
+        };
+        const id =
+            typeof parsed.hajkTemplateGroupId === 'number' ? parsed.hajkTemplateGroupId : null;
+        const organisators = (Array.isArray(parsed.organisators) ? parsed.organisators : [])
+            .filter(
+                (o): o is OrganisatorRef =>
+                    !!o &&
+                    typeof (o as OrganisatorRef).personId === 'number' &&
+                    typeof (o as OrganisatorRef).name === 'string',
+            )
+            .map((o) => ({ personId: o.personId, name: o.name }));
+        if (id === null && organisators.length === 0) return null;
+        return { hajkTemplateGroupId: id, organisators };
     } catch {
         return null;
     }
@@ -82,6 +103,19 @@ export async function searchGroups(query: string): Promise<GroupRes[]> {
     if (!q) return [];
     const groups = await apiGet<GroupRes[]>(`/groups?query=${encodeURIComponent(q)}&limit=25`);
     return groups.map((g) => ({ id: g.id, name: g.name }));
+}
+
+/** Personensuche für die Organisatoren-Auswahl in der Konfiguration (Admin). */
+export async function searchPersons(query: string): Promise<OrganisatorRef[]> {
+    const q = query.trim();
+    if (!q) return [];
+    const persons = await apiGet<{ id: number; firstName: string; lastName: string }[]>(
+        `/persons?query=${encodeURIComponent(q)}&limit=15`,
+    );
+    return persons.map((p) => ({
+        personId: p.id,
+        name: `${p.firstName} ${p.lastName}`.trim(),
+    }));
 }
 
 /** Name einer Gruppe für die Anzeige; null, wenn nicht lesbar/existent. */

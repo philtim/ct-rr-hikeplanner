@@ -1,13 +1,21 @@
 <script setup lang="ts">
 /**
- * Konfigurationsseite (?admin=1): legt fest, welche Gruppe als Hajk-Vorlage
- * dient. Wer speichern darf, entscheidet ChurchTools — ohne Admin-Rechte
- * liefert der KV-Store 403, und die Seite erklärt das.
+ * Konfigurationsseite (Footer-Link): legt fest, welche Gruppe als
+ * Hajk-Vorlage dient und wer bei jeder Veranstaltung als Organisator
+ * eingetragen wird. Wer speichern darf, entscheidet ChurchTools — ohne
+ * Admin-Rechte liefert der KV-Store 403, und die Seite erklärt das.
  */
 import { onMounted, ref } from 'vue';
 import { ChurchToolsApiError } from '@/shared/api';
 import { TEMPLATE_GROUP_NAME } from '@/wizard/config';
-import { getGroupName, loadSettings, saveSettings, searchGroups } from '@/wizard/settings.api';
+import {
+    getGroupName,
+    loadSettings,
+    saveSettings,
+    searchGroups,
+    searchPersons,
+} from '@/wizard/settings.api';
+import type { OrganisatorRef } from '@/wizard/settings.api';
 import '../wizard.css';
 
 const emit = defineEmits<{ back: [] }>();
@@ -22,6 +30,11 @@ const searched = ref(false);
 const searching = ref(false);
 const selectedId = ref<number | null>(null);
 
+const organisators = ref<OrganisatorRef[]>([]);
+const personQuery = ref('');
+const personResults = ref<OrganisatorRef[]>([]);
+const personSearched = ref(false);
+
 const saving = ref(false);
 const saved = ref(false);
 const error = ref<string | null>(null);
@@ -30,7 +43,10 @@ onMounted(async () => {
     const settings = await loadSettings();
     if (settings) {
         currentId.value = settings.hajkTemplateGroupId;
-        currentName.value = await getGroupName(settings.hajkTemplateGroupId);
+        organisators.value = settings.organisators;
+        if (settings.hajkTemplateGroupId !== null) {
+            currentName.value = await getGroupName(settings.hajkTemplateGroupId);
+        }
     }
     loading.value = false;
 });
@@ -49,15 +65,43 @@ async function search(): Promise<void> {
     }
 }
 
+async function searchPerson(): Promise<void> {
+    error.value = null;
+    try {
+        const found = await searchPersons(personQuery.value);
+        // Bereits gewählte Personen nicht erneut anbieten.
+        const chosen = new Set(organisators.value.map((o) => o.personId));
+        personResults.value = found.filter((p) => !chosen.has(p.personId));
+        personSearched.value = true;
+    } catch {
+        error.value = 'Personensuche fehlgeschlagen. Bitte versuche es erneut.';
+    }
+}
+
+function addOrganisator(person: OrganisatorRef): void {
+    organisators.value = [...organisators.value, person];
+    personResults.value = personResults.value.filter((p) => p.personId !== person.personId);
+}
+
+function removeOrganisator(personId: number): void {
+    organisators.value = organisators.value.filter((o) => o.personId !== personId);
+}
+
 async function save(): Promise<void> {
-    if (selectedId.value === null) return;
     saving.value = true;
     saved.value = false;
     error.value = null;
     try {
-        await saveSettings({ hajkTemplateGroupId: selectedId.value });
-        currentId.value = selectedId.value;
-        currentName.value = results.value.find((r) => r.id === selectedId.value)?.name ?? null;
+        const templateGroupId = selectedId.value ?? currentId.value;
+        await saveSettings({
+            hajkTemplateGroupId: templateGroupId,
+            organisators: organisators.value,
+        });
+        currentId.value = templateGroupId;
+        if (selectedId.value !== null) {
+            currentName.value = results.value.find((r) => r.id === selectedId.value)?.name ?? null;
+            selectedId.value = null;
+        }
         saved.value = true;
     } catch (e) {
         error.value =
@@ -119,6 +163,66 @@ async function save(): Promise<void> {
             </fieldset>
             <p v-else-if="searched && !searching" class="hp-hint">Keine Gruppen gefunden.</p>
 
+            <h2>Organisatoren</h2>
+            <p class="hp-hint">
+                Diese Personen werden bei jeder neuen Veranstaltung automatisch als Organisator
+                eingetragen (z. B. für Förderanträge).
+            </p>
+
+            <ul v-if="organisators.length" class="hp-result-list" data-testid="organisators">
+                <li v-for="o in organisators" :key="o.personId">
+                    <span>{{ o.name }}</span>
+                    <button
+                        type="button"
+                        class="hp-link-btn"
+                        :data-testid="`remove-organisator-${o.personId}`"
+                        @click="removeOrganisator(o.personId)"
+                    >
+                        Entfernen
+                    </button>
+                </li>
+            </ul>
+            <p v-else class="hp-hint" data-testid="no-organisators">
+                Noch keine Organisatoren konfiguriert — es gelten die Organisator-Mitglieder der
+                Vorlagen-Gruppe.
+            </p>
+
+            <div class="hp-field">
+                <label for="hp-person-query">Person hinzufügen</label>
+                <div class="hp-copy-row">
+                    <input
+                        id="hp-person-query"
+                        v-model="personQuery"
+                        type="search"
+                        placeholder="Name, z. B. Irma"
+                        @keydown.enter.prevent="searchPerson()"
+                    />
+                    <button
+                        type="button"
+                        class="hp-btn"
+                        data-testid="search-person"
+                        @click="searchPerson()"
+                    >
+                        Suchen
+                    </button>
+                </div>
+            </div>
+
+            <ul v-if="personResults.length" class="hp-result-list" data-testid="person-results">
+                <li v-for="p in personResults" :key="p.personId">
+                    <span>{{ p.name }}</span>
+                    <button
+                        type="button"
+                        class="hp-link-btn"
+                        :data-testid="`add-organisator-${p.personId}`"
+                        @click="addOrganisator(p)"
+                    >
+                        Hinzufügen
+                    </button>
+                </li>
+            </ul>
+            <p v-else-if="personSearched" class="hp-hint">Keine Personen gefunden.</p>
+
             <p v-if="saved" class="hp-info-box" data-testid="saved">✓ Konfiguration gespeichert.</p>
             <p v-if="error" class="hp-error-text" data-testid="save-error">{{ error }}</p>
 
@@ -130,7 +234,7 @@ async function save(): Promise<void> {
                     type="button"
                     class="hp-btn hp-btn--primary"
                     data-testid="save"
-                    :disabled="selectedId === null || saving"
+                    :disabled="saving"
                     @click="save()"
                 >
                     Speichern

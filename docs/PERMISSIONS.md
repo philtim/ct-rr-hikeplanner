@@ -25,7 +25,11 @@ ist offen (Kandidat: „Gruppen verwalten/administer groups" — bewusst nicht v
 Der Wizard versucht seit v0.1.14 als Fallback, nicht gewählte Felder per
 `PUT …/memberfields/group/{id}` mit `useInRegistrationForm: false` aus dem
 Anmeldeformular auszublenden; nur wenn auch das scheitert, bleibt die Warnung und die
-Stammleitung räumt die Felder.
+Stammleitung räumt die Felder. **Stand 22.09.2026: Für Leiter scheitert BEIDES (403).**
+Der churchdb-Rechtekatalog kennt kein eigenes Memberfield-Recht; verbleibende
+Kandidaten: churchdb **„Sicherheitslevel Gruppe“ (security level group)** — Leitern
+Stufe 1 geben und erneut testen — oder „Gruppen verwalten (administer groups)"
+(bewusst nicht vergeben, gälte global).
 
 ## Deploy-Dienstkonto „RR CICD" (je Instanz; verifiziert 22.09.2026)
 

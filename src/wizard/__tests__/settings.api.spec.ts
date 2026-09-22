@@ -9,7 +9,13 @@ vi.mock('@/shared/api', () => ({
 }));
 
 import * as api from '@/shared/api';
-import { getGroupName, loadSettings, saveSettings, searchGroups } from '@/wizard/settings.api';
+import {
+    getGroupName,
+    loadSettings,
+    saveSettings,
+    searchGroups,
+    searchPersons,
+} from '@/wizard/settings.api';
 
 const MODULE = { id: 5, shorty: 'rr-hikeplanner' };
 const CATEGORIES = '/custommodules/5/customdatacategories';
@@ -32,7 +38,24 @@ describe('loadSettings', () => {
                 { id: 2, shorty: 'settings', data: '{"hajkTemplateGroupId":2587}' },
             ],
         });
-        expect(await loadSettings()).toEqual({ hajkTemplateGroupId: 2587 });
+        expect(await loadSettings()).toEqual({ hajkTemplateGroupId: 2587, organisators: [] });
+    });
+
+    it('parses configured organisators and tolerates a missing template id', async () => {
+        mockGet({
+            '/custommodules': [MODULE],
+            [CATEGORIES]: [
+                {
+                    id: 2,
+                    shorty: 'settings',
+                    data: '{"organisators":[{"personId":1050,"name":"Irma Betz"},{"broken":true}]}',
+                },
+            ],
+        });
+        expect(await loadSettings()).toEqual({
+            hajkTemplateGroupId: null,
+            organisators: [{ personId: 1050, name: 'Irma Betz' }],
+        });
     });
 
     it.each([
@@ -69,22 +92,22 @@ describe('saveSettings', () => {
             '/custommodules': [MODULE],
             [CATEGORIES]: [{ id: 7, shorty: 'settings', data: '{}' }],
         });
-        await saveSettings({ hajkTemplateGroupId: 99 });
+        await saveSettings({ hajkTemplateGroupId: 99, organisators: [] });
         expect(api.apiPut).toHaveBeenCalledWith(`${CATEGORIES}/7`, {
-            data: '{"hajkTemplateGroupId":99}',
+            data: '{"hajkTemplateGroupId":99,"organisators":[]}',
         });
         expect(api.apiPost).not.toHaveBeenCalled();
     });
 
     it('creates the category via POST when none exists', async () => {
         mockGet({ '/custommodules': [MODULE], [CATEGORIES]: [] });
-        await saveSettings({ hajkTemplateGroupId: 99 });
+        await saveSettings({ hajkTemplateGroupId: 99, organisators: [] });
         expect(api.apiPost).toHaveBeenCalledWith(
             CATEGORIES,
             expect.objectContaining({
                 customModuleId: 5,
                 shorty: 'settings',
-                data: '{"hajkTemplateGroupId":99}',
+                data: '{"hajkTemplateGroupId":99,"organisators":[]}',
             }),
         );
     });
@@ -92,7 +115,9 @@ describe('saveSettings', () => {
     it('propagates write errors (e.g. 403) to the caller', async () => {
         mockGet({ '/custommodules': [MODULE], [CATEGORIES]: [] });
         (api.apiPost as Mock).mockRejectedValue(new Error('403'));
-        await expect(saveSettings({ hajkTemplateGroupId: 1 })).rejects.toThrow('403');
+        await expect(saveSettings({ hajkTemplateGroupId: 1, organisators: [] })).rejects.toThrow(
+            '403',
+        );
     });
 });
 
@@ -111,6 +136,19 @@ describe('searchGroups', () => {
 
     it('skips the request for a blank query', async () => {
         expect(await searchGroups('   ')).toEqual([]);
+        expect(api.apiGet).not.toHaveBeenCalled();
+    });
+});
+
+describe('searchPersons', () => {
+    it('maps persons to organisator refs', async () => {
+        (api.apiGet as Mock).mockResolvedValue([{ id: 1050, firstName: 'Irma', lastName: 'Betz' }]);
+        expect(await searchPersons(' Irma ')).toEqual([{ personId: 1050, name: 'Irma Betz' }]);
+        expect(api.apiGet).toHaveBeenCalledWith('/persons?query=Irma&limit=15');
+    });
+
+    it('skips the request for a blank query', async () => {
+        expect(await searchPersons(' ')).toEqual([]);
         expect(api.apiGet).not.toHaveBeenCalled();
     });
 });
