@@ -1,0 +1,297 @@
+/*
+ * Design-Tokens und Basis-Layout des Hajk-Assistenten.
+ * Alle Regeln leben unter .rr-hikeplanner-root (Baseline). Farben nur über
+ * Tokens; Dark-Mode über prefers-color-scheme — die konkrete CT-Theme-Klasse
+ * wird beim E2E auf rr-demo verifiziert (docs/NOTES-api-spike.md, offen).
+ */
+.rr-hikeplanner-root {
+    --hp-surface: #ffffff;
+    --hp-surface-muted: #f4f5f7;
+    --hp-text: #1f2329;
+    --hp-muted: #6b7280;
+    --hp-primary: #007cba;
+    --hp-primary-text: #ffffff;
+    --hp-danger: #c0392b;
+    --hp-warning-bg: #fdf3d7;
+    --hp-warning-text: #7a5c00;
+    --hp-success: #1e7e34;
+    --hp-border: #d1d5db;
+    --hp-focus: #007cba;
+
+    color: var(--hp-text);
+    background: transparent;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 16px;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+@media (prefers-color-scheme: dark) {
+    .rr-hikeplanner-root {
+        --hp-surface: #1e2228;
+        --hp-surface-muted: #262b33;
+        --hp-text: #e5e7eb;
+        --hp-muted: #9ca3af;
+        --hp-primary: #3ba7dd;
+        --hp-primary-text: #10141a;
+        --hp-danger: #e0604f;
+        --hp-warning-bg: #3a3419;
+        --hp-warning-text: #e8cf7a;
+        --hp-success: #4caf6e;
+        --hp-border: #3a414c;
+        --hp-focus: #3ba7dd;
+    }
+}
+
+.rr-hikeplanner-root h1 {
+    font-size: 1.4rem;
+    margin: 0 0 12px;
+}
+.rr-hikeplanner-root h2 {
+    font-size: 1.15rem;
+    margin: 0 0 8px;
+}
+
+.rr-hikeplanner-root .hp-card {
+    background: var(--hp-surface);
+    border: 1px solid var(--hp-border);
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.rr-hikeplanner-root .hp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 8px 20px;
+    border-radius: 6px;
+    border: 1px solid var(--hp-border);
+    background: var(--hp-surface);
+    color: var(--hp-text);
+    font-size: 1rem;
+    cursor: pointer;
+}
+.rr-hikeplanner-root .hp-btn--primary {
+    background: var(--hp-primary);
+    border-color: var(--hp-primary);
+    color: var(--hp-primary-text);
+    font-weight: 600;
+}
+.rr-hikeplanner-root .hp-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+.rr-hikeplanner-root .hp-btn:focus-visible,
+.rr-hikeplanner-root input:focus-visible,
+.rr-hikeplanner-root select:focus-visible,
+.rr-hikeplanner-root textarea:focus-visible {
+    outline: 2px solid var(--hp-focus);
+    outline-offset: 2px;
+}
+
+.rr-hikeplanner-root .hp-field {
+    margin-bottom: 16px;
+}
+.rr-hikeplanner-root .hp-field label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+.rr-hikeplanner-root .hp-field input,
+.rr-hikeplanner-root .hp-field select,
+.rr-hikeplanner-root .hp-field textarea {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 44px;
+    padding: 8px 10px;
+    border: 1px solid var(--hp-border);
+    border-radius: 6px;
+    background: var(--hp-surface);
+    color: var(--hp-text);
+    font-size: 1rem;
+}
+.rr-hikeplanner-root .hp-field textarea {
+    min-height: 96px;
+    resize: vertical;
+}
+.rr-hikeplanner-root .hp-field--invalid input,
+.rr-hikeplanner-root .hp-field--invalid select,
+.rr-hikeplanner-root .hp-field--invalid textarea {
+    border-color: var(--hp-danger);
+}
+.rr-hikeplanner-root .hp-error-text {
+    color: var(--hp-danger);
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+.rr-hikeplanner-root .hp-hint {
+    color: var(--hp-muted);
+    font-size: 0.9rem;
+}
+.rr-hikeplanner-root .hp-warning-box {
+    background: var(--hp-warning-bg);
+    color: var(--hp-warning-text);
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin: 8px 0 16px;
+}
+.rr-hikeplanner-root .hp-info-box {
+    background: var(--hp-surface-muted);
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin: 8px 0 16px;
+}
+
+.rr-hikeplanner-root .hp-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 24px;
+}
+.rr-hikeplanner-root .hp-actions--single {
+    justify-content: flex-end;
+}
+
+/* Stepper */
+.rr-hikeplanner-root .hp-stepper {
+    list-style: none;
+    display: flex;
+    gap: 8px;
+    padding: 0;
+    margin: 0 0 20px;
+}
+.rr-hikeplanner-root .hp-stepper li {
+    flex: 1;
+}
+.rr-hikeplanner-root .hp-stepper button {
+    width: 100%;
+    background: none;
+    border: 0;
+    border-top: 4px solid var(--hp-border);
+    padding: 8px 4px 0;
+    color: var(--hp-muted);
+    font-size: 0.85rem;
+    text-align: left;
+    cursor: pointer;
+}
+.rr-hikeplanner-root .hp-stepper button:disabled {
+    cursor: default;
+}
+.rr-hikeplanner-root .hp-stepper .hp-step--active button {
+    border-top-color: var(--hp-primary);
+    color: var(--hp-text);
+    font-weight: 600;
+}
+.rr-hikeplanner-root .hp-stepper .hp-step--done button {
+    border-top-color: var(--hp-primary);
+}
+@media (max-width: 479px) {
+    .rr-hikeplanner-root .hp-stepper .hp-step-label {
+        display: none;
+    }
+}
+
+/* Skeleton */
+.rr-hikeplanner-root .hp-skeleton {
+    height: 18px;
+    border-radius: 4px;
+    background: var(--hp-surface-muted);
+    margin-bottom: 12px;
+    animation: hp-pulse 1.4s ease-in-out infinite;
+}
+@keyframes hp-pulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Fortschritts- und Ergebnislisten */
+.rr-hikeplanner-root .hp-progress,
+.rr-hikeplanner-root .hp-result-list {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0;
+}
+.rr-hikeplanner-root .hp-progress li,
+.rr-hikeplanner-root .hp-result-list li {
+    padding: 4px 0;
+}
+.rr-hikeplanner-root .hp-status--done {
+    color: var(--hp-success);
+}
+.rr-hikeplanner-root .hp-status--failed {
+    color: var(--hp-danger);
+}
+.rr-hikeplanner-root .hp-status--pending {
+    color: var(--hp-muted);
+}
+
+/* Zusammenfassung (Schritt 3) */
+.rr-hikeplanner-root .hp-summary dl {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 4px 12px;
+    margin: 8px 0 20px;
+}
+.rr-hikeplanner-root .hp-summary dt {
+    color: var(--hp-muted);
+}
+.rr-hikeplanner-root .hp-summary dd {
+    margin: 0;
+}
+@media (max-width: 479px) {
+    .rr-hikeplanner-root .hp-summary dl {
+        grid-template-columns: 1fr;
+    }
+}
+.rr-hikeplanner-root .hp-summary-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+/* Feld-Checkliste */
+.rr-hikeplanner-root .hp-checklist {
+    border: 0;
+    padding: 0;
+    margin: 0 0 16px;
+}
+.rr-hikeplanner-root .hp-checklist legend {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+.rr-hikeplanner-root .hp-checklist .hp-check-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 10px 4px;
+    border-bottom: 1px solid var(--hp-border);
+    cursor: pointer;
+}
+.rr-hikeplanner-root .hp-check-row input {
+    width: 18px;
+    height: 18px;
+    flex: none;
+}
+.rr-hikeplanner-root .hp-check-sub {
+    color: var(--hp-muted);
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 767px) {
+    .rr-hikeplanner-root .hp-actions {
+        flex-direction: row;
+    }
+    .rr-hikeplanner-root .hp-actions .hp-btn--primary {
+        flex: 1;
+    }
+}
