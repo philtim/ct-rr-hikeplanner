@@ -44,9 +44,10 @@ const felderLine = computed(() => {
         .map((f) => f.name);
     return names.length > 0 ? names.join(' · ') : 'keine';
 });
-const organisatorenLine = computed(() =>
-    props.context.template.organisators.map((o) => o.name).join(', '),
-);
+const organisatorenLine = computed(() => {
+    const names = props.context.template.organisators.map((o) => o.name);
+    return names.length > 0 ? names.join(', ') : 'Werden aus der Vorlage übernommen';
+});
 </script>
 
 <template>

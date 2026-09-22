@@ -42,6 +42,11 @@ gepflegt (normale CT-Oberfläche, keine Code-Änderung nötig):
 - **Settings**: Sichtbarkeit (intern), Auto-Accept usw. — Duplikate erben sie.
 - **Organisatoren**: alle Mitglieder mit Rolle „Organisator“ (aktuell Irma Betz,
   Julia Timmalog) werden in jede neue Hajk-Gruppe übernommen (Förderanträge!).
+- **Wichtig:** Die Vorlage darf AUSSCHLIESSLICH Organisatoren als Mitglieder
+  enthalten. Können Leiter die Mitgliederliste nicht lesen, kopiert der Wizard
+  beim Duplizieren ALLE Vorlagen-Mitglieder serverseitig mit — jedes weitere
+  Mitglied würde also in jeder neuen Hajk-Gruppe landen. Pflege der Vorlage
+  braucht keine Mitgliedschaft (Admin-Rechte genügen).
 
 Die Vorlage braucht immer mindestens ein Organisator-Mitglied, sonst verweigert der
 Assistent den Start (bewusste Validierung).

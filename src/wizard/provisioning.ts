@@ -67,9 +67,15 @@ export async function executeProvisioning(
         }
     }
 
+    // Kann der Leiter die Vorlagen-Mitglieder nicht lesen (leere Liste),
+    // kopiert der Server die Organisatoren beim Duplizieren mit.
+    const copyMembers = context.template.organisators.length === 0;
+
     let groupId: number | null = null;
     try {
-        groupId = await run('duplicate', () => api.duplicateGroup(context.template.id, name));
+        groupId = await run('duplicate', () =>
+            api.duplicateGroup(context.template.id, name, copyMembers),
+        );
         const newGroupId = groupId;
 
         await run('configure', () => api.configureGroup(newGroupId, form));

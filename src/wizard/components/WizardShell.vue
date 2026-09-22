@@ -49,7 +49,7 @@ const resultSummary = computed(() => {
         `Abgelegt in „${team.sammelgruppeName}“`,
         `Anmeldefelder: ${fieldNames.length ? fieldNames.join(', ') : 'keine'}`,
         modus,
-        `Organisatoren: ${ctx.template.organisators.map((o) => o.name).join(', ')}`,
+        `Organisatoren: ${ctx.template.organisators.length ? ctx.template.organisators.map((o) => o.name).join(', ') : 'aus der Vorlage übernommen'}`,
         'Du bist als Leiter eingetragen',
     ];
 });

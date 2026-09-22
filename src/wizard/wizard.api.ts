@@ -129,8 +129,9 @@ export async function loadWizardContext(): Promise<WizardContext> {
                 .join(' ')
                 .trim(),
         }));
-    if (organisators.length === 0)
-        throw templateInvalid('kein Mitglied mit Rolle „Organisator“ in der Vorlagengruppe');
+    // Leer heißt hier meist: der Leiter darf die Mitgliederliste der Vorlage
+    // nicht lesen. Kein Fehler — die Provisionierung kopiert die Organisatoren
+    // dann serverseitig mit (duplicate?copyMembers=true).
 
     const fields: TemplateField[] = fieldsRaw.map((f) => ({
         id: f.field.id,
@@ -178,7 +179,7 @@ export async function loadWizardContext(): Promise<WizardContext> {
 
 export interface ProvisionApi {
     findGroupIdByName(name: string): Promise<number | null>;
-    duplicateGroup(templateId: number, newName: string): Promise<number>;
+    duplicateGroup(templateId: number, newName: string, copyMembers: boolean): Promise<number>;
     configureGroup(groupId: number, form: FormState): Promise<void>;
     listMemberFields(groupId: number): Promise<{ id: number; name: string }[]>;
     deleteMemberField(groupId: number, fieldId: number): Promise<void>;
@@ -196,9 +197,9 @@ export interface ProvisionApi {
 export const provisionApi: ProvisionApi = {
     findGroupIdByName: findGroupIdByNameRaw,
 
-    async duplicateGroup(templateId, newName) {
+    async duplicateGroup(templateId, newName, copyMembers) {
         const group = await apiPost<GroupRes>(
-            `/groups/${templateId}/duplicate?newName=${encodeURIComponent(newName)}`,
+            `/groups/${templateId}/duplicate?newName=${encodeURIComponent(newName)}${copyMembers ? '&copyMembers=true' : ''}`,
         );
         return group.id;
     },

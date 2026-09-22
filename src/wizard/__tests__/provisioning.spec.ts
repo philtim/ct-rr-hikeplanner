@@ -94,7 +94,11 @@ describe('executeProvisioning', () => {
         const outcome = await executeProvisioning(input, api, onProgress);
         expect(outcome).toEqual({ ok: true, groupId: 99, calendarWarning: false });
 
-        expect(api.duplicateGroup).toHaveBeenCalledWith(2587, 'RR Hajk Eisbären 10.04.–12.04.2027');
+        expect(api.duplicateGroup).toHaveBeenCalledWith(
+            2587,
+            'RR Hajk Eisbären 10.04.–12.04.2027',
+            false,
+        );
         expect(api.configureGroup).toHaveBeenCalledWith(99, input.form);
         // nur das NICHT gewählte Feld wird gelöscht — gematcht über den Namen im Duplikat
         expect(api.deleteMemberField).toHaveBeenCalledTimes(1);
@@ -126,6 +130,20 @@ describe('executeProvisioning', () => {
             'members',
             'calendar',
         ]);
+    });
+
+    it('copies members server-side when the organisator list is unreadable', async () => {
+        const api = makeApi();
+        const ctx = { ...context, template: { ...context.template, organisators: [] } };
+        const outcome = await executeProvisioning({ ...input, context: ctx }, api, onProgress);
+        expect(outcome).toMatchObject({ ok: true });
+        expect(api.duplicateGroup).toHaveBeenCalledWith(
+            2587,
+            'RR Hajk Eisbären 10.04.–12.04.2027',
+            true,
+        );
+        // nur der anfragende Leiter wird noch eingetragen
+        expect((api.putMember as ReturnType<typeof vi.fn>).mock.calls).toEqual([[99, 42, 23]]);
     });
 
     it('aborts on name collision before duplicating', async () => {

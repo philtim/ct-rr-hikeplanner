@@ -156,15 +156,15 @@ describe('loadWizardContext', () => {
         expect(ctx.calendarId).toBe(69);
     });
 
-    it('rejects a template without organisator member', async () => {
+    it('tolerates an unreadable member list (organisators empty, no error)', async () => {
         mockContextEndpoints();
         (api.fetchAllPages as Mock).mockImplementation((url: string) => {
             if (url.startsWith('/persons/42/groups')) return Promise.resolve([]);
-            if (url.startsWith(`/groups/${T}/members`))
-                return Promise.resolve([templateMembers[1]]);
+            if (url.startsWith(`/groups/${T}/members`)) return Promise.resolve([]);
             return Promise.reject(new Error(`unmocked pages ${url}`));
         });
-        await expect(loadWizardContext()).rejects.toThrow(/template-invalid/);
+        const ctx = await loadWizardContext();
+        expect(ctx.template.organisators).toEqual([]);
     });
 });
 

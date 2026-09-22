@@ -9,10 +9,9 @@
 
 ## [0.1.7](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.6...v0.1.7) (2026-09-22)
 
-
 ### Bug Fixes
 
-* derive team structure from naming conventions instead of hierarchy walk ([588c2c5](https://github.com/philtim/ct-rr-hikeplanner/commit/588c2c503da60fc4313fc781988a11fb45334dc8))
+- derive team structure from naming conventions instead of hierarchy walk ([588c2c5](https://github.com/philtim/ct-rr-hikeplanner/commit/588c2c503da60fc4313fc781988a11fb45334dc8))
 
 ## [0.1.6](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.5...v0.1.6) (2026-09-22)
 
