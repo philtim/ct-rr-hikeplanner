@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.2.0](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.17...v0.2.0) (2026-09-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* always take over all template fields, drop field selection
+
+### Features
+
+* always take over all template fields, drop field selection ([d78639d](https://github.com/philtim/ct-rr-hikeplanner/commit/d78639d4b67979eeeda1b63bfa6318a02365d465))
+
 ## [0.1.17](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.16...v0.1.17) (2026-09-22)
 
 
