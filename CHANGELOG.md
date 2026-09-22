@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.15](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.14...v0.1.15) (2026-09-22)
+
+
+### Features
+
+* configurable default organisators in extension settings ([befd2ab](https://github.com/philtim/ct-rr-hikeplanner/commit/befd2aba028c09d06342233a955aa298b334f134))
+
 ## [0.1.14](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.13...v0.1.14) (2026-09-22)
 
 
