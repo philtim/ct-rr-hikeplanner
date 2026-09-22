@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.2...v0.1.3) (2026-09-22)
+
+
+### Bug Fixes
+
+* align result view with design spec ([a991717](https://github.com/philtim/ct-rr-hikeplanner/commit/a991717b13268b58d346739fd95ba9dab97539b8))
+
 ## [0.1.2](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.1...v0.1.2) (2026-09-22)
 
 ### Bug Fixes
