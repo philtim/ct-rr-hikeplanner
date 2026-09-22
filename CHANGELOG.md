@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.12](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.11...v0.1.12) (2026-09-22)
+
+
+### Features
+
+* configurable hajk template via extension settings ([abff7fd](https://github.com/philtim/ct-rr-hikeplanner/commit/abff7fdc3483bb876e4eafa7debe8534e88bd5fd))
+
+
+### Bug Fixes
+
+* clarify public signup checkbox copy ([6a82ce8](https://github.com/philtim/ct-rr-hikeplanner/commit/6a82ce8d1f7d637f7cdcd98ac7100f9e6fd073e0))
+* reword and visually separate public signup checkbox ([0b74956](https://github.com/philtim/ct-rr-hikeplanner/commit/0b749565e697dbcd3c4cc4e2f6a9caa4640f0901))
+
 ## [0.1.11](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.10...v0.1.11) (2026-09-22)
 
 ### Bug Fixes
