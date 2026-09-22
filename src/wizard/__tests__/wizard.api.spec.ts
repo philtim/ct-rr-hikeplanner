@@ -14,9 +14,7 @@ vi.mock('@/shared/api', () => ({
 
 import * as api from '@/shared/api';
 import { loadWizardContext, provisionApi } from '@/wizard/wizard.api';
-import { TEMPLATE_GROUP_ID } from '@/wizard/config';
-
-const T = TEMPLATE_GROUP_ID;
+const T = 2587;
 
 const roles = [
     { id: 9, groupTypeId: 1, isLeader: true, name: 'Leiter', type: 'leader' },
@@ -90,6 +88,11 @@ const templateFields = [
 function mockContextEndpoints(overrides: Record<string, unknown> = {}) {
     const responses: Record<string, unknown> = {
         '/whoami': { id: 42, firstName: 'Christoph', lastName: 'Cremer' },
+        '/groups': [{ id: T, name: '=== Vorlage Hajks' }],
+        '/calendars': [
+            { id: 4, name: 'Gemeindeleitung' },
+            { id: 69, name: 'Royal Rangers' },
+        ],
         '/groups/hierarchies': hierarchies,
         '/group/roles': roles,
         [`/groups/${T}`]: { id: T, name: '=== Vorlage Hajks', information: { groupTypeId: 3 } },
@@ -148,6 +151,7 @@ describe('loadWizardContext', () => {
         expect(ctx.template.organisators).toEqual([{ personId: 1050, name: 'Irma Betz' }]);
         expect(ctx.eventLeaderRoleId).toBe(23);
         expect(ctx.organisatorRoleId).toBe(26);
+        expect(ctx.calendarId).toBe(69);
     });
 
     it('rejects a template without organisator member', async () => {

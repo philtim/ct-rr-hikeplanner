@@ -153,7 +153,16 @@ console.log(`  Person ${myId} ist Leiter im Testteam`);
 await put(`/groups/${templateId}/members/${myId}`, { groupTypeRoleId: eventOrganisatorRole });
 console.log(`  Person ${myId} ist Organisator der Vorlage`);
 
+console.log('Kalender:');
 const calendars = await get('/calendars');
-console.log('\nIn .env eintragen:');
-console.log(`VITE_TEMPLATE_GROUP_ID=${templateId}`);
-console.log(`VITE_CALENDAR_ID=${calendars[0].id}  # ${calendars[0].name}`);
+let cal = calendars.find((c) => c.name === 'Royal Rangers');
+if (cal) {
+    console.log(`  exists, skipping: Royal Rangers (${cal.id})`);
+} else {
+    cal = await post('/calendars', { name: 'Royal Rangers', type: 'church', sortKey: 99 });
+    console.log(`  created: Royal Rangers (${cal.id})`);
+}
+
+console.log(
+    `\nFertig. Vorlage ${templateId}, Kalender ${cal.id} — werden zur Laufzeit über ihre Namen gefunden.`,
+);

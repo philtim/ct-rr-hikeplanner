@@ -63,6 +63,7 @@ const context = {
     },
     eventLeaderRoleId: 23,
     organisatorRoleId: 26,
+    calendarId: 69,
 };
 
 beforeEach(() => {

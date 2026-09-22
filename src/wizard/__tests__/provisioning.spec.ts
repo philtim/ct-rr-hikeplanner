@@ -33,6 +33,7 @@ const context: WizardContext = {
     },
     eventLeaderRoleId: 23,
     organisatorRoleId: 26,
+    calendarId: 69,
 };
 
 const input: ProvisionInput = {
@@ -160,6 +161,14 @@ describe('executeProvisioning', () => {
             rollback: 'failed',
             orphanGroupId: 99,
         });
+    });
+
+    it('warns without api call when the calendar is missing on the instance', async () => {
+        const api = makeApi();
+        const outcome = await executeProvisioning({ ...input, calendarId: null }, api, onProgress);
+        expect(outcome).toEqual({ ok: true, groupId: 99, calendarWarning: true });
+        expect(api.createAppointment).not.toHaveBeenCalled();
+        expect(progress.at(-1)).toEqual({ step: 'calendar', status: 'failed' });
     });
 
     it('treats a calendar failure as success with warning and keeps the group', async () => {

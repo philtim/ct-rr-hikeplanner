@@ -21,7 +21,8 @@ export interface ProvisionInput {
     /** Aufgelöstes Team; sammelgruppeId ist hier garantiert non-null (Gate in US-1). */
     team: TeamOption;
     context: WizardContext;
-    calendarId: number;
+    /** null = Kalender existiert auf der Instanz nicht → Warnung statt Termin. */
+    calendarId: number | null;
     /** Baut die Frontend-URL einer Gruppe (für die Termin-Beschreibung). */
     groupUrl: (groupId: number) => string;
 }
@@ -123,6 +124,11 @@ export async function executeProvisioning(
     }
 
     let calendarWarning = false;
+    if (calendarId === null) {
+        // Kalender fehlt auf der Instanz — Gruppe bleibt, Termin manuell (US-5).
+        onProgress({ step: 'calendar', status: 'failed' });
+        return { ok: true, groupId, calendarWarning: true };
+    }
     try {
         const finalGroupId = groupId;
         await run('calendar', () =>

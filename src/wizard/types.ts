@@ -47,6 +47,8 @@ export interface WizardContext {
     eventLeaderRoleId: number;
     /** Rolle „Organisator" ebenda. */
     organisatorRoleId: number;
+    /** Zielkalender (per Name aufgelöst); null, wenn er auf der Instanz fehlt. */
+    calendarId: number | null;
 }
 
 export type SignupMode = 'self' | 'manual';

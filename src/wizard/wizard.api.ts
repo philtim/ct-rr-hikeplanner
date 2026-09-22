@@ -3,9 +3,12 @@
  * Mapping auf Domänen-Typen. Payload-Formen sind auf rr-demo verifiziert —
  * siehe docs/NOTES-api-spike.md (flache PATCH-Keys, isInternal-Pflichtfeld,
  * parents.domainIdentifier als String).
+ *
+ * Vorlage und Kalender werden zur Laufzeit über ihre NAMEN aufgelöst, damit
+ * derselbe Build auf Demo- und Live-Instanz läuft (IDs differieren).
  */
 import { apiDelete, apiGet, apiPatch, apiPost, apiPut, fetchAllPages } from '@/shared/api';
-import { TEMPLATE_GROUP_ID } from './config';
+import { CALENDAR_NAME, TEMPLATE_GROUP_NAME } from './config';
 import { deriveLeaderContext } from './leaderContext';
 import type { HierarchyIn, MembershipIn, RoleIn } from './leaderContext';
 import type { FormState, TemplateField, WizardContext } from './types';
@@ -56,24 +59,46 @@ interface ParentRes {
     domainIdentifier: string;
     title: string;
 }
+interface CalendarRes {
+    id: number;
+    name: string;
+}
 
 function templateInvalid(reason: string): Error {
     return new Error(`template-invalid: ${reason}`);
 }
 
+async function findGroupIdByNameRaw(name: string): Promise<number | null> {
+    const groups = await apiGet<GroupRes[]>(`/groups?query=${encodeURIComponent(name)}&limit=200`);
+    return groups.find((g) => g.name === name)?.id ?? null;
+}
+
 export async function loadWizardContext(): Promise<WizardContext> {
     const me = await apiGet<WhoamiRes>('/whoami');
 
-    const [memberships, hierarchiesRaw, roles, template, fieldsRaw, membersRaw, parentsRaw] =
-        await Promise.all([
-            fetchAllPages<PersonGroupRes>(`/persons/${me.id}/groups`, { limit: 100 }),
-            apiGet<HierarchyRes[]>('/groups/hierarchies'),
-            apiGet<RoleRes[]>('/group/roles'),
-            apiGet<GroupRes>(`/groups/${TEMPLATE_GROUP_ID}`),
-            apiGet<MemberFieldRes[]>(`/groups/${TEMPLATE_GROUP_ID}/memberfields`),
-            fetchAllPages<MemberRes>(`/groups/${TEMPLATE_GROUP_ID}/members`, { limit: 100 }),
-            apiGet<ParentRes[]>(`/groups/${TEMPLATE_GROUP_ID}/parents`),
-        ]);
+    const templateId = await findGroupIdByNameRaw(TEMPLATE_GROUP_NAME);
+    if (templateId === null)
+        throw templateInvalid(`Vorlagengruppe „${TEMPLATE_GROUP_NAME}“ wurde nicht gefunden`);
+
+    const [
+        memberships,
+        hierarchiesRaw,
+        roles,
+        template,
+        fieldsRaw,
+        membersRaw,
+        parentsRaw,
+        calendars,
+    ] = await Promise.all([
+        fetchAllPages<PersonGroupRes>(`/persons/${me.id}/groups`, { limit: 100 }),
+        apiGet<HierarchyRes[]>('/groups/hierarchies'),
+        apiGet<RoleRes[]>('/group/roles'),
+        apiGet<GroupRes>(`/groups/${templateId}`),
+        apiGet<MemberFieldRes[]>(`/groups/${templateId}/memberfields`),
+        fetchAllPages<MemberRes>(`/groups/${templateId}/members`, { limit: 100 }),
+        apiGet<ParentRes[]>(`/groups/${templateId}/parents`),
+        apiGet<CalendarRes[]>('/calendars'),
+    ]);
 
     const templateTypeId = template.information?.groupTypeId;
     if (!templateTypeId) throw templateInvalid('Gruppentyp der Vorlage nicht lesbar');
@@ -128,13 +153,14 @@ export async function loadWizardContext(): Promise<WizardContext> {
         user: { id: me.id, firstName: me.firstName, lastName: me.lastName },
         leader: deriveLeaderContext(membershipsIn, rolesIn, hierarchyIn),
         template: {
-            id: TEMPLATE_GROUP_ID,
+            id: templateId,
             parentIds: parentsRaw.map((p) => Number(p.domainIdentifier)),
             fields,
             organisators,
         },
         eventLeaderRoleId,
         organisatorRoleId,
+        calendarId: calendars.find((c) => c.name === CALENDAR_NAME)?.id ?? null,
     };
 }
 
@@ -156,12 +182,7 @@ export interface ProvisionApi {
 }
 
 export const provisionApi: ProvisionApi = {
-    async findGroupIdByName(name) {
-        const groups = await apiGet<GroupRes[]>(
-            `/groups?query=${encodeURIComponent(name)}&limit=200`,
-        );
-        return groups.find((g) => g.name === name)?.id ?? null;
-    },
+    findGroupIdByName: findGroupIdByNameRaw,
 
     async duplicateGroup(templateId, newName) {
         const group = await apiPost<GroupRes>(

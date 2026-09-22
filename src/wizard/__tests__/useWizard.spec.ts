@@ -39,6 +39,7 @@ function makeContext(overrides: Partial<WizardContext['leader']> = {}): WizardCo
         },
         eventLeaderRoleId: 23,
         organisatorRoleId: 26,
+        calendarId: 69,
     };
 }
 

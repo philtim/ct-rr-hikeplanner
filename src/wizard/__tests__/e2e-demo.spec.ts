@@ -61,7 +61,6 @@ vi.mock('@/shared/api', () => ({
 
 import { loadWizardContext, provisionApi } from '@/wizard/wizard.api';
 import { executeProvisioning } from '@/wizard/provisioning';
-import { CALENDAR_ID } from '@/wizard/config';
 import type { FormState, ProvisionProgress } from '@/wizard/types';
 
 const form: FormState = {
@@ -89,14 +88,22 @@ async function deleteGroupByName(name: string) {
     }
 }
 
+async function getCalendarId(): Promise<number> {
+    const calendars = await call<{ id: number; name: string }[]>('GET', '/calendars');
+    const cal = calendars.find((c) => c.name === 'Royal Rangers');
+    if (!cal) throw new Error('Kalender "Royal Rangers" fehlt auf der Demo-Instanz');
+    return cal.id;
+}
+
 async function deleteE2eAppointments() {
+    const calId = await getCalendarId();
     const appts = await call<{ base: { id: number; title: string } }[]>(
         'GET',
-        `/calendars/${CALENDAR_ID}/appointments?from=2027-06-01&to=2027-06-30`,
+        `/calendars/${calId}/appointments?from=2027-06-01&to=2027-06-30`,
     );
     for (const a of appts) {
         if (a.base.title === EXPECTED_NAME) {
-            await call('DELETE', `/calendars/${CALENDAR_ID}/appointments/${a.base.id}`);
+            await call('DELETE', `/calendars/${calId}/appointments/${a.base.id}`);
         }
     }
 }
@@ -127,6 +134,7 @@ describe.runIf(RUN)('E2E gegen rr-demo', () => {
             expect.arrayContaining(['Vegetarisch', 'T-Shirt-Größe', 'Bemerkung']),
         );
         expect(ctx.template.organisators.length).toBeGreaterThan(0);
+        expect(ctx.calendarId).not.toBeNull();
 
         form.teamId = team!.groupId;
         form.selectedFieldIds = [ctx.template.fields.find((f) => f.name === 'Vegetarisch')!.id];
@@ -144,7 +152,7 @@ describe.runIf(RUN)('E2E gegen rr-demo', () => {
                 form,
                 team,
                 context: ctx,
-                calendarId: CALENDAR_ID,
+                calendarId: ctx.calendarId,
                 groupUrl: (id) => `${BASE}/groups/${id}`,
             },
             provisionApi,
@@ -203,7 +211,7 @@ describe.runIf(RUN)('E2E gegen rr-demo', () => {
         // Kalendertermin existiert
         const appts = await call<{ base: { title: string; allDay?: boolean } }[]>(
             'GET',
-            `/calendars/${CALENDAR_ID}/appointments?from=2027-06-01&to=2027-06-30`,
+            `/calendars/${ctx.calendarId}/appointments?from=2027-06-01&to=2027-06-30`,
         );
         expect(appts.map((a) => a.base.title)).toContain(EXPECTED_NAME);
 
@@ -213,7 +221,7 @@ describe.runIf(RUN)('E2E gegen rr-demo', () => {
                 form,
                 team,
                 context: ctx,
-                calendarId: CALENDAR_ID,
+                calendarId: ctx.calendarId,
                 groupUrl: (id) => `${BASE}/groups/${id}`,
             },
             provisionApi,

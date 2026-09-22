@@ -6,7 +6,6 @@
  */
 import { computed, reactive, ref } from 'vue';
 import { getOriginUrl } from '@/shared/api';
-import { CALENDAR_ID } from './config';
 import { buildGroupName } from './naming';
 import { executeProvisioning } from './provisioning';
 import { fewNightsWarning, validateStep1, validateStep2 } from './validation';
@@ -153,7 +152,7 @@ export function useWizard(deps: UseWizardDeps = {}) {
                 form,
                 team: selectedTeam.value,
                 context: context.value,
-                calendarId: CALENDAR_ID,
+                calendarId: context.value.calendarId,
                 groupUrl: (id) => `${getOriginUrl()}/groups/${id}`,
             },
             provisionApi,

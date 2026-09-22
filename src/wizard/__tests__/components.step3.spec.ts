@@ -48,6 +48,7 @@ const context: WizardContext = {
     },
     eventLeaderRoleId: 23,
     organisatorRoleId: 26,
+    calendarId: 69,
 };
 
 const form: FormState = {
