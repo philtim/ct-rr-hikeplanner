@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { sanitizeSuffix } from '@/wizard/naming';
 import type { Step1Errors } from '@/wizard/validation';
 import type { FormState, Stufe, TeamOption } from '@/wizard/types';
 
@@ -98,6 +99,21 @@ const singleTeamName = computed(
             ></textarea>
             <p v-if="errors.description" id="hp-description-error" class="hp-error-text">
                 {{ errors.description }}
+            </p>
+        </div>
+
+        <div class="hp-field">
+            <label for="hp-title-suffix">Titel-Zusatz (optional)</label>
+            <input
+                id="hp-title-suffix"
+                v-model="form.titleSuffix"
+                type="text"
+                maxlength="40"
+                placeholder="z. B. Wildnistour"
+                @blur="form.titleSuffix = sanitizeSuffix(form.titleSuffix)"
+            />
+            <p class="hp-hint">
+                Wird an den Namen angehängt. Erlaubt: Buchstaben, Zahlen, Leerzeichen, Bindestrich.
             </p>
         </div>
 

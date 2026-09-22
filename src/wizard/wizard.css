@@ -242,6 +242,22 @@
     gap: 12px;
     margin-top: 20px;
 }
+.rr-hikeplanner-root .hp-copy-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+}
+.rr-hikeplanner-root .hp-copy-row input {
+    flex: 1;
+    min-height: 44px;
+    padding: 8px 10px;
+    border: 1px solid var(--hp-border);
+    border-radius: 6px;
+    background: var(--hp-surface);
+    color: var(--hp-text);
+    font-size: 0.9rem;
+}
+
 .rr-hikeplanner-root .hp-link-btn {
     background: none;
     border: 0;

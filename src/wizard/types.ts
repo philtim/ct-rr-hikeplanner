@@ -65,6 +65,10 @@ export interface FormState {
     signupDeadline: string;
     /** Freitext aus dem number input; "" = unbegrenzt. */
     maxMembers: string;
+    /** Optionaler Titel-Zusatz des Leiters (wird sanitisiert angehängt). */
+    titleSuffix: string;
+    /** Anmeldung ohne ChurchTools-Login teilbar (visibility public). */
+    publicSignup: boolean;
     /** IDs der gewählten Vorlagen-Felder. */
     selectedFieldIds: number[];
 }
@@ -85,7 +89,7 @@ export interface ProvisionProgress {
 }
 
 export type ProvisionOutcome =
-    | { ok: true; groupId: number; calendarWarning: boolean }
+    | { ok: true; groupId: number; calendarWarning: boolean; fieldsWarning: boolean }
     | {
           ok: false;
           failedStep: ProvisionStepId | 'precheck';

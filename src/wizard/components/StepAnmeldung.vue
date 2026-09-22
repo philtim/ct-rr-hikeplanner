@@ -50,6 +50,14 @@ const emit = defineEmits<{ next: []; back: [] }>();
             </p>
         </div>
 
+        <label v-if="form.mode === 'self'" class="hp-check-row">
+            <input v-model="form.publicSignup" type="checkbox" data-testid="public-signup" />
+            <span>Anmeldung öffentlich</span>
+            <span class="hp-check-sub"
+                >Link funktioniert ohne ChurchTools-Login (z. B. für Eltern)</span
+            >
+        </label>
+
         <div class="hp-field" :class="{ 'hp-field--invalid': errors.maxMembers }">
             <label for="hp-max-members">Max. Teilnehmer (optional)</label>
             <input

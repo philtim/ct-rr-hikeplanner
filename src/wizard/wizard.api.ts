@@ -220,6 +220,10 @@ export const provisionApi: ProvisionApi = {
                 form.mode === 'self' && form.signupDeadline
                     ? `${form.signupDeadline}T23:59:59Z`
                     : null,
+            // Öffentliche Anmeldung: Link funktioniert ohne CT-Login.
+            ...(form.mode === 'self' && form.publicSignup
+                ? { visibility: 'public', isPublic: true }
+                : {}),
         });
     },
 

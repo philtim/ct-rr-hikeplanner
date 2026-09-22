@@ -51,7 +51,12 @@ function fillValidForm(w: ReturnType<typeof useWizard>) {
     w.form.description = 'Toller Hajk, 2 Nächte';
 }
 
-const okOutcome: ProvisionOutcome = { ok: true, groupId: 99, calendarWarning: false };
+const okOutcome: ProvisionOutcome = {
+    ok: true,
+    groupId: 99,
+    calendarWarning: false,
+    fieldsWarning: false,
+};
 
 beforeEach(() => {
     vi.clearAllMocks();

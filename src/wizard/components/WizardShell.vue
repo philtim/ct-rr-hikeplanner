@@ -56,7 +56,7 @@ const resultSummary = computed(() => {
 </script>
 
 <template>
-    <div class="rr-hikeplanner-root">
+    <div class="rr-hikeplanner-root" lang="de">
         <h1>Neuen Hajk anlegen</h1>
 
         <GateView v-if="w.state.value.phase === 'loading'" state="loading" />
@@ -124,6 +124,12 @@ const resultSummary = computed(() => {
                 :group-href="groupUrl(w.state.value.outcome.groupId)"
                 :summary="resultSummary"
                 :calendar-warning="w.state.value.outcome.calendarWarning"
+                :fields-warning="w.state.value.outcome.fieldsWarning"
+                :signup-url="
+                    w.form.mode === 'self' && w.form.publicSignup
+                        ? `${groupUrl(w.state.value.outcome.groupId)}/signup`
+                        : null
+                "
                 @restart="w.reset()"
             />
         </template>

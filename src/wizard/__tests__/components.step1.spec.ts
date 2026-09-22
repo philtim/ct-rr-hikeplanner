@@ -41,6 +41,8 @@ function makeForm(overrides: Partial<FormState> = {}): FormState {
         mode: 'self',
         signupDeadline: '',
         maxMembers: '',
+        titleSuffix: '',
+        publicSignup: false,
         selectedFieldIds: [],
         ...overrides,
     }) as FormState;
@@ -111,6 +113,15 @@ describe('StepTeamTermin', () => {
     it('constrains the end date picker to dates from the start date on', async () => {
         const w = makeWrapper({ form: makeForm({ dateFrom: '2027-04-10' }) });
         expect(w.find('#hp-date-to').attributes('min')).toBe('2027-04-10');
+    });
+
+    it('sanitizes the title suffix on blur', async () => {
+        const form = makeForm();
+        const w = makeWrapper({ form });
+        const input = w.find('#hp-title-suffix');
+        await input.setValue('Wildnis! & Tour');
+        await input.trigger('blur');
+        expect(form.titleSuffix).toBe('Wildnis Tour');
     });
 
     it('binds inputs to the form state', async () => {

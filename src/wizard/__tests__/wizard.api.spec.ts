@@ -212,7 +212,11 @@ describe('provisionApi', () => {
 
     it('duplicateGroup url-encodes the new name and returns the new id', async () => {
         (api.apiPost as Mock).mockResolvedValue({ id: 99 });
-        const id = await provisionApi.duplicateGroup(T, 'RR Hajk Eisbären 10.04.–12.04.2027', false);
+        const id = await provisionApi.duplicateGroup(
+            T,
+            'RR Hajk Eisbären 10.04.–12.04.2027',
+            false,
+        );
         expect(id).toBe(99);
         const url = (api.apiPost as Mock).mock.calls[0][0] as string;
         expect(url).toBe(
@@ -231,6 +235,8 @@ describe('provisionApi', () => {
             mode: 'self',
             signupDeadline: '2027-04-03',
             maxMembers: '20',
+            titleSuffix: '',
+            publicSignup: false,
             selectedFieldIds: [],
         });
         const [url, body] = (api.apiPatch as Mock).mock.calls[0] as [
@@ -257,6 +263,8 @@ describe('provisionApi', () => {
             mode: 'manual',
             signupDeadline: '2027-04-03',
             maxMembers: '',
+            titleSuffix: '',
+            publicSignup: false,
             selectedFieldIds: [],
         });
         const body = (api.apiPatch as Mock).mock.calls[0][1] as Record<string, unknown>;
@@ -264,6 +272,26 @@ describe('provisionApi', () => {
         expect(body.signUpClosingDate).toBeNull();
         expect(body.maxMembers).toBeNull();
         expect(body.note).toBe('Toller Hajk');
+    });
+
+    it('configureGroup adds public visibility flags for public signup', async () => {
+        (api.apiPatch as Mock).mockResolvedValue({});
+        await provisionApi.configureGroup(99, {
+            teamId: 2156,
+            dateFrom: '2027-04-10',
+            dateTo: '2027-04-12',
+            location: '',
+            description: 'x',
+            mode: 'self',
+            signupDeadline: '',
+            maxMembers: '',
+            titleSuffix: '',
+            publicSignup: true,
+            selectedFieldIds: [],
+        });
+        const body = (api.apiPatch as Mock).mock.calls[0][1] as Record<string, unknown>;
+        expect(body.visibility).toBe('public');
+        expect(body.isPublic).toBe(true);
     });
 
     it('listParentIds parses domainIdentifier strings', async () => {

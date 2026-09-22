@@ -34,9 +34,10 @@ const zeitraum = computed(
 );
 const modusLine = computed(() => {
     if (props.form.mode === 'manual') return 'Du trägst die Teilnehmer selbst ein';
-    return props.form.signupDeadline
+    const base = props.form.signupDeadline
         ? `Selbstanmeldung bis ${formatDateDe(props.form.signupDeadline)}`
         : 'Selbstanmeldung (ohne Anmeldeschluss)';
+    return props.form.publicSignup ? `${base} · öffentlich` : base;
 });
 const felderLine = computed(() => {
     const names = props.context.template.fields

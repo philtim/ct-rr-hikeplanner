@@ -72,9 +72,11 @@ const form: FormState = {
     mode: 'self',
     signupDeadline: '2027-06-11',
     maxMembers: '12',
+    titleSuffix: 'E2E-Lauf',
+    publicSignup: true,
     selectedFieldIds: [],
 };
-const EXPECTED_NAME = 'RR Hajk Testbären 18.06.–20.06.2027';
+const EXPECTED_NAME = 'RR Hajk Testbären 18.06.–20.06.2027 E2E-Lauf';
 
 let createdGroupId: number | null = null;
 
@@ -163,6 +165,7 @@ describe.runIf(RUN)('E2E gegen rr-demo', () => {
         if (!outcome.ok) return;
         createdGroupId = outcome.groupId;
         expect(outcome.calendarWarning).toBe(false);
+        expect(outcome.fieldsWarning).toBe(false);
 
         // Gruppe: Name, Settings, Beschreibung
         const group = await call<{
@@ -180,6 +183,16 @@ describe.runIf(RUN)('E2E gegen rr-demo', () => {
         expect(group.information.endDate).toBe('2027-06-20');
         expect(group.settings.isOpenForMembers).toBe(true);
         expect(group.settings.maxMembers).toBe(12);
+
+        // Öffentliche Anmeldung: Flags gesetzt und Link ohne Login erreichbar
+        const pub = await call<{ settings: { visibility: string; isPublic: boolean } }>(
+            'GET',
+            `/groups/${outcome.groupId}`,
+        );
+        expect(pub.settings.visibility).toBe('public');
+        expect(pub.settings.isPublic).toBe(true);
+        const anon = await fetch(`${BASE}/groups/${outcome.groupId}/signup`);
+        expect(anon.status).toBe(200);
 
         // Felder: genau das gewählte
         const fields = await call<{ field: { name: string } }[]>(

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import ResultView from '@/wizard/components/ResultView.vue';
 
@@ -15,6 +15,8 @@ function makeWrapper(props: Record<string, unknown> = {}) {
                 'Du bist als Leiter eingetragen',
             ],
             calendarWarning: false,
+            fieldsWarning: false,
+            signupUrl: null,
             ...props,
         },
     });
@@ -35,6 +37,30 @@ describe('ResultView', () => {
         const w = makeWrapper({ calendarWarning: true });
         expect(w.text()).toContain('Wichtig: Kalendertermin konnte nicht angelegt werden');
         expect(w.text()).toContain('Royal Rangers');
+    });
+
+    it('shows the fields warning only when set', () => {
+        expect(makeWrapper().text()).not.toContain('Anmeldefelder konnten nicht entfernt');
+        expect(makeWrapper({ fieldsWarning: true }).text()).toContain(
+            'Anmeldefelder konnten nicht entfernt',
+        );
+    });
+
+    it('shows the public signup link with copy button when provided', async () => {
+        const w = makeWrapper({ signupUrl: 'https://x.tools/groups/99/signup' });
+        const box = w.find('[data-testid="signup-link"]');
+        expect(box.exists()).toBe(true);
+        expect((box.find('input').element as HTMLInputElement).value).toBe(
+            'https://x.tools/groups/99/signup',
+        );
+        const writeText = vi.fn().mockResolvedValue(undefined);
+        vi.stubGlobal('navigator', { ...navigator, clipboard: { writeText } });
+        await box.find('[data-testid="copy-signup"]').trigger('click');
+        expect(writeText).toHaveBeenCalledWith('https://x.tools/groups/99/signup');
+    });
+
+    it('hides the signup link block without url', () => {
+        expect(makeWrapper().find('[data-testid="signup-link"]').exists()).toBe(false);
     });
 
     it('emits restart', async () => {

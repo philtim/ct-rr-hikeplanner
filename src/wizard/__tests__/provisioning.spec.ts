@@ -46,6 +46,8 @@ const input: ProvisionInput = {
         mode: 'self',
         signupDeadline: '2027-04-03',
         maxMembers: '20',
+        titleSuffix: '',
+        publicSignup: false,
         selectedFieldIds: [3508], // nur Vegetarisch
     },
     team: {
@@ -92,7 +94,12 @@ describe('executeProvisioning', () => {
     it('runs the happy path in order and reports done steps', async () => {
         const api = makeApi();
         const outcome = await executeProvisioning(input, api, onProgress);
-        expect(outcome).toEqual({ ok: true, groupId: 99, calendarWarning: false });
+        expect(outcome).toEqual({
+            ok: true,
+            groupId: 99,
+            calendarWarning: false,
+            fieldsWarning: false,
+        });
 
         expect(api.duplicateGroup).toHaveBeenCalledWith(
             2587,
@@ -124,12 +131,27 @@ describe('executeProvisioning', () => {
         const doneSteps = progress.filter((p) => p.status === 'done').map((p) => p.step);
         expect(doneSteps).toEqual([
             'duplicate',
+            'members',
             'configure',
             'fields',
             'parents',
-            'members',
             'calendar',
         ]);
+    });
+
+    it('keeps the group and warns when field deletion is forbidden', async () => {
+        const api = makeApi({ deleteMemberField: vi.fn().mockRejectedValue(new Error('403')) });
+        const outcome = await executeProvisioning(input, api, onProgress);
+        expect(outcome).toEqual({
+            ok: true,
+            groupId: 99,
+            calendarWarning: false,
+            fieldsWarning: true,
+        });
+        expect(api.deleteGroup).not.toHaveBeenCalled();
+        // parents und calendar laufen trotzdem weiter
+        expect(api.addParent).toHaveBeenCalled();
+        expect(api.createAppointment).toHaveBeenCalled();
     });
 
     it('copies members server-side when the organisator list is unreadable', async () => {
@@ -184,7 +206,12 @@ describe('executeProvisioning', () => {
     it('warns without api call when the calendar is missing on the instance', async () => {
         const api = makeApi();
         const outcome = await executeProvisioning({ ...input, calendarId: null }, api, onProgress);
-        expect(outcome).toEqual({ ok: true, groupId: 99, calendarWarning: true });
+        expect(outcome).toEqual({
+            ok: true,
+            groupId: 99,
+            calendarWarning: true,
+            fieldsWarning: false,
+        });
         expect(api.createAppointment).not.toHaveBeenCalled();
         expect(progress.at(-1)).toEqual({ step: 'calendar', status: 'failed' });
     });
@@ -194,7 +221,12 @@ describe('executeProvisioning', () => {
             createAppointment: vi.fn().mockRejectedValue(new Error('no rights')),
         });
         const outcome = await executeProvisioning(input, api, onProgress);
-        expect(outcome).toEqual({ ok: true, groupId: 99, calendarWarning: true });
+        expect(outcome).toEqual({
+            ok: true,
+            groupId: 99,
+            calendarWarning: true,
+            fieldsWarning: false,
+        });
         expect(api.deleteGroup).not.toHaveBeenCalled();
         expect(progress.at(-1)).toEqual({ step: 'calendar', status: 'failed' });
     });

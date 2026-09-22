@@ -23,8 +23,29 @@ export function formatDateRange(fromIso: string, toIso: string): string {
     return `${f.d}.${f.m}.${f.y}–${t.d}.${t.m}.${t.y}`;
 }
 
-export function buildGroupName(teamFullName: string, fromIso: string, toIso: string): string {
-    return `RR Hajk ${teamShortName(teamFullName)} ${formatDateRange(fromIso, toIso)}`;
+/**
+ * Freitext-Zusatz des Leiters: nur Buchstaben (inkl. Umlaute), Ziffern,
+ * Leerzeichen und Bindestrich; mehrfache Leerzeichen zusammengefasst,
+ * maximal 40 Zeichen.
+ */
+export function sanitizeSuffix(raw: string): string {
+    return raw
+        .replace(/[^A-Za-zÄÖÜäöüß0-9 -]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 40)
+        .trim();
+}
+
+export function buildGroupName(
+    teamFullName: string,
+    fromIso: string,
+    toIso: string,
+    suffix = '',
+): string {
+    const base = `RR Hajk ${teamShortName(teamFullName)} ${formatDateRange(fromIso, toIso)}`;
+    const clean = sanitizeSuffix(suffix);
+    return clean ? `${base} ${clean}` : base;
 }
 
 /** Kalendernächte zwischen den Daten; 0 bei leerer/ungültiger/invertierter Eingabe. */

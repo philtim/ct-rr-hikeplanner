@@ -29,12 +29,15 @@ export type WizardPhase =
     | { phase: 'failed'; outcome: Extract<ProvisionOutcome, { ok: false }> }
     | { phase: 'done'; outcome: Extract<ProvisionOutcome, { ok: true }>; groupName: string };
 
+// Reihenfolge = Provisionierungs-Reihenfolge: Der Leiter wird direkt nach dem
+// Duplizieren eingetragen, damit die Folgeschritte mit Gruppenleiter-Rechten
+// laufen können.
 const ALL_STEPS: ProvisionStepId[] = [
     'duplicate',
+    'members',
     'configure',
     'fields',
     'parents',
-    'members',
     'calendar',
 ];
 
@@ -48,6 +51,8 @@ function emptyForm(): FormState {
         mode: 'self',
         signupDeadline: '',
         maxMembers: '',
+        titleSuffix: '',
+        publicSignup: false,
         selectedFieldIds: [],
     };
 }
@@ -74,7 +79,7 @@ export function useWizard(deps: UseWizardDeps = {}) {
     );
     const groupName = computed(() =>
         selectedTeam.value && form.dateFrom && form.dateTo
-            ? buildGroupName(selectedTeam.value.name, form.dateFrom, form.dateTo)
+            ? buildGroupName(selectedTeam.value.name, form.dateFrom, form.dateTo, form.titleSuffix)
             : '',
     );
     const nightsWarning = computed(() => fewNightsWarning(form));

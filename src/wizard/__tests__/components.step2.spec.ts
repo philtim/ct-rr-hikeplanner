@@ -39,6 +39,8 @@ function makeForm(overrides: Partial<FormState> = {}): FormState {
         mode: 'self',
         signupDeadline: '',
         maxMembers: '',
+        titleSuffix: '',
+        publicSignup: false,
         selectedFieldIds: [],
         ...overrides,
     }) as FormState;
@@ -74,6 +76,15 @@ describe('StepAnmeldung', () => {
         await w.find('input[value="manual"]').setValue();
         await w.find('input[value="self"]').setValue();
         expect((w.find('#hp-deadline').element as HTMLInputElement).value).toBe('2027-04-03');
+    });
+
+    it('offers public signup only in self mode and binds it', async () => {
+        const form = makeForm();
+        const w = makeWrapper(form);
+        await w.find('[data-testid="public-signup"]').setValue(true);
+        expect(form.publicSignup).toBe(true);
+        await w.find('input[value="manual"]').setValue();
+        expect(w.find('[data-testid="public-signup"]').exists()).toBe(false);
     });
 
     it('emits next and back', async () => {

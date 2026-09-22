@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { buildGroupName, countNights, formatDateRange, teamShortName } from '@/wizard/naming';
+import {
+    buildGroupName,
+    countNights,
+    formatDateRange,
+    sanitizeSuffix,
+    teamShortName,
+} from '@/wizard/naming';
 
 describe('teamShortName', () => {
     it('strips the RR <Stufe>team prefix', () => {
@@ -28,6 +34,38 @@ describe('buildGroupName', () => {
         expect(buildGroupName('RR Kundschafterteam Eisbären', '2027-04-10', '2027-04-12')).toBe(
             'RR Hajk Eisbären 10.04.–12.04.2027',
         );
+    });
+});
+
+describe('sanitizeSuffix', () => {
+    it('keeps letters, digits, umlauts, spaces and hyphens', () => {
+        expect(sanitizeSuffix('Wildnis-Tour 2')).toBe('Wildnis-Tour 2');
+        expect(sanitizeSuffix('Überquerung')).toBe('Überquerung');
+    });
+    it('strips special characters and collapses whitespace', () => {
+        expect(sanitizeSuffix('Tour! <script> & Co.')).toBe('Tour script Co');
+        expect(sanitizeSuffix('  viel   Platz  ')).toBe('viel Platz');
+    });
+    it('caps the length at 40 characters', () => {
+        expect(sanitizeSuffix('x'.repeat(60))).toHaveLength(40);
+    });
+});
+
+describe('buildGroupName with suffix', () => {
+    it('appends the sanitized suffix after the date', () => {
+        expect(
+            buildGroupName(
+                'RR Kundschafterteam Eisbären',
+                '2027-04-10',
+                '2027-04-12',
+                'Wildnis-Tour!',
+            ),
+        ).toBe('RR Hajk Eisbären 10.04.–12.04.2027 Wildnis-Tour');
+    });
+    it('changes nothing for an empty suffix', () => {
+        expect(
+            buildGroupName('RR Kundschafterteam Eisbären', '2027-04-10', '2027-04-12', '  '),
+        ).toBe('RR Hajk Eisbären 10.04.–12.04.2027');
     });
 });
 
