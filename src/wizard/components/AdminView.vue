@@ -81,8 +81,9 @@ async function save(): Promise<void> {
                 <strong>{{ currentName ?? `Gruppe ${currentId} (nicht lesbar)` }}</strong>
             </p>
             <p v-else class="hp-hint" data-testid="current-template">
-                Noch keine Vorlage konfiguriert — der Assistent sucht die Gruppe
-                „{{ TEMPLATE_GROUP_NAME }}“ über ihren Namen.
+                Noch keine Vorlage konfiguriert — der Assistent sucht die Gruppe „{{
+                    TEMPLATE_GROUP_NAME
+                }}“ über ihren Namen.
             </p>
 
             <div class="hp-field">
