@@ -212,7 +212,7 @@ describe('provisionApi', () => {
 
     it('duplicateGroup url-encodes the new name and returns the new id', async () => {
         (api.apiPost as Mock).mockResolvedValue({ id: 99 });
-        const id = await provisionApi.duplicateGroup(T, 'RR Hajk Eisbären 10.04.–12.04.2027');
+        const id = await provisionApi.duplicateGroup(T, 'RR Hajk Eisbären 10.04.–12.04.2027', false);
         expect(id).toBe(99);
         const url = (api.apiPost as Mock).mock.calls[0][0] as string;
         expect(url).toBe(
