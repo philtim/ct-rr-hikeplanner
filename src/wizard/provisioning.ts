@@ -112,9 +112,16 @@ export async function executeProvisioning(
         }
 
         await run('parents', async () => {
+            // Geerbte Eltern (konventionsgemäß keine — die Vorlage hängt
+            // nirgends) best-effort entfernen; nur das Setzen der
+            // Ziel-Sammelgruppe ist kritisch.
             const inherited = await api.listParentIds(newGroupId);
             for (const parentId of inherited) {
-                await api.removeParent(newGroupId, parentId);
+                try {
+                    await api.removeParent(newGroupId, parentId);
+                } catch {
+                    // fehlendes Recht an der Fremdgruppe — Ablage stimmt trotzdem
+                }
             }
             await api.addParent(newGroupId, team.sammelgruppeId as number);
         });

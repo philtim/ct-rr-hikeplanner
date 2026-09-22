@@ -34,7 +34,9 @@ sie; Abweichungen brechen die automatische Erkennung.
 
 ## Vorlagengruppe = Single Source of Truth
 
-Die Gruppe `=== Vorlage Hajks` steuert den Assistenten. Dort — und nur dort — werden
+Die Gruppe `=== Vorlage Hajks` steuert den Assistenten. Sie hängt bewusst
+UNTER KEINER Eltern-Gruppe: Duplikate würden die Ablagen erben, und Leiter
+dürfen fremde Zuordnungen nicht entfernen. Dort — und nur dort — werden
 gepflegt (normale CT-Oberfläche, keine Code-Änderung nötig):
 
 - **Anmeldefelder**: der komplette wählbare Katalog inkl. Pflicht-Markierung und

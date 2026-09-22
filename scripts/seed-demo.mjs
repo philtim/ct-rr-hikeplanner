@@ -120,7 +120,9 @@ const sammelId = await ensureGroup('RR | Camps und Aktionen - Kundschafter', 4, 
 await call('PATCH', `/groups/${sammelId}`, { visibility: 'intern' });
 
 console.log('Vorlage:');
-const templateId = await ensureGroup('=== Vorlage Hajks', 3, sammelId);
+// Bewusst OHNE Eltern-Gruppe: Duplikate erben sonst Ablagen, die Leiter
+// mangels Rechten nicht entfernen können (docs/CONVENTIONS.md).
+const templateId = await ensureGroup('=== Vorlage Hajks', 3, null);
 
 // Vorlagen-Settings: Selbstanmeldung offen, intern sichtbar (flache Keys!).
 await call('PATCH', `/groups/${templateId}`, {

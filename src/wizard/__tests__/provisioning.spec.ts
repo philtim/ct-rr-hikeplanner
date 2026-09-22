@@ -181,6 +181,13 @@ describe('executeProvisioning', () => {
         expect(api.duplicateGroup).not.toHaveBeenCalled();
     });
 
+    it('ignores failures when removing inherited parents', async () => {
+        const api = makeApi({ removeParent: vi.fn().mockRejectedValue(new Error('403')) });
+        const outcome = await executeProvisioning(input, api, onProgress);
+        expect(outcome).toMatchObject({ ok: true });
+        expect(api.addParent).toHaveBeenCalledWith(99, 2612);
+    });
+
     it('rolls back the group when a step fails', async () => {
         const api = makeApi({ addParent: vi.fn().mockRejectedValue(new Error('boom')) });
         const outcome = await executeProvisioning(input, api, onProgress);
