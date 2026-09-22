@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.14](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.13...v0.1.14) (2026-09-22)
+
+
+### Features
+
+* publish question with correct public link and field-hide fallback ([f0ac205](https://github.com/philtim/ct-rr-hikeplanner/commit/f0ac2059ee07c30788307d7e22ed1bbed0ddbd24))
+
 ## [0.1.13](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.12...v0.1.13) (2026-09-22)
 
 
