@@ -11,6 +11,8 @@ const base: FormState = {
     mode: 'self',
     signupDeadline: '2027-04-03',
     maxMembers: '',
+    titleSuffix: '',
+    publicSignup: false,
     selectedFieldIds: [],
 };
 

@@ -60,6 +60,8 @@ const form: FormState = {
     mode: 'self',
     signupDeadline: '2027-04-03',
     maxMembers: '20',
+    titleSuffix: '',
+    publicSignup: false,
     selectedFieldIds: [3508, 3502],
 };
 
