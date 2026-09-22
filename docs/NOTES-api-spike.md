@@ -60,6 +60,25 @@ Minimal funktionierender Payload:
 - Anmeldefeld anlegen: `POST /api/groups/{id}/memberfields/group` — `securityLevel` (int) ist Pflicht; `referenceName` wird automatisch aus dem Namen erzeugt (Recon 21.09.).
 - `GET /api/groups/{id}/memberfields` → `data[].field.{id,name,fieldTypeCode,options[],requiredInRegistrationForm,useInRegistrationForm}`.
 
+## 6. Gruppenstatus & öffentlicher Link (Recon 22.09., rr-demo + live)
+
+- `POST /groups/{id}/duplicate` erzeugt das Duplikat immer mit **`groupStatusId: 2`
+  („Entwurf“/pending)** — unabhängig vom Status der Vorlage.
+- Veröffentlichen: flacher `PATCH /groups/{id}` mit `{"groupStatusId": 1}` (Aktiv).
+  Status-Masterdata in `GET /person/masterdata` → `groupStatuses`
+  (1 active, 2 pending/Entwurf, 3 archived, 4 finished).
+- Der für Eltern relevante öffentliche Link ist **`https://<instanz>/publicgroup/{id}`**
+  (nicht `/groups/{id}/signup`); er funktioniert erst bei `isPublic` UND Status Aktiv.
+
+## 7. Anmeldefeld bearbeiten statt löschen (Recon 22.09., rr-demo)
+
+- `PUT /groups/{gid}/memberfields/group/{fieldId}` akzeptiert **keine Teil-Updates**:
+  Payload muss das komplette Feld enthalten (`name`, `referenceName`, `fieldTypeId`,
+  `note`, `sortKey`, `securityLevel`, `defaultValue`, `requiredInRegistrationForm`,
+  `nameInSignupForm`, `noteInSignupForm`) — sonst 400/500.
+- `useInRegistrationForm: false` blendet das Feld aus dem Anmeldeformular aus →
+  Fallback des Wizards, wenn `DELETE …/memberfields/group/{id}` an Rechten scheitert.
+
 ## Noch offen (Task 16 / E2E)
 
 - CT-Theme-Klasse für Dark-Mode aus dem DOM der Demo-Instanz ablesen (für `wizard.css`).

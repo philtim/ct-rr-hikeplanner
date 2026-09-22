@@ -129,9 +129,10 @@ const resultSummary = computed(() => {
                 :fields-warning="w.state.value.outcome.fieldsWarning"
                 :signup-url="
                     w.form.mode === 'self' && w.form.publicSignup
-                        ? `${groupUrl(w.state.value.outcome.groupId)}/signup`
+                        ? `${getOriginUrl()}/publicgroup/${w.state.value.outcome.groupId}`
                         : null
                 "
+                :published="w.form.publishNow"
                 @restart="w.reset()"
             />
         </template>

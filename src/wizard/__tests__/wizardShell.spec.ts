@@ -17,6 +17,7 @@ const fake = {
         maxMembers: '',
         titleSuffix: '',
         publicSignup: false,
+        publishNow: true,
         selectedFieldIds: [],
     }),
     maxVisited: ref(1),

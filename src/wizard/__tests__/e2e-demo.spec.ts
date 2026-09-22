@@ -74,6 +74,7 @@ const form: FormState = {
     maxMembers: '12',
     titleSuffix: 'E2E-Lauf',
     publicSignup: true,
+    publishNow: true,
     selectedFieldIds: [],
 };
 const EXPECTED_NAME = 'RR Hajk Testbären 18.06.–20.06.2027 E2E-Lauf';

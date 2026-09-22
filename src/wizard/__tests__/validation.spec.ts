@@ -13,6 +13,7 @@ const base: FormState = {
     maxMembers: '',
     titleSuffix: '',
     publicSignup: false,
+    publishNow: true,
     selectedFieldIds: [],
 };
 

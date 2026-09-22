@@ -41,6 +41,7 @@ function makeForm(overrides: Partial<FormState> = {}): FormState {
         maxMembers: '',
         titleSuffix: '',
         publicSignup: false,
+        publishNow: true,
         selectedFieldIds: [],
         ...overrides,
     }) as FormState;
@@ -85,6 +86,18 @@ describe('StepAnmeldung', () => {
         expect(form.publicSignup).toBe(true);
         await w.find('input[value="manual"]').setValue();
         expect(w.find('[data-testid="public-signup"]').exists()).toBe(false);
+    });
+
+    it('asks about publishing only when public signup is chosen', async () => {
+        const form = makeForm();
+        const w = makeWrapper(form);
+        expect(w.find('[data-testid="publish-now"]').exists()).toBe(false);
+        await w.find('[data-testid="public-signup"]').setValue(true);
+        expect((w.find('[data-testid="publish-now"]').element as HTMLInputElement).checked).toBe(
+            true,
+        );
+        await w.find('[data-testid="publish-now"]').setValue(false);
+        expect(form.publishNow).toBe(false);
     });
 
     it('emits next and back', async () => {

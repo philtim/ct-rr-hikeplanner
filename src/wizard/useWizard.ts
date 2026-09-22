@@ -53,6 +53,7 @@ function emptyForm(): FormState {
         maxMembers: '',
         titleSuffix: '',
         publicSignup: false,
+        publishNow: true,
         selectedFieldIds: [],
     };
 }

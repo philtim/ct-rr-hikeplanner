@@ -17,6 +17,7 @@ function makeWrapper(props: Record<string, unknown> = {}) {
             calendarWarning: false,
             fieldsWarning: false,
             signupUrl: null,
+            published: true,
             ...props,
         },
     });
@@ -61,6 +62,19 @@ describe('ResultView', () => {
 
     it('hides the signup link block without url', () => {
         expect(makeWrapper().find('[data-testid="signup-link"]').exists()).toBe(false);
+    });
+
+    it('shows the draft hint only when the group was not published', () => {
+        const draft = makeWrapper({
+            signupUrl: 'https://x.tools/publicgroup/99',
+            published: false,
+        });
+        expect(draft.find('[data-testid="draft-hint"]').text()).toContain('Entwurf');
+        const published = makeWrapper({
+            signupUrl: 'https://x.tools/publicgroup/99',
+            published: true,
+        });
+        expect(published.find('[data-testid="draft-hint"]').exists()).toBe(false);
     });
 
     it('emits restart', async () => {

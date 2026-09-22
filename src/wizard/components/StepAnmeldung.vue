@@ -50,15 +50,25 @@ const emit = defineEmits<{ next: []; back: [] }>();
             </p>
         </div>
 
-        <label v-if="form.mode === 'self'" class="hp-check-row hp-check-row--standalone">
-            <input v-model="form.publicSignup" type="checkbox" data-testid="public-signup" />
-            <span class="hp-check-label">Anmeldung ohne ChurchTools-Konto ermöglichen</span>
-            <span class="hp-check-sub"
-                >Öffnet die Anmeldung für alle, die den Link haben — z. B. Eltern, die ihr Kind
-                anmelden. Ohne Häkchen können sich nur Personen mit ChurchTools-Konto
-                anmelden.</span
-            >
-        </label>
+        <div v-if="form.mode === 'self'" class="hp-standalone-box">
+            <label class="hp-check-row hp-check-row--standalone">
+                <input v-model="form.publicSignup" type="checkbox" data-testid="public-signup" />
+                <span class="hp-check-label">Anmeldung ohne ChurchTools-Konto ermöglichen</span>
+                <span class="hp-check-sub"
+                    >Öffnet die Anmeldung für alle, die den Link haben — z. B. Eltern, die ihr Kind
+                    anmelden. Ohne Häkchen können sich nur Personen mit ChurchTools-Konto
+                    anmelden.</span
+                >
+            </label>
+            <label v-if="form.publicSignup" class="hp-check-row hp-check-row--standalone">
+                <input v-model="form.publishNow" type="checkbox" data-testid="publish-now" />
+                <span class="hp-check-label">Veranstaltung sofort veröffentlichen</span>
+                <span class="hp-check-sub"
+                    >Der Anmelde-Link funktioniert erst, wenn die Gruppe veröffentlicht ist. Ohne
+                    Häkchen bleibt sie ein Entwurf, den du später selbst veröffentlichst.</span
+                >
+            </label>
+        </div>
 
         <div class="hp-field" :class="{ 'hp-field--invalid': errors.maxMembers }">
             <label for="hp-max-members">Max. Teilnehmer (optional)</label>

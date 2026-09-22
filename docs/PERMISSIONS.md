@@ -20,10 +20,12 @@ sind für Leiter unantastbar. Auch Vorlage und Sammelgruppen haben diesen Typ.
 | Alles andere (andere Gruppentypen, Personen-Admin, andere Kalender) | — | ➖ nicht nötig |
 
 Bekannte Lücke (nicht blockierend): **Anmeldefelder löschen** in der frisch angelegten
-Gruppe liefert für Leiter 403 (auch als Gruppenleiter). Der Wizard bricht deshalb nicht
-ab, sondern lässt alle Vorlagen-Felder stehen und zeigt eine Warnung; nicht benötigte
-Felder entfernt die Stammleitung bei Bedarf. Welches Recht CT dafür verlangt, ist offen
-(Kandidat: „Gruppen verwalten/administer groups" — bewusst nicht vergeben).
+Gruppe liefert für Leiter 403 (auch als Gruppenleiter); welches Recht CT dafür verlangt,
+ist offen (Kandidat: „Gruppen verwalten/administer groups" — bewusst nicht vergeben).
+Der Wizard versucht seit v0.1.14 als Fallback, nicht gewählte Felder per
+`PUT …/memberfields/group/{id}` mit `useInRegistrationForm: false` aus dem
+Anmeldeformular auszublenden; nur wenn auch das scheitert, bleibt die Warnung und die
+Stammleitung räumt die Felder.
 
 ## Deploy-Dienstkonto „RR CICD" (je Instanz; verifiziert 22.09.2026)
 

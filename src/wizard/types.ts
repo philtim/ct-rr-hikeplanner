@@ -69,6 +69,12 @@ export interface FormState {
     titleSuffix: string;
     /** Anmeldung ohne ChurchTools-Login teilbar (visibility public). */
     publicSignup: boolean;
+    /**
+     * Gruppe sofort veröffentlichen (groupStatusId Aktiv statt Entwurf).
+     * Nur bei publicSignup abgefragt; der öffentliche Link funktioniert
+     * erst nach Veröffentlichung.
+     */
+    publishNow: boolean;
     /** IDs der gewählten Vorlagen-Felder. */
     selectedFieldIds: number[];
 }

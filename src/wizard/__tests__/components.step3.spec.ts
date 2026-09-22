@@ -62,6 +62,7 @@ const form: FormState = {
     maxMembers: '20',
     titleSuffix: '',
     publicSignup: false,
+    publishNow: true,
     selectedFieldIds: [3508, 3502],
 };
 

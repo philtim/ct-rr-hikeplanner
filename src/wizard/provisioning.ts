@@ -90,8 +90,10 @@ export async function executeProvisioning(
 
         await run('configure', () => api.configureGroup(newGroupId, form));
 
-        // Feld-Reduktion ist nicht fatal: Scheitert das Löschen an Rechten,
-        // bleibt die Gruppe bestehen und das Ergebnis zeigt eine Warnung.
+        // Feld-Reduktion ist nicht fatal: Scheitert das Löschen an Rechten
+        // (Leiter bekommen dort 403), wird das Feld stattdessen aus dem
+        // Anmeldeformular ausgeblendet; erst wenn auch das scheitert, bleibt
+        // die Gruppe bestehen und das Ergebnis zeigt eine Warnung.
         try {
             await run('fields', async () => {
                 // Die Feld-IDs des Duplikats sind neu — Auswahl über Namen mappen.
@@ -103,7 +105,11 @@ export async function executeProvisioning(
                 const duplicateFields = await api.listMemberFields(newGroupId);
                 for (const field of duplicateFields) {
                     if (!selectedNames.has(field.name)) {
-                        await api.deleteMemberField(newGroupId, field.id);
+                        try {
+                            await api.deleteMemberField(newGroupId, field.id);
+                        } catch {
+                            await api.hideMemberField(newGroupId, field);
+                        }
                     }
                 }
             });

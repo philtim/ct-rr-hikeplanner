@@ -273,6 +273,7 @@ describe('provisionApi', () => {
             maxMembers: '20',
             titleSuffix: '',
             publicSignup: false,
+            publishNow: true,
             selectedFieldIds: [],
         });
         const [url, body] = (api.apiPatch as Mock).mock.calls[0] as [
@@ -286,6 +287,8 @@ describe('provisionApi', () => {
         expect(body.note).toBe('Toller Hajk\n\nTreffpunkt: Gemeindehaus');
         expect(body.signUpClosingDate).toBe('2027-04-03T23:59:59Z');
         expect(typeof body.signUpOpeningDate).toBe('string');
+        // Duplikate entstehen als Entwurf — der Wizard veröffentlicht standardmäßig.
+        expect(body.groupStatusId).toBe(1);
     });
 
     it('configureGroup disables signup in manual mode and omits limits when empty', async () => {
@@ -301,6 +304,7 @@ describe('provisionApi', () => {
             maxMembers: '',
             titleSuffix: '',
             publicSignup: false,
+            publishNow: true,
             selectedFieldIds: [],
         });
         const body = (api.apiPatch as Mock).mock.calls[0][1] as Record<string, unknown>;
@@ -323,11 +327,72 @@ describe('provisionApi', () => {
             maxMembers: '',
             titleSuffix: '',
             publicSignup: true,
+            publishNow: true,
             selectedFieldIds: [],
         });
         const body = (api.apiPatch as Mock).mock.calls[0][1] as Record<string, unknown>;
         expect(body.visibility).toBe('public');
         expect(body.isPublic).toBe(true);
+        expect(body.groupStatusId).toBe(1);
+    });
+
+    it('configureGroup keeps the draft status when publishing was declined', async () => {
+        (api.apiPatch as Mock).mockResolvedValue({});
+        await provisionApi.configureGroup(99, {
+            teamId: 2156,
+            dateFrom: '2027-04-10',
+            dateTo: '2027-04-12',
+            location: '',
+            description: 'x',
+            mode: 'self',
+            signupDeadline: '',
+            maxMembers: '',
+            titleSuffix: '',
+            publicSignup: true,
+            publishNow: false,
+            selectedFieldIds: [],
+        });
+        const body = (api.apiPatch as Mock).mock.calls[0][1] as Record<string, unknown>;
+        expect(body.groupStatusId).toBeUndefined();
+    });
+
+    it('listMemberFields keeps the full PUT payload; hideMemberField sends it back', async () => {
+        (api.apiGet as Mock).mockResolvedValue([
+            {
+                type: 'group',
+                field: {
+                    id: 184,
+                    name: 'Vegetarisch',
+                    referenceName: 'vegetarisch',
+                    fieldTypeCode: 'radioselect',
+                    fieldTypeId: 9,
+                    note: null,
+                    sortKey: 0,
+                    securityLevel: 1,
+                    defaultValue: null,
+                    options: [],
+                    useInRegistrationForm: true,
+                    requiredInRegistrationForm: true,
+                    nameInSignupForm: null,
+                    noteInSignupForm: null,
+                },
+            },
+        ]);
+        const fields = await provisionApi.listMemberFields(99);
+        expect(fields[0]).toMatchObject({ id: 184, name: 'Vegetarisch' });
+
+        (api.apiPut as Mock).mockResolvedValue({});
+        await provisionApi.hideMemberField(99, fields[0]);
+        const [url, body] = (api.apiPut as Mock).mock.calls[0] as [string, Record<string, unknown>];
+        expect(url).toBe('/groups/99/memberfields/group/184');
+        // Die API verlangt das komplette Feld-Objekt (Teil-Updates → 400).
+        expect(body).toMatchObject({
+            name: 'Vegetarisch',
+            referenceName: 'vegetarisch',
+            fieldTypeId: 9,
+            requiredInRegistrationForm: true,
+            useInRegistrationForm: false,
+        });
     });
 
     it('listParentIds parses domainIdentifier strings', async () => {

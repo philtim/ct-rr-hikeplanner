@@ -48,6 +48,7 @@ const input: ProvisionInput = {
         maxMembers: '20',
         titleSuffix: '',
         publicSignup: false,
+        publishNow: true,
         selectedFieldIds: [3508], // nur Vegetarisch
     },
     team: {
@@ -69,10 +70,11 @@ function makeApi(overrides: Partial<ProvisionApi> = {}): ProvisionApi {
         duplicateGroup: vi.fn().mockResolvedValue(99),
         configureGroup: vi.fn().mockResolvedValue(undefined),
         listMemberFields: vi.fn().mockResolvedValue([
-            { id: 47, name: 'Vegetarisch' },
-            { id: 48, name: 'T-Shirt-Größe' },
+            { id: 47, name: 'Vegetarisch', putPayload: { name: 'Vegetarisch' } },
+            { id: 48, name: 'T-Shirt-Größe', putPayload: { name: 'T-Shirt-Größe' } },
         ]),
         deleteMemberField: vi.fn().mockResolvedValue(undefined),
+        hideMemberField: vi.fn().mockResolvedValue(undefined),
         listParentIds: vi.fn().mockResolvedValue([2612, 2600]),
         removeParent: vi.fn().mockResolvedValue(undefined),
         addParent: vi.fn().mockResolvedValue(undefined),
@@ -139,8 +141,28 @@ describe('executeProvisioning', () => {
         ]);
     });
 
-    it('keeps the group and warns when field deletion is forbidden', async () => {
+    it('hides the field from the signup form when deletion is forbidden', async () => {
         const api = makeApi({ deleteMemberField: vi.fn().mockRejectedValue(new Error('403')) });
+        const outcome = await executeProvisioning(input, api, onProgress);
+        expect(outcome).toEqual({
+            ok: true,
+            groupId: 99,
+            calendarWarning: false,
+            fieldsWarning: false,
+        });
+        // Fallback greift nur für das NICHT gewählte Feld
+        expect(api.hideMemberField).toHaveBeenCalledTimes(1);
+        expect(api.hideMemberField).toHaveBeenCalledWith(
+            99,
+            expect.objectContaining({ id: 48, name: 'T-Shirt-Größe' }),
+        );
+    });
+
+    it('keeps the group and warns when deleting AND hiding fail', async () => {
+        const api = makeApi({
+            deleteMemberField: vi.fn().mockRejectedValue(new Error('403')),
+            hideMemberField: vi.fn().mockRejectedValue(new Error('403')),
+        });
         const outcome = await executeProvisioning(input, api, onProgress);
         expect(outcome).toEqual({
             ok: true,

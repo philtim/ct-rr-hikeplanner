@@ -9,6 +9,8 @@ defineProps<{
     fieldsWarning: boolean;
     /** Öffentlicher Anmelde-Link; null, wenn die Anmeldung nicht öffentlich ist. */
     signupUrl: string | null;
+    /** false = Gruppe blieb Entwurf; der Link funktioniert erst nach Veröffentlichung. */
+    published: boolean;
 }>();
 const emit = defineEmits<{ restart: [] }>();
 
@@ -54,7 +56,12 @@ async function copySignupUrl(url: string) {
         </p>
 
         <div v-if="signupUrl" class="hp-info-box" data-testid="signup-link">
-            <span class="hp-hint">Öffentlicher Anmelde-Link (ohne ChurchTools-Login):</span>
+            <p v-if="!published" class="hp-warning-box" data-testid="draft-hint">
+                ⚠ Die Gruppe ist noch ein <strong>Entwurf</strong> — der Anmelde-Link funktioniert
+                erst, wenn du sie veröffentlichst: Öffne die Gruppe in ChurchTools und setze den
+                Status auf „Aktiv“. Danach gilt dieser Link:
+            </p>
+            <span v-else class="hp-hint">Öffentlicher Anmelde-Link (ohne ChurchTools-Login):</span>
             <div class="hp-copy-row">
                 <input
                     type="text"

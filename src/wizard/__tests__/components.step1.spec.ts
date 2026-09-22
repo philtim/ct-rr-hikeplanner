@@ -43,6 +43,7 @@ function makeForm(overrides: Partial<FormState> = {}): FormState {
         maxMembers: '',
         titleSuffix: '',
         publicSignup: false,
+        publishNow: true,
         selectedFieldIds: [],
         ...overrides,
     }) as FormState;
