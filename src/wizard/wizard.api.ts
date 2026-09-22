@@ -20,12 +20,14 @@ interface WhoamiRes {
 }
 interface PersonGroupRes {
     id?: number;
-    group: { domainIdentifier: string; title: string };
+    /** null, wenn der Nutzer die Gruppe nicht sehen darf. */
+    group?: { domainIdentifier: string; title: string } | null;
     groupTypeRoleId: number;
 }
 interface HierarchyRes {
     groupId: number;
-    group: { title: string };
+    /** null, wenn der Nutzer die Gruppe nicht sehen darf. */
+    group?: { title: string } | null;
     parents?: number[];
     children?: number[];
 }
@@ -133,21 +135,26 @@ export async function loadWizardContext(): Promise<WizardContext> {
         requiredInRegistrationForm: f.field.requiredInRegistrationForm,
     }));
 
-    const membershipsIn: MembershipIn[] = memberships.map((m) => ({
-        groupId: Number(m.group.domainIdentifier),
-        groupTypeRoleId: m.groupTypeRoleId,
-    }));
+    // CT liefert group: null für Gruppen ohne Sichtbarkeit — überspringen.
+    const membershipsIn: MembershipIn[] = memberships
+        .filter((m) => m.group?.domainIdentifier)
+        .map((m) => ({
+            groupId: Number(m.group!.domainIdentifier),
+            groupTypeRoleId: m.groupTypeRoleId,
+        }));
     const rolesIn: RoleIn[] = roles.map((r) => ({
         id: r.id,
         groupTypeId: r.groupTypeId,
         isLeader: r.isLeader,
     }));
-    const hierarchyIn: HierarchyIn[] = hierarchiesRaw.map((h) => ({
-        groupId: h.groupId,
-        title: h.group.title,
-        parents: h.parents ?? [],
-        children: h.children ?? [],
-    }));
+    const hierarchyIn: HierarchyIn[] = hierarchiesRaw
+        .filter((h) => h.group?.title)
+        .map((h) => ({
+            groupId: h.groupId,
+            title: h.group!.title,
+            parents: h.parents ?? [],
+            children: h.children ?? [],
+        }));
 
     return {
         user: { id: me.id, firstName: me.firstName, lastName: me.lastName },

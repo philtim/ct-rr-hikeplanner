@@ -25,6 +25,7 @@ const roles = [
 ];
 
 const hierarchies = [
+    { groupId: 999, group: null, parents: [], children: [] }, // unsichtbare Gruppe
     { groupId: 950, group: { title: 'RR Gesamt-Stammleitung' }, parents: [], children: [123] },
     {
         groupId: 123,
@@ -109,6 +110,7 @@ function mockContextEndpoints(overrides: Record<string, unknown> = {}) {
     (api.fetchAllPages as Mock).mockImplementation((url: string) => {
         if (url.startsWith('/persons/42/groups'))
             return Promise.resolve([
+                { group: null, groupTypeRoleId: 29 }, // unsichtbare Gruppe
                 {
                     group: { domainIdentifier: '2156', title: 'RR Kundschafterteam Eisbären' },
                     groupTypeRoleId: 9,
