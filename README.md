@@ -1,60 +1,57 @@
-# ct-template
+# ct-rr-hikeplanner
 
-Template for ChurchTools Vue 3 + TypeScript extensions. Forks include:
+ChurchTools-Extension **„RR HikePlanner“** für den Royal-Rangers-Stamm JMS Altensteig:
+Ein 3-Schritte-Assistent, mit dem Team-Leiter in wenigen Minuten eine vollständig und
+korrekt konfigurierte Hajk-Gruppe anlegen — mit Anmeldefeldern aus einer zentral
+gepflegten Vorlage, korrekter Ablage in der Gruppenhierarchie, automatisch eingetragenen
+Organisatoren (Förderanträge) und Termin im öffentlichen „Royal Rangers“-Kalender.
 
-- Vue 3 + Vite + TypeScript scaffold under `src/` with feature-folder structure ([ADR-004](docs/adr/004-module-structure.md)).
-- Hardened API layer in `src/shared/api/` with timeouts, normalized errors, and an ESLint rule that forbids importing `@churchtools/churchtools-client` outside the API folder ([ADR-005](docs/adr/005-api-client.md)).
-- KV-Store helpers split by concern (`module`, `category`, `value`) under `src/shared/kv-store/`.
-- GitHub Actions for CI, release-please, and ZIP deploy to demo + live ChurchTools instances. Workflow inputs are read from `package.json#churchtools` so you only configure metadata in one place.
-- A `Hello-Auth` example slice that calls `/whoami` and renders the user's name — proves the pipeline end-to-end.
+Kein Backend: Die Extension läuft im Browser mit den Rechten des angemeldeten Leiters.
 
-## Use the template
+## Setup
 
 ```bash
-gh repo create my-extension --template <your-org>/ct-template
-cd my-extension
 npm install
-npm run init        # interactive: name, shorty, moduleName → updates everything
-git add -A && git commit -m "chore: scaffold from ct-template"
-```
-
-Then follow [`docs/SETUP.md`](docs/SETUP.md) to wire up GitHub secrets and your first release.
-
-## Project layout
-
-```
-src/
-├── main.ts                 # boot, mount Vue app
-├── App.vue                 # top-level shell
-├── example/                # Hello-Auth slice (delete or replace)
-│   ├── Example.vue
-│   ├── useExample.ts       # composable
-│   └── example.api.ts      # whoami()
-└── shared/
-    ├── api/                # the only place that imports @churchtools/churchtools-client
-    │   ├── client.ts       # ct, initApi, withTimeout, apiGet/Post/Put/Delete
-    │   ├── errors.ts       # ChurchToolsApiError
-    │   └── pagination.ts   # fetchAllPages
-    ├── kv-store/           # module / category / value helpers
-    ├── ct-types.d.ts       # slim hand-curated CT types
-    ├── constants.ts        # EXTENSION_KEY, API_TIMEOUT_MS
-    ├── reset.css           # dev-only host-style simulation
-    └── types.ts            # CT type re-exports
+cp .env-example .env        # Werte für rr-demo eintragen (nie gegen live entwickeln)
+npm run seed:demo           # legt Testteam, Sammelgruppe und Vorlage auf rr-demo an
+# die ausgegebenen IDs (VITE_TEMPLATE_GROUP_ID, VITE_CALENDAR_ID) in .env eintragen
+npm run dev                 # http://localhost:5173/ccm/rr-hikeplanner/
 ```
 
 ## Scripts
 
-- `npm run dev` — Vite dev server with hot reload.
-- `npm run build` — production build to `dist/`.
-- `npm run lint` / `npm run typecheck` / `npm run check` — quality gates (CI runs `check`).
-- `npm run deploy` — build + package into `releases/*.zip`.
-- `npm run gen:types` — opt-in: regenerate full CT types from a live OpenAPI schema.
-- `npm run init` — one-shot template initializer (delete after first run).
+- `npm run dev` — Vite-Dev-Server mit Proxy + Auto-Login gegen die Instanz aus `.env`
+- `npm run check` — Lint + Typecheck + Tests + Build (CI-Gate)
+- `npm run test` / `test:watch` — Vitest (85+ Unit-/Komponententests)
+- `RUN_E2E=1 npx vitest run e2e-demo` — echter End-to-End-Lauf gegen rr-demo (räumt auf)
+- `npm run seed:demo` — idempotentes Seed der Demo-Instanz
+- `npm run deploy` — Build + ZIP-Paket in `releases/`
 
-## Architecture decisions
+## Projektstruktur
 
-See [`docs/adr/`](docs/adr/) for the six ADRs that shape this template.
+```
+src/
+├── wizard/                 # das Feature: Hajk-Assistent
+│   ├── config.ts           # Instanz-IDs (env-überschreibbar) + Namensmuster
+│   ├── types.ts            # Domänen-Typen
+│   ├── naming.ts           # Namensschema RR Hajk <Team> <Datum>
+│   ├── leaderContext.ts    # Rollen-/Hierarchie-Auswertung (wer darf, welche Teams)
+│   ├── validation.ts       # Schritt-Validierung
+│   ├── wizard.api.ts       # alle CT-Endpoints (dünn)
+│   ├── provisioning.ts     # Engine: duplizieren → konfigurieren → Rollback bei Fehler
+│   ├── useWizard.ts        # Zustandsmaschine
+│   └── components/         # GateView, Stepper, 3 Schritte, Ergebnis
+└── shared/api/             # einziger Ort mit @churchtools/churchtools-client
+```
 
-## License
+## Dokumentation
 
-MIT — see [`LICENSE`](LICENSE).
+- Produktdefinition: [`docs/prds/prd-hikeplanner-hajk-assistent-v0.1.md`](docs/prds/prd-hikeplanner-hajk-assistent-v0.1.md)
+- Design-Spec (Screens/States/Copy): [`docs/design/001-hajk-assistent-wizard.md`](docs/design/001-hajk-assistent-wizard.md)
+- Verifizierte API-Payloads: [`docs/NOTES-api-spike.md`](docs/NOTES-api-spike.md)
+- Konventionen (Namensschema, Vorlage als SSOT): [`docs/CONVENTIONS.md`](docs/CONVENTIONS.md)
+- Berechtigungsmatrix: [`docs/PERMISSIONS.md`](docs/PERMISSIONS.md)
+
+## Lizenz
+
+MIT — siehe [`LICENSE`](LICENSE).
