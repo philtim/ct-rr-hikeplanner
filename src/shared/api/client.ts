@@ -100,6 +100,14 @@ export async function apiPut<T>(endpoint: string, data: Params): Promise<T> {
     }
 }
 
+export async function apiPatch<T>(endpoint: string, data?: Params): Promise<T> {
+    try {
+        return await withTimeout(ct.patch<T>(endpoint, data), API_TIMEOUT_MS, endpoint);
+    } catch (e) {
+        throw normalizeError(endpoint, e);
+    }
+}
+
 export async function apiDelete<T>(endpoint: string, data?: Params): Promise<T> {
     try {
         return await withTimeout(ct.deleteApi<T>(endpoint, data), API_TIMEOUT_MS, endpoint);

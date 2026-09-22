@@ -10,6 +10,7 @@ export {
     apiGet,
     apiPost,
     apiPut,
+    apiPatch,
     apiDelete,
 } from './client';
 export { ChurchToolsApiError } from './errors';
