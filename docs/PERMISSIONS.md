@@ -30,6 +30,20 @@ Hinweise:
 - Kalender-Schreibrecht fehlt → der Wizard läuft trotzdem durch und markiert nur den
   Termin als „manuell nachzuholen“ (US-5).
 
+## Deploy-Dienstkonto „RR CICD“ (verifiziert 22.09.2026 auf rr-demo)
+
+Für die GitHub-Actions-Deploys (`release-please.yml`, `deploy.yml`) existiert je Instanz
+ein Dienstkonto **RR CICD**; sein Login-Token liegt in den GitHub-Secrets
+(`CT_DEMO_LOGIN_TOKEN` / `CT_LIVE_LOGIN_TOKEN`). Empirisch bestätigtes Minimal-Rechte-Set:
+
+| churchcore-Recht | Wozu | Status |
+|---|---|---|
+| „Manage extensions“ (`administer custom modules`) | Module auflisten und bei Bedarf anlegen (`/api/custommodules`) | ✅ bestätigt |
+| „Edit system settings“ (`administer settings`) | ZIP-Upload (`POST /api/files/custom_module/{id}`) — ohne dieses Recht: 403 | ✅ bestätigt |
+| Alles andere (Personen, Gruppen, Kalender, Modul-Rechte unter `rr-hikeplanner`) | — | ➖ nicht nötig |
+
+Auf der Live-Instanz identisch anlegen (Konto + beide Rechte + Login-Token als Secret).
+
 ## Offene Verifikation (Blocker vor dem Rollout)
 
 Der komplette Wizard-Durchlauf (inkl. Duplizieren, Eltern setzen, Kalender) wurde bisher
