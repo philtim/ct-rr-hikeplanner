@@ -37,7 +37,7 @@ const modusLine = computed(() => {
     const base = props.form.signupDeadline
         ? `Selbstanmeldung bis ${formatDateDe(props.form.signupDeadline)}`
         : 'Selbstanmeldung (ohne Anmeldeschluss)';
-    return props.form.publicSignup ? `${base} · öffentlich` : base;
+    return props.form.publicSignup ? `${base} · Link ohne ChurchTools-Konto` : base;
 });
 const felderLine = computed(() => {
     const names = props.context.template.fields

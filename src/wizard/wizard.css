@@ -340,6 +340,35 @@
     text-overflow: ellipsis;
 }
 
+/* Einzelne Checkbox-Frage außerhalb einer Checkliste (z. B. öffentliche
+ * Anmeldung): als eigene Box abgesetzt, Erklärtext mehrzeilig darunter. */
+.rr-hikeplanner-root .hp-check-row--standalone {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px;
+    margin: 20px 0;
+    padding: 12px;
+    background: var(--hp-surface-muted);
+    border-radius: 6px;
+    cursor: pointer;
+}
+.rr-hikeplanner-root .hp-check-row--standalone input {
+    width: 18px;
+    height: 18px;
+    flex: none;
+}
+.rr-hikeplanner-root .hp-check-row--standalone .hp-check-label {
+    font-weight: 600;
+}
+.rr-hikeplanner-root .hp-check-row--standalone .hp-check-sub {
+    flex-basis: 100%;
+    margin-left: 28px;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: initial;
+}
+
 .rr-hikeplanner-root .hp-footer {
     margin-top: 32px;
     text-align: center;

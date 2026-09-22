@@ -50,12 +50,13 @@ const emit = defineEmits<{ next: []; back: [] }>();
             </p>
         </div>
 
-        <label v-if="form.mode === 'self'" class="hp-check-row">
+        <label v-if="form.mode === 'self'" class="hp-check-row hp-check-row--standalone">
             <input v-model="form.publicSignup" type="checkbox" data-testid="public-signup" />
-            <span>Anmeldung öffentlich</span>
+            <span class="hp-check-label">Anmeldung ohne ChurchTools-Konto ermöglichen</span>
             <span class="hp-check-sub"
-                >Anmelde-Link funktioniert auch ohne ChurchTools-Konto — z. B. wenn Eltern ihr Kind
-                anmelden</span
+                >Öffnet die Anmeldung für alle, die den Link haben — z. B. Eltern, die ihr Kind
+                anmelden. Ohne Häkchen können sich nur Personen mit ChurchTools-Konto
+                anmelden.</span
             >
         </label>
 
