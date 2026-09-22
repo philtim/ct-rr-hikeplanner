@@ -108,6 +108,11 @@ describe('StepTeamTermin', () => {
         expect(w.emitted('next')).toHaveLength(1);
     });
 
+    it('constrains the end date picker to dates from the start date on', async () => {
+        const w = makeWrapper({ form: makeForm({ dateFrom: '2027-04-10' }) });
+        expect(w.find('#hp-date-to').attributes('min')).toBe('2027-04-10');
+    });
+
     it('binds inputs to the form state', async () => {
         const form = makeForm();
         const w = makeWrapper({ form });

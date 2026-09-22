@@ -73,6 +73,7 @@ const singleTeamName = computed(
                 id="hp-date-to"
                 v-model="form.dateTo"
                 type="date"
+                :min="form.dateFrom || undefined"
                 :aria-describedby="errors.dateTo ? 'hp-date-to-error' : undefined"
             />
             <p v-if="errors.dateTo" id="hp-date-to-error" class="hp-error-text">

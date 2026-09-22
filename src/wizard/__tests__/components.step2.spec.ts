@@ -63,6 +63,11 @@ describe('StepAnmeldung', () => {
         expect(w.find('.hp-info-box').text()).toContain('keine Selbstanmeldung');
     });
 
+    it('constrains the deadline picker to dates before the hike start', () => {
+        const w = makeWrapper();
+        expect(w.find('#hp-deadline').attributes('max')).toBe('2027-04-10');
+    });
+
     it('keeps a previously entered deadline when toggling modes', async () => {
         const form = makeForm({ signupDeadline: '2027-04-03' });
         const w = makeWrapper(form);

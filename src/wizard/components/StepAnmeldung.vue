@@ -42,6 +42,7 @@ const emit = defineEmits<{ next: []; back: [] }>();
                 id="hp-deadline"
                 v-model="form.signupDeadline"
                 type="date"
+                :max="form.dateFrom || undefined"
                 :aria-describedby="errors.signupDeadline ? 'hp-deadline-error' : undefined"
             />
             <p v-if="errors.signupDeadline" id="hp-deadline-error" class="hp-error-text">
