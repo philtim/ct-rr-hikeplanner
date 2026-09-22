@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.8](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.7...v0.1.8) (2026-09-22)
+
+
+### Bug Fixes
+
+* resolve event leader role via isLeader flag fallback ([e61d2e7](https://github.com/philtim/ct-rr-hikeplanner/commit/e61d2e74f58db081cfe0604542b26745a2ef2973))
+
 ## [0.1.7](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.6...v0.1.7) (2026-09-22)
 
 
