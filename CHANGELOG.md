@@ -2,10 +2,9 @@
 
 ## [0.1.2](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.1...v0.1.2) (2026-09-22)
 
-
 ### Bug Fixes
 
-* resolve template group and calendar by name at runtime ([4e793a9](https://github.com/philtim/ct-rr-hikeplanner/commit/4e793a90692711dfc3c6cf5997c529acc93be6c0))
+- resolve template group and calendar by name at runtime ([4e793a9](https://github.com/philtim/ct-rr-hikeplanner/commit/4e793a90692711dfc3c6cf5997c529acc93be6c0))
 
 ## [0.1.1](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.0...v0.1.1) (2026-09-22)
 

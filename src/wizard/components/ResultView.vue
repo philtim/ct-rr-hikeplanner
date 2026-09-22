@@ -15,14 +15,17 @@ onMounted(() => heading.value?.focus());
 </script>
 
 <template>
-    <section>
-        <h2 ref="heading" tabindex="-1">✓ Dein Hajk ist angelegt!</h2>
-        <p>
-            <strong>{{ groupName }}</strong>
-        </p>
+    <section class="hp-card hp-result">
+        <h2 ref="heading" tabindex="-1">
+            <span class="hp-status--done" aria-hidden="true">✓</span> Dein Hajk ist angelegt!
+        </h2>
+        <p class="hp-result-name">{{ groupName }}</p>
 
         <ul class="hp-result-list">
-            <li v-for="line in summary" :key="line" class="hp-status--done">✓ {{ line }}</li>
+            <li v-for="line in summary" :key="line">
+                <span class="hp-status--done" aria-hidden="true">✓</span>
+                <span>{{ line }}</span>
+            </li>
         </ul>
 
         <p v-if="calendarWarning" class="hp-warning-box">
@@ -30,13 +33,16 @@ onMounted(() => heading.value?.focus());
             Kalender „Royal Rangers“ ein.
         </p>
 
-        <div class="hp-actions hp-actions--single">
+        <div class="hp-result-actions">
             <a class="hp-btn hp-btn--primary" :href="groupHref">Zur Gruppe in ChurchTools →</a>
-        </div>
-        <p>
-            <button type="button" class="hp-btn" data-testid="restart" @click="emit('restart')">
+            <button
+                type="button"
+                class="hp-link-btn"
+                data-testid="restart"
+                @click="emit('restart')"
+            >
                 Weiteren Hajk anlegen
             </button>
-        </p>
+        </div>
     </section>
 </template>

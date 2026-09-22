@@ -222,6 +222,43 @@
 .rr-hikeplanner-root .hp-result-list li {
     padding: 4px 0;
 }
+/* Ergebnisseite: nur die Häkchen sind grün, der Text bleibt Textfarbe. */
+.rr-hikeplanner-root .hp-result-list li {
+    display: flex;
+    gap: 10px;
+    color: var(--hp-text);
+}
+.rr-hikeplanner-root .hp-result h2 {
+    margin-bottom: 4px;
+}
+.rr-hikeplanner-root .hp-result-name {
+    font-weight: 600;
+    margin: 0 0 12px;
+}
+.rr-hikeplanner-root .hp-result-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 20px;
+}
+.rr-hikeplanner-root .hp-link-btn {
+    background: none;
+    border: 0;
+    padding: 4px 0;
+    color: var(--hp-muted);
+    text-decoration: underline;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+.rr-hikeplanner-root .hp-link-btn:hover {
+    color: var(--hp-text);
+}
+@media (max-width: 767px) {
+    .rr-hikeplanner-root .hp-result-actions .hp-btn--primary {
+        width: 100%;
+    }
+}
 .rr-hikeplanner-root .hp-status--done {
     color: var(--hp-success);
 }
