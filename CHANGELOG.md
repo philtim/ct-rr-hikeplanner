@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.13](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.12...v0.1.13) (2026-09-22)
+
+
+### Bug Fixes
+
+* switch admin view routing to client state ([8f8c541](https://github.com/philtim/ct-rr-hikeplanner/commit/8f8c541012f71b894579302516f264b11efc7278))
+
 ## [0.1.12](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.11...v0.1.12) (2026-09-22)
 
 
