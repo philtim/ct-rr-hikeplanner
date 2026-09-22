@@ -83,17 +83,19 @@ export async function loadSettings(): Promise<ExtensionSettings | null> {
 export async function saveSettings(next: ExtensionSettings): Promise<void> {
     const moduleId = await getModuleId();
     const existing = await getSettingsCategory(moduleId);
-    const data = JSON.stringify(next);
+    // PUT wie POST verlangen das komplette Kategorie-Objekt — ein Update nur
+    // mit {data} lehnt die API mit 400 ab (verifiziert auf rr-demo).
+    const payload = {
+        customModuleId: moduleId,
+        name: CATEGORY_NAME,
+        shorty: CATEGORY_SHORTY,
+        description: CATEGORY_DESCRIPTION,
+        data: JSON.stringify(next),
+    };
     if (existing) {
-        await apiPut(`/custommodules/${moduleId}/customdatacategories/${existing.id}`, { data });
+        await apiPut(`/custommodules/${moduleId}/customdatacategories/${existing.id}`, payload);
     } else {
-        await apiPost(`/custommodules/${moduleId}/customdatacategories`, {
-            customModuleId: moduleId,
-            name: CATEGORY_NAME,
-            shorty: CATEGORY_SHORTY,
-            description: CATEGORY_DESCRIPTION,
-            data,
-        });
+        await apiPost(`/custommodules/${moduleId}/customdatacategories`, payload);
     }
 }
 

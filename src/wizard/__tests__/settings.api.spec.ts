@@ -93,9 +93,15 @@ describe('saveSettings', () => {
             [CATEGORIES]: [{ id: 7, shorty: 'settings', data: '{}' }],
         });
         await saveSettings({ hajkTemplateGroupId: 99, organisators: [] });
-        expect(api.apiPut).toHaveBeenCalledWith(`${CATEGORIES}/7`, {
-            data: '{"hajkTemplateGroupId":99,"organisators":[]}',
-        });
+        // Voller Payload — ein PUT nur mit {data} lehnt die API mit 400 ab.
+        expect(api.apiPut).toHaveBeenCalledWith(
+            `${CATEGORIES}/7`,
+            expect.objectContaining({
+                customModuleId: 5,
+                shorty: 'settings',
+                data: '{"hajkTemplateGroupId":99,"organisators":[]}',
+            }),
+        );
         expect(api.apiPost).not.toHaveBeenCalled();
     });
 
