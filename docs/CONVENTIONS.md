@@ -21,6 +21,17 @@ sie; Abweichungen brechen die automatische Erkennung.
 - Jede Hajk-Gruppe hängt unter GENAU EINER Sammelgruppe. Keine Hajks unter Teams,
   Verwaltungsgruppen oder anderen Hajks.
 
+## Sichtbarkeiten
+
+- Die 6 Sammelgruppen „RR | Camps und Aktionen – …“ stehen auf Sichtbarkeit **intern** —
+  der Assistent findet die Ziel-Ablage über ihren Namen, dafür müssen Leiter sie sehen.
+- Stufenteams, `RR <Stufe>stamm-MA` und `RR Gesamt-Stammleitung` bleiben **restricted**;
+  der Assistent braucht sie nicht (Stufe steckt im Teamnamen). Stammleiter-Erkennung
+  funktioniert über die eigene Mitgliedschaft (Mitglieder sehen restricted-Gruppen).
+- Konsequenz für Stammleiter: Im Team-Dropdown erscheinen nur Teams, die sie sehen
+  können — Stammleiter sollten daher Sicht auf die Stufenteams haben (Mitgliedschaft
+  oder churchdb-Sichtrecht).
+
 ## Vorlagengruppe = Single Source of Truth
 
 Die Gruppe `=== Vorlage Hajks` steuert den Assistenten. Dort — und nur dort — werden

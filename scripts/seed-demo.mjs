@@ -115,6 +115,10 @@ const teamId = await ensureGroup('RR Kundschafterteam Testbären', 1, stammMa.id
 const team2Id = await ensureGroup('RR Kundschafterteam Testfüchse', 1, stammMa.id);
 console.log('Sammelgruppe:');
 const sammelId = await ensureGroup('RR | Camps und Aktionen - Kundschafter', 4, stammMa.id);
+// Sammelgruppen stehen auf "intern": Leiter müssen sie sehen können, damit
+// der Wizard die Ziel-Ablage per Namens-Match findet (docs/CONVENTIONS.md).
+await call('PATCH', `/groups/${sammelId}`, { visibility: 'intern' });
+
 console.log('Vorlage:');
 const templateId = await ensureGroup('=== Vorlage Hajks', 3, sammelId);
 

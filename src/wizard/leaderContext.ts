@@ -1,9 +1,17 @@
 /**
- * Leitet aus den Mitgliedschaften des Nutzers, dem Rollenkatalog und der
- * Gruppenhierarchie ab, wer den Assistenten nutzen darf und für welche
- * Teams (PRD US-1). Struktur-Konventionen siehe docs/CONVENTIONS.md:
- * Wurzel „RR Gesamt-Stammleitung“ → je Stufe „RR <Stufe>stamm-MA“ →
- * Stufenteams + Sammelgruppe („Camps und Aktionen“-Marker im Namen).
+ * Leitet aus den Mitgliedschaften des Nutzers, dem Rollenkatalog und den für
+ * ihn SICHTBAREN Gruppen ab, wer den Assistenten nutzen darf und für welche
+ * Teams (PRD US-1).
+ *
+ * Bewusst ohne Hierarchie-Walk: Leiter sehen Stamm-MA-Gruppen und die
+ * Gesamt-Stammleitung nicht (Sichtbarkeit „restricted“). Die Struktur steckt
+ * stattdessen in den Namenskonventionen (docs/CONVENTIONS.md):
+ * - Stufe eines Teams: aus dem Teamnamen („RR <Stufe>team <Name>“)
+ * - Ziel-Sammelgruppe: Name enthält „Camps und Aktionen“ UND die Stufe;
+ *   die Sammelgruppen stehen dafür auf Sichtbarkeit „intern“.
+ * - Stammleiter: Leiter-Rolle in einer sichtbaren „RR <Stufe>stamm-MA“-Gruppe
+ *   oder Mitglied der „RR Gesamt-Stammleitung“ (Mitglieder sehen die eigene
+ *   Gruppe auch bei „restricted“).
  */
 import { ROOT_GROUP_NAME, SAMMELGRUPPE_MARKER, STAMM_MA_PATTERN, TEAM_PATTERN } from './config';
 import { teamShortName } from './naming';
@@ -30,33 +38,26 @@ export function deriveLeaderContext(
     roles: RoleIn[],
     hierarchy: HierarchyIn[],
 ): LeaderContext {
-    const byId = new Map(hierarchy.map((h) => [h.groupId, h]));
-    const root = hierarchy.find((h) => h.title === ROOT_GROUP_NAME);
     const leaderRoleIds = new Set(roles.filter((r) => r.isLeader).map((r) => r.id));
+    const byId = new Map(hierarchy.map((h) => [h.groupId, h]));
+
+    const sammelgruppen = hierarchy.filter((h) => h.title.includes(SAMMELGRUPPE_MARKER));
+    const sammelgruppeFor = (stufe: Stufe) => sammelgruppen.find((g) => g.title.includes(stufe));
 
     const allTeams: TeamOption[] = [];
-    const stammMaIds: number[] = [];
-    for (const childId of root?.children ?? []) {
-        const stammMa = byId.get(childId);
-        const stufeMatch = stammMa?.title.match(STAMM_MA_PATTERN);
-        if (!stammMa || !stufeMatch) continue;
-        stammMaIds.push(stammMa.groupId);
-        const stufe = stufeMatch[1] as Stufe;
-        const sammelgruppe = stammMa.children
-            .map((id) => byId.get(id))
-            .find((g) => g?.title.includes(SAMMELGRUPPE_MARKER));
-        for (const teamId of stammMa.children) {
-            const team = byId.get(teamId);
-            if (!team || !TEAM_PATTERN.test(team.title)) continue;
-            allTeams.push({
-                groupId: team.groupId,
-                name: team.title,
-                shortName: teamShortName(team.title),
-                stufe,
-                sammelgruppeId: sammelgruppe?.groupId ?? null,
-                sammelgruppeName: sammelgruppe?.title ?? null,
-            });
-        }
+    for (const entry of hierarchy) {
+        const match = entry.title.match(TEAM_PATTERN);
+        if (!match) continue;
+        const stufe = match[1] as Stufe;
+        const sammelgruppe = sammelgruppeFor(stufe);
+        allTeams.push({
+            groupId: entry.groupId,
+            name: entry.title,
+            shortName: teamShortName(entry.title),
+            stufe,
+            sammelgruppeId: sammelgruppe?.groupId ?? null,
+            sammelgruppeName: sammelgruppe?.title ?? null,
+        });
     }
     allTeams.sort((a, b) =>
         a.stufe === b.stufe
@@ -67,9 +68,12 @@ export function deriveLeaderContext(
     const leaderGroupIds = new Set(
         memberships.filter((m) => leaderRoleIds.has(m.groupTypeRoleId)).map((m) => m.groupId),
     );
-    const isStammleiter =
-        stammMaIds.some((id) => leaderGroupIds.has(id)) ||
-        memberships.some((m) => m.groupId === root?.groupId);
+    const isStammleiter = memberships.some((m) => {
+        const group = byId.get(m.groupId);
+        if (!group) return false;
+        if (group.title === ROOT_GROUP_NAME) return true;
+        return STAMM_MA_PATTERN.test(group.title) && leaderRoleIds.has(m.groupTypeRoleId);
+    });
 
     if (isStammleiter) return { kind: 'stammleiter', teams: allTeams };
 

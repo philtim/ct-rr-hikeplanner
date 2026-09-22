@@ -2,17 +2,15 @@
 
 ## [0.1.6](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.5...v0.1.6) (2026-09-22)
 
-
 ### Bug Fixes
 
-* tolerate hidden groups in hierarchy and membership responses ([0ee0449](https://github.com/philtim/ct-rr-hikeplanner/commit/0ee044968304edc06294fed87f23ec25109342c1))
+- tolerate hidden groups in hierarchy and membership responses ([0ee0449](https://github.com/philtim/ct-rr-hikeplanner/commit/0ee044968304edc06294fed87f23ec25109342c1))
 
 ## [0.1.5](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.4...v0.1.5) (2026-09-22)
 
-
 ### Bug Fixes
 
-* name rejected endpoint and status in gate error ([3cf5e79](https://github.com/philtim/ct-rr-hikeplanner/commit/3cf5e79641dad8852546efda945630a3e78259e2))
+- name rejected endpoint and status in gate error ([3cf5e79](https://github.com/philtim/ct-rr-hikeplanner/commit/3cf5e79641dad8852546efda945630a3e78259e2))
 
 ## [0.1.4](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.3...v0.1.4) (2026-09-22)
 

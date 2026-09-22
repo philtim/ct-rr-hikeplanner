@@ -70,8 +70,23 @@ describe('deriveLeaderContext', () => {
     });
 
     it('marks missing Sammelgruppe as null', () => {
-        const h = hierarchy.map((e) => (e.groupId === 123 ? { ...e, children: [2156, 1930] } : e));
+        const h = hierarchy.filter((e) => e.groupId !== 2612);
         const ctx = deriveLeaderContext([{ groupId: 2156, groupTypeRoleId: 9 }], roles, h);
         expect(ctx.teams[0].sammelgruppeId).toBeNull();
+    });
+
+    it('works when only own team and Sammelgruppen are visible (restricted structure)', () => {
+        // Davids Realität: Stamm-MA und Gesamt-Stammleitung liefern group:null
+        // und fehlen daher komplett; sichtbar sind nur eigenes Team + die
+        // intern gestellten Sammelgruppen.
+        const visible = hierarchy.filter((e) => [1572001, 2156, 2612, 2615].includes(e.groupId));
+        const ctx = deriveLeaderContext([{ groupId: 2156, groupTypeRoleId: 9 }], roles, visible);
+        expect(ctx.kind).toBe('teamleiter');
+        expect(ctx.teams[0]).toMatchObject({
+            groupId: 2156,
+            stufe: 'Kundschafter',
+            sammelgruppeId: 2612,
+            sammelgruppeName: 'RR | Camps und Aktionen - Kundschafter',
+        });
     });
 });
