@@ -1,7 +1,7 @@
 {
     "name": "ct-rr-hikeplanner",
     "private": true,
-    "version": "0.1.9",
+    "version": "0.1.10",
     "description": "ChurchTools extension: Hajk-Assistent für Royal Rangers JMS Altensteig",
     "license": "MIT",
     "type": "module",
