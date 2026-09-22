@@ -140,7 +140,13 @@ describe.runIf(RUN)('E2E gegen rr-demo', () => {
 
         const progress: ProvisionProgress[] = [];
         const outcome = await executeProvisioning(
-            { form, team, context: ctx, calendarId: CALENDAR_ID, groupUrl: (id) => `${BASE}/groups/${id}` },
+            {
+                form,
+                team,
+                context: ctx,
+                calendarId: CALENDAR_ID,
+                groupUrl: (id) => `${BASE}/groups/${id}`,
+            },
             provisionApi,
             (p) => progress.push(p),
         );
@@ -154,7 +160,11 @@ describe.runIf(RUN)('E2E gegen rr-demo', () => {
         const group = await call<{
             name: string;
             information: { note: string; dateOfFoundation: string; endDate: string };
-            settings: { isOpenForMembers: boolean; signUpClosingDate: string | null; maxMembers: number };
+            settings: {
+                isOpenForMembers: boolean;
+                signUpClosingDate: string | null;
+                maxMembers: number;
+            };
         }>('GET', `/groups/${outcome.groupId}`);
         expect(group.name).toBe(EXPECTED_NAME);
         expect(group.information.note).toContain('Treffpunkt: Testplatz');
@@ -184,7 +194,10 @@ describe.runIf(RUN)('E2E gegen rr-demo', () => {
             `/groups/${outcome.groupId}/members`,
         );
         expect(members).toEqual([
-            expect.objectContaining({ personId: ctx.user.id, groupTypeRoleId: ctx.eventLeaderRoleId }),
+            expect.objectContaining({
+                personId: ctx.user.id,
+                groupTypeRoleId: ctx.eventLeaderRoleId,
+            }),
         ]);
 
         // Kalendertermin existiert
@@ -196,7 +209,13 @@ describe.runIf(RUN)('E2E gegen rr-demo', () => {
 
         // Namenskollision beim zweiten Lauf
         const second = await executeProvisioning(
-            { form, team, context: ctx, calendarId: CALENDAR_ID, groupUrl: (id) => `${BASE}/groups/${id}` },
+            {
+                form,
+                team,
+                context: ctx,
+                calendarId: CALENDAR_ID,
+                groupUrl: (id) => `${BASE}/groups/${id}`,
+            },
             provisionApi,
             () => {},
         );
