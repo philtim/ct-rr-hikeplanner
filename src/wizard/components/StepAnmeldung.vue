@@ -54,7 +54,8 @@ const emit = defineEmits<{ next: []; back: [] }>();
             <input v-model="form.publicSignup" type="checkbox" data-testid="public-signup" />
             <span>Anmeldung öffentlich</span>
             <span class="hp-check-sub"
-                >Link funktioniert ohne ChurchTools-Login (z. B. für Eltern)</span
+                >Anmelde-Link funktioniert auch ohne ChurchTools-Konto — z. B. wenn Eltern ihr Kind
+                anmelden</span
             >
         </label>
 
