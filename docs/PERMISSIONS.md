@@ -9,6 +9,7 @@ Status-Legende: ✅ erforderlich · ➖ nicht nötig · ❓ ZU VERIFIZIEREN mit 
 
 | CT-Recht (churchdb, sofern nicht anders vermerkt) | Team-Leiter/Co-Leiter | Stammleiter | Organisatorin | Mitglied |
 |---|---|---|---|---|
+| Modul-Recht `rr-hikeplanner` → „RR HikePlanner“ sehen (view) — ohne dieses Recht liefert die Extension-Seite HTTP 500 mit Berechtigungshinweis; wird beim Anlegen des Moduls NIEMANDEM automatisch gegeben (außer dem Ersteller-Konto) | ✅ verifiziert 22.09.2026 | ✅ | ➖ | ➖ |
 | Eigene Gruppenmitgliedschaften sehen (`/persons/{id}/groups`) | ✅ ❓ | ✅ ❓ | ➖ | ➖ |
 | Gruppenhierarchie lesen (`/groups/hierarchies`) | ✅ ❓ | ✅ ❓ | ➖ | ➖ |
 | Vorlagengruppe sehen inkl. Felder + Mitglieder (Sichtbarkeit „intern“ genügt?) | ✅ ❓ | ✅ ❓ | ➖ | ➖ |
