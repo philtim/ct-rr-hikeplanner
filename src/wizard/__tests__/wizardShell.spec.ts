@@ -78,6 +78,12 @@ describe('WizardShell', () => {
         expect(fake.start).toHaveBeenCalledTimes(1);
     });
 
+    it('shows version and commit in the footer', () => {
+        fake.state.value = { phase: 'loading' };
+        const w = mount(WizardShell);
+        expect(w.find('.hp-footer').text()).toBe('v0.0.0-test · testsha');
+    });
+
     it('renders step 2 in form phase', () => {
         fake.context.value = context;
         fake.state.value = { phase: 'form', step: 2 };

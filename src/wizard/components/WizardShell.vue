@@ -13,6 +13,10 @@ import '../wizard.css';
 const w = useWizard();
 onMounted(() => void w.start());
 
+// Build-Provenienz aus vite.config (define) — im Footer sichtbar wie im Organigram.
+const appVersion = __APP_VERSION__;
+const appCommit = __APP_COMMIT__;
+
 const groupUrl = (id: number) => `${getOriginUrl()}/groups/${id}`;
 
 const currentStep = computed(() => (w.state.value.phase === 'form' ? w.state.value.step : 3));
@@ -123,5 +127,9 @@ const resultSummary = computed(() => {
                 @restart="w.reset()"
             />
         </template>
+
+        <footer class="hp-footer" :title="`RR HikePlanner v${appVersion} (build ${appCommit})`">
+            v{{ appVersion }} · {{ appCommit }}
+        </footer>
     </div>
 </template>

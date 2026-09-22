@@ -287,6 +287,13 @@
     text-overflow: ellipsis;
 }
 
+.rr-hikeplanner-root .hp-footer {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--hp-muted);
+}
+
 @media (max-width: 767px) {
     .rr-hikeplanner-root .hp-actions {
         flex-direction: row;
