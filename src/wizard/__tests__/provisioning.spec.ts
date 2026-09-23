@@ -43,6 +43,7 @@ const input: ProvisionInput = {
         dateTo: '2027-04-12',
         location: 'Gemeindehaus',
         description: 'Toller Hajk, 2 Nächte',
+        dailySchedule: 'Frühstück, Wanderung, Lagerfeuer',
         mode: 'self',
         signupDeadline: '2027-04-03',
         maxMembers: '20',
@@ -118,6 +119,11 @@ describe('executeProvisioning', () => {
             endDate: '2027-04-12',
             description: expect.stringContaining('https://x.church.tools/groups/99'),
         });
+        const appt = (api.createAppointment as ReturnType<typeof vi.fn>).mock.calls[0][1];
+        expect(appt.description).toContain('(3 Tage / 2 Nächte)');
+        expect(appt.description).toContain(
+            'Ungefährer Tagesablauf:\nFrühstück, Wanderung, Lagerfeuer',
+        );
 
         const doneSteps = progress.filter((p) => p.status === 'done').map((p) => p.step);
         expect(doneSteps).toEqual(['duplicate', 'members', 'configure', 'parents', 'calendar']);

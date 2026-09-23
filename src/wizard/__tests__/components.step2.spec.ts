@@ -35,6 +35,7 @@ function makeForm(overrides: Partial<FormState> = {}): FormState {
         dateTo: '2027-04-12',
         location: '',
         description: 'x',
+        dailySchedule: 'Frühstück, Wanderung, Lagerfeuer',
         mode: 'self',
         signupDeadline: '',
         maxMembers: '',

@@ -9,7 +9,9 @@ export interface Step1Errors {
     teamId?: string;
     dateFrom?: string;
     dateTo?: string;
+    location?: string;
     description?: string;
+    dailySchedule?: string;
 }
 export interface Step2Errors {
     signupDeadline?: string;
@@ -23,8 +25,10 @@ export function validateStep1(f: FormState): Step1Errors {
     if (!f.dateTo) e.dateTo = 'Bitte ein Datum wählen.';
     if (f.dateFrom && f.dateTo && f.dateTo < f.dateFrom)
         e.dateTo = 'Das Enddatum muss nach dem Startdatum liegen.';
-    if (!f.description.trim())
-        e.description = 'Bitte beschreibe kurz den Hajk — inklusive Anzahl der Nächte.';
+    // Ort, Programm und Tagesablauf braucht die Stammleitung für Förderanträge.
+    if (!f.location.trim()) e.location = 'Bitte gib den Ort bzw. Treffpunkt an.';
+    if (!f.description.trim()) e.description = 'Bitte beschreibe, was beim Hajk gemacht wird.';
+    if (!f.dailySchedule.trim()) e.dailySchedule = 'Bitte beschreibe den ungefähren Tagesablauf.';
     return e;
 }
 

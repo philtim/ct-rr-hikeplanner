@@ -57,6 +57,7 @@ const form: FormState = {
     dateTo: '2027-04-12',
     location: 'Gemeindehaus Altensteig',
     description: 'Wochenend-Hajk im Schwarzwald',
+    dailySchedule: 'Frühstück, Wanderung, Lagerfeuer',
     mode: 'self',
     signupDeadline: '2027-04-03',
     maxMembers: '20',
@@ -90,7 +91,7 @@ describe('StepReview summary', () => {
         const text = w.text();
         expect(text).toContain('RR Hajk Eisbären 10.04.–12.04.2027');
         expect(text).toContain('Selbstanmeldung bis 03.04.2027');
-        expect(text).toContain('(2 Nächte)');
+        expect(text).toContain('(3 Tage / 2 Nächte)');
         expect(text).toContain('Vegetarisch · T-Shirt-Größe');
         expect(text).toContain('Irma Betz, Julia Timmalog');
         expect(text).toContain('Du (Christoph Cremer)');

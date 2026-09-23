@@ -12,6 +12,7 @@ const fake = {
         dateTo: '',
         location: '',
         description: '',
+        dailySchedule: 'Frühstück, Wanderung, Lagerfeuer',
         mode: 'self',
         signupDeadline: '',
         maxMembers: '',

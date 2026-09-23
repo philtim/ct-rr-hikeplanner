@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import ProgressList from './ProgressList.vue';
-import { countNights, formatDateRange } from '@/wizard/naming';
+import { formatDuration } from '@/wizard/eventText';
+import { formatDateRange } from '@/wizard/naming';
 import type {
     FormState,
     ProvisionOutcome,
@@ -30,7 +31,7 @@ function formatDateDe(iso: string): string {
 
 const zeitraum = computed(
     () =>
-        `${formatDateRange(props.form.dateFrom, props.form.dateTo)} (${countNights(props.form.dateFrom, props.form.dateTo)} Nächte)`,
+        `${formatDateRange(props.form.dateFrom, props.form.dateTo)} (${formatDuration(props.form.dateFrom, props.form.dateTo)})`,
 );
 const modusLine = computed(() => {
     if (props.form.mode === 'manual') return 'Du trägst die Teilnehmer selbst ein';
@@ -74,10 +75,12 @@ const organisatorenLine = computed(() => {
                     <dd>{{ team.name }}</dd>
                     <dt>Zeitraum</dt>
                     <dd>{{ zeitraum }}</dd>
-                    <dt>Treffpunkt</dt>
-                    <dd>{{ form.location || '—' }}</dd>
-                    <dt>Beschreibung</dt>
-                    <dd>{{ form.description }}</dd>
+                    <dt>Ort / Treffpunkt</dt>
+                    <dd>{{ form.location }}</dd>
+                    <dt>Programm</dt>
+                    <dd class="hp-prewrap">{{ form.description }}</dd>
+                    <dt>Tagesablauf</dt>
+                    <dd class="hp-prewrap">{{ form.dailySchedule }}</dd>
                 </dl>
 
                 <div class="hp-summary-head">

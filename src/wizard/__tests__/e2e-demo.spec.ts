@@ -69,6 +69,7 @@ const form: FormState = {
     dateTo: '2027-06-20',
     location: 'Testplatz',
     description: 'E2E-Testhajk, 2 Nächte',
+    dailySchedule: 'Frühstück, Wanderung, Lagerfeuer',
     mode: 'self',
     signupDeadline: '2027-06-11',
     maxMembers: '12',

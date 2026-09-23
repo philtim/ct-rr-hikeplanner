@@ -41,6 +41,7 @@ function emptyForm(): FormState {
         dateTo: '',
         location: '',
         description: '',
+        dailySchedule: '',
         mode: 'self',
         signupDeadline: '',
         maxMembers: '',

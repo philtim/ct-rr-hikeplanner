@@ -6,8 +6,9 @@ const base: FormState = {
     teamId: 2156,
     dateFrom: '2027-04-10',
     dateTo: '2027-04-12',
-    location: '',
-    description: 'Wochenend-Hajk, 2 Nächte',
+    location: 'Zeltplatz',
+    description: 'Wandern, Lagerfeuer',
+    dailySchedule: '8 Uhr Frühstück, dann Wanderung',
     mode: 'self',
     signupDeadline: '2027-04-03',
     maxMembers: '',
@@ -25,10 +26,11 @@ describe('validateStep1', () => {
             'Das Enddatum muss nach dem Startdatum liegen.',
         );
     });
-    it('requires a description', () => {
-        expect(validateStep1({ ...base, description: '  ' }).description).toBe(
-            'Bitte beschreibe kurz den Hajk — inklusive Anzahl der Nächte.',
-        );
+    it('requires program, daily schedule and location (funding data)', () => {
+        const e = validateStep1({ ...base, description: '  ', dailySchedule: '', location: ' ' });
+        expect(e.description).toBe('Bitte beschreibe, was beim Hajk gemacht wird.');
+        expect(e.dailySchedule).toBe('Bitte beschreibe den ungefähren Tagesablauf.');
+        expect(e.location).toBe('Bitte gib den Ort bzw. Treffpunkt an.');
     });
     it('requires team and dates', () => {
         const e = validateStep1({ ...base, teamId: null, dateFrom: '', dateTo: '' });

@@ -48,7 +48,9 @@ function fillValidForm(w: ReturnType<typeof useWizard>) {
     w.form.teamId = 2156;
     w.form.dateFrom = '2027-04-10';
     w.form.dateTo = '2027-04-12';
-    w.form.description = 'Toller Hajk, 2 Nächte';
+    w.form.location = 'Zeltplatz';
+    w.form.description = 'Toller Hajk';
+    w.form.dailySchedule = 'Frühstück, Wanderung';
 }
 
 const okOutcome: ProvisionOutcome = {

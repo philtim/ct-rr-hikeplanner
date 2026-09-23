@@ -38,6 +38,7 @@ function makeForm(overrides: Partial<FormState> = {}): FormState {
         dateTo: '',
         location: '',
         description: '',
+        dailySchedule: 'Frühstück, Wanderung, Lagerfeuer',
         mode: 'self',
         signupDeadline: '',
         maxMembers: '',
@@ -87,13 +88,26 @@ describe('StepTeamTermin', () => {
         expect(w.text()).toContain('RR Hajk Eisbären 10.04.–12.04.2027');
     });
 
-    it('shows field errors from props', () => {
+    it('shows errors for the funding fields', () => {
         const w = makeWrapper({
             errors: {
-                description: 'Bitte beschreibe kurz den Hajk — inklusive Anzahl der Nächte.',
+                location: 'Bitte gib den Ort bzw. Treffpunkt an.',
+                description: 'Bitte beschreibe, was beim Hajk gemacht wird.',
+                dailySchedule: 'Bitte beschreibe den ungefähren Tagesablauf.',
             },
         });
-        expect(w.find('.hp-error-text').text()).toContain('Bitte beschreibe kurz den Hajk');
+        expect(w.find('#hp-location-error').text()).toContain('Ort bzw. Treffpunkt');
+        expect(w.find('#hp-description-error').text()).toContain('was beim Hajk gemacht wird');
+        expect(w.find('#hp-daily-schedule-error').text()).toContain('Tagesablauf');
+    });
+
+    it('shows the computed duration once both dates are set', async () => {
+        const w = makeWrapper({ form: makeForm({ dateFrom: '', dateTo: '' }) });
+        expect(w.find('[data-testid="duration"]').exists()).toBe(false);
+        const withDates = makeWrapper({
+            form: makeForm({ dateFrom: '2027-04-10', dateTo: '2027-04-12' }),
+        });
+        expect(withDates.find('[data-testid="duration"]').text()).toContain('3 Tage / 2 Nächte');
     });
 
     it('shows the non-blocking nights warning', () => {

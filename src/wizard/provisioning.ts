@@ -5,6 +5,7 @@
  * Teilzustand zurück. Nur der Kalenderschritt ist optional: sein Fehler
  * führt zu einer Warnung, nicht zum Rollback (PRD US-5).
  */
+import { buildEventText } from './eventText';
 import { buildGroupName } from './naming';
 import type { ProvisionApi } from './wizard.api';
 import type {
@@ -140,7 +141,7 @@ export async function executeProvisioning(
                 caption: name,
                 startDate: form.dateFrom,
                 endDate: form.dateTo,
-                description: `${form.description}\n\nGruppe: ${input.groupUrl(finalGroupId)}`,
+                description: `${buildEventText(form)}\n\nGruppe: ${input.groupUrl(finalGroupId)}`,
             }),
         );
     } catch {

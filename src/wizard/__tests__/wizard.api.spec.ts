@@ -283,6 +283,7 @@ describe('provisionApi', () => {
             dateTo: '2027-04-12',
             location: 'Gemeindehaus',
             description: 'Toller Hajk',
+            dailySchedule: 'Frühstück, Wanderung, Lagerfeuer',
             mode: 'self',
             signupDeadline: '2027-04-03',
             maxMembers: '20',
@@ -298,7 +299,11 @@ describe('provisionApi', () => {
         expect(body.dateOfFoundation).toBe('2027-04-10');
         expect(body.endDate).toBe('2027-04-12');
         expect(body.maxMembers).toBe(20);
-        expect(body.note).toBe('Toller Hajk\n\nTreffpunkt: Gemeindehaus');
+        // Förderrelevanter Textblock (Dauer, Ort, Programm, Tagesablauf)
+        expect(body.note).toContain('Zeitraum: 10.04.–12.04.2027 (3 Tage / 2 Nächte)');
+        expect(body.note).toContain('Ort / Treffpunkt: Gemeindehaus');
+        expect(body.note).toContain('Programm:\nToller Hajk');
+        expect(body.note).toContain('Ungefährer Tagesablauf:\nFrühstück, Wanderung, Lagerfeuer');
         expect(body.signUpClosingDate).toBe('2027-04-03T23:59:59Z');
         expect(typeof body.signUpOpeningDate).toBe('string');
         // Duplikate entstehen als Entwurf — der Wizard veröffentlicht standardmäßig.
@@ -313,6 +318,7 @@ describe('provisionApi', () => {
             dateTo: '2027-04-12',
             location: '',
             description: 'Toller Hajk',
+            dailySchedule: 'Frühstück, Wanderung, Lagerfeuer',
             mode: 'manual',
             signupDeadline: '2027-04-03',
             maxMembers: '',
@@ -324,7 +330,7 @@ describe('provisionApi', () => {
         expect(body.signUpOpeningDate).toBeNull();
         expect(body.signUpClosingDate).toBeNull();
         expect(body.maxMembers).toBeNull();
-        expect(body.note).toBe('Toller Hajk');
+        expect(body.note).toContain('Programm:\nToller Hajk');
     });
 
     it('configureGroup adds public visibility flags for public signup', async () => {
@@ -335,6 +341,7 @@ describe('provisionApi', () => {
             dateTo: '2027-04-12',
             location: '',
             description: 'x',
+            dailySchedule: 'Frühstück, Wanderung, Lagerfeuer',
             mode: 'self',
             signupDeadline: '',
             maxMembers: '',
@@ -356,6 +363,7 @@ describe('provisionApi', () => {
             dateTo: '2027-04-12',
             location: '',
             description: 'x',
+            dailySchedule: 'Frühstück, Wanderung, Lagerfeuer',
             mode: 'self',
             signupDeadline: '',
             maxMembers: '',

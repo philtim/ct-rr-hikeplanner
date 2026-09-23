@@ -11,6 +11,7 @@
 
 | Datum | Version | Autor | Änderung |
 |---|---|---|---|
+| 2026-09-23 | 0.3 | Philipp | Förderdaten Pflicht in Schritt 1: Ort, Programm („was wird gemacht“), ungefährer Tagesablauf; Dauer (Tage/Nächte) wird aus Von/Bis berechnet und mit allen Angaben als fester Textblock in Gruppenbeschreibung und Kalendertermin geschrieben |
 | 2026-09-22 | 0.2 | Philipp | US-3 geändert: keine Feld-Auswahl mehr, alle Vorlagen-Felder werden übernommen (CT-Rechte erlauben Leitern kein Feld-Schreiben) |
 | 2026-09-22 | 0.1 | Philipp | Initiales Draft nach Discovery-Interview und CT-Recon vom 21.09.2026 |
 

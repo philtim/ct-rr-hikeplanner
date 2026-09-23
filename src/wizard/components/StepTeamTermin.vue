@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { formatDuration } from '@/wizard/eventText';
 import { sanitizeSuffix } from '@/wizard/naming';
 import type { Step1Errors } from '@/wizard/validation';
 import type { FormState, Stufe, TeamOption } from '@/wizard/types';
@@ -23,6 +24,8 @@ const teamsByStufe = computed(() => {
     }
     return [...groups.entries()];
 });
+
+const duration = computed(() => formatDuration(props.form.dateFrom, props.form.dateTo));
 
 const singleTeamName = computed(
     () => props.teams.find((t) => t.groupId === props.form.teamId)?.name ?? '',
@@ -82,25 +85,55 @@ const singleTeamName = computed(
             </p>
         </div>
 
+        <p v-if="duration" class="hp-hint" data-testid="duration">
+            Dauer: <strong>{{ duration }}</strong> (wird automatisch berechnet)
+        </p>
+
         <p v-if="nightsWarning" class="hp-warning-box">⚠ {{ nightsWarning }}</p>
 
-        <div class="hp-field">
-            <label for="hp-location">Treffpunkt / Ort (optional)</label>
-            <input id="hp-location" v-model="form.location" type="text" />
+        <div class="hp-field" :class="{ 'hp-field--invalid': errors.location }">
+            <label for="hp-location">Ort / Treffpunkt *</label>
+            <input
+                id="hp-location"
+                v-model="form.location"
+                type="text"
+                placeholder="z. B. Zeltplatz Nagold, Treffpunkt Gemeindehaus"
+                :aria-describedby="errors.location ? 'hp-location-error' : undefined"
+            />
+            <p v-if="errors.location" id="hp-location-error" class="hp-error-text">
+                {{ errors.location }}
+            </p>
         </div>
 
         <div class="hp-field" :class="{ 'hp-field--invalid': errors.description }">
-            <label for="hp-description">Kurzbeschreibung *</label>
+            <label for="hp-description">Programm — was wird gemacht? *</label>
             <textarea
                 id="hp-description"
                 v-model="form.description"
-                placeholder="Was ist geplant? Bitte auch die Anzahl der Nächte nennen (wichtig für Förderung)."
+                placeholder="z. B. Wanderung mit Karte und Kompass, Feuer machen, Knoten, Andacht am Abend"
                 :aria-describedby="errors.description ? 'hp-description-error' : undefined"
             ></textarea>
             <p v-if="errors.description" id="hp-description-error" class="hp-error-text">
                 {{ errors.description }}
             </p>
         </div>
+
+        <div class="hp-field" :class="{ 'hp-field--invalid': errors.dailySchedule }">
+            <label for="hp-daily-schedule">Ungefährer Tagesablauf *</label>
+            <textarea
+                id="hp-daily-schedule"
+                v-model="form.dailySchedule"
+                placeholder="z. B. 8 Uhr Frühstück, 9 Uhr Aufbruch, mittags Rast, 17 Uhr Lageraufbau, abends Lagerfeuer"
+                :aria-describedby="errors.dailySchedule ? 'hp-daily-schedule-error' : undefined"
+            ></textarea>
+            <p v-if="errors.dailySchedule" id="hp-daily-schedule-error" class="hp-error-text">
+                {{ errors.dailySchedule }}
+            </p>
+        </div>
+
+        <p class="hp-hint">
+            Dauer, Ort, Programm und Tagesablauf braucht die Stammleitung für die Förderanträge.
+        </p>
 
         <div class="hp-field">
             <label for="hp-title-suffix">Titel-Zusatz (optional)</label>
