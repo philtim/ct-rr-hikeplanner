@@ -93,7 +93,7 @@ describe('StepTeamTermin', () => {
             errors: {
                 location: 'Bitte gib den Ort bzw. Treffpunkt an.',
                 description: 'Bitte beschreibe, was beim Hajk gemacht wird.',
-                dailySchedule: 'Bitte beschreibe den ungefähren Tagesablauf.',
+                dailySchedule: 'Bitte beschreibe grob den Tagesablauf.',
             },
         });
         expect(w.find('#hp-location-error').text()).toContain('Ort bzw. Treffpunkt');

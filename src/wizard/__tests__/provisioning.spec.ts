@@ -121,9 +121,7 @@ describe('executeProvisioning', () => {
         });
         const appt = (api.createAppointment as ReturnType<typeof vi.fn>).mock.calls[0][1];
         expect(appt.description).toContain('(3 Tage / 2 Nächte)');
-        expect(appt.description).toContain(
-            'Ungefährer Tagesablauf:\nFrühstück, Wanderung, Lagerfeuer',
-        );
+        expect(appt.description).toContain('Tagesablauf:\nFrühstück, Wanderung, Lagerfeuer');
 
         const doneSteps = progress.filter((p) => p.status === 'done').map((p) => p.step);
         expect(doneSteps).toEqual(['duplicate', 'members', 'configure', 'parents', 'calendar']);

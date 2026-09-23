@@ -28,7 +28,7 @@ export function validateStep1(f: FormState): Step1Errors {
     // Ort, Programm und Tagesablauf braucht die Stammleitung für Förderanträge.
     if (!f.location.trim()) e.location = 'Bitte gib den Ort bzw. Treffpunkt an.';
     if (!f.description.trim()) e.description = 'Bitte beschreibe, was beim Hajk gemacht wird.';
-    if (!f.dailySchedule.trim()) e.dailySchedule = 'Bitte beschreibe den ungefähren Tagesablauf.';
+    if (!f.dailySchedule.trim()) e.dailySchedule = 'Bitte beschreibe grob den Tagesablauf.';
     return e;
 }
 

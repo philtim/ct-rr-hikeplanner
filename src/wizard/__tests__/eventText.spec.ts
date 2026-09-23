@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildEventText, formatDuration } from '@/wizard/eventText';
+import { buildEventText, buildGroupNote, formatDuration } from '@/wizard/eventText';
 
 describe('formatDuration', () => {
     it('counts days inclusively and nights between', () => {
@@ -34,8 +34,39 @@ describe('buildEventText', () => {
                 'Programm:',
                 'Wandern, Feuer machen',
                 '',
-                'Ungefährer Tagesablauf:',
+                'Tagesablauf:',
                 '08:00 Frühstück\n09:00 Aufbruch',
+            ].join('\n'),
+        );
+    });
+});
+
+describe('buildGroupNote', () => {
+    const form = {
+        dateFrom: '2026-09-28',
+        dateTo: '2026-09-30',
+        location: 'Altensteig',
+        description: 'Wandern\nFeuer machen',
+        dailySchedule: '8 Uhr Frühstück\n\n9 Uhr Aufbruch',
+    };
+
+    it('renders ChurchTools markdown with headings, bold labels and a divider', () => {
+        expect(buildGroupNote(form)).toBe(
+            [
+                '### Wann & Wo',
+                '**Zeitraum:** 28.09.–30.09.2026 · 3 Tage / 2 Nächte  ',
+                '**Ort / Treffpunkt:** Altensteig',
+                '',
+                '---',
+                '',
+                '### Programm',
+                'Wandern  ',
+                'Feuer machen',
+                '',
+                '### Tagesablauf',
+                '8 Uhr Frühstück',
+                '',
+                '9 Uhr Aufbruch',
             ].join('\n'),
         );
     });

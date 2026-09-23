@@ -300,10 +300,10 @@ describe('provisionApi', () => {
         expect(body.endDate).toBe('2027-04-12');
         expect(body.maxMembers).toBe(20);
         // Förderrelevanter Textblock (Dauer, Ort, Programm, Tagesablauf)
-        expect(body.note).toContain('Zeitraum: 10.04.–12.04.2027 (3 Tage / 2 Nächte)');
-        expect(body.note).toContain('Ort / Treffpunkt: Gemeindehaus');
-        expect(body.note).toContain('Programm:\nToller Hajk');
-        expect(body.note).toContain('Ungefährer Tagesablauf:\nFrühstück, Wanderung, Lagerfeuer');
+        expect(body.note).toContain('**Zeitraum:** 10.04.–12.04.2027 · 3 Tage / 2 Nächte');
+        expect(body.note).toContain('**Ort / Treffpunkt:** Gemeindehaus');
+        expect(body.note).toContain('### Programm\nToller Hajk');
+        expect(body.note).toContain('### Tagesablauf\nFrühstück, Wanderung, Lagerfeuer');
         expect(body.signUpClosingDate).toBe('2027-04-03T23:59:59Z');
         expect(typeof body.signUpOpeningDate).toBe('string');
         // Duplikate entstehen als Entwurf — der Wizard veröffentlicht standardmäßig.
@@ -330,7 +330,7 @@ describe('provisionApi', () => {
         expect(body.signUpOpeningDate).toBeNull();
         expect(body.signUpClosingDate).toBeNull();
         expect(body.maxMembers).toBeNull();
-        expect(body.note).toContain('Programm:\nToller Hajk');
+        expect(body.note).toContain('### Programm\nToller Hajk');
     });
 
     it('configureGroup adds public visibility flags for public signup', async () => {

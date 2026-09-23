@@ -61,7 +61,7 @@ export interface FormState {
     location: string;
     /** Programm: was wird gemacht (Pflicht, förderrelevant). */
     description: string;
-    /** Ungefährer Tagesablauf (Pflicht, förderrelevant). */
+    /** Grober Tagesablauf (Pflicht, förderrelevant). */
     dailySchedule: string;
     mode: SignupMode;
     /** "" = kein Anmeldeschluss; irrelevant bei mode === 'manual'. */

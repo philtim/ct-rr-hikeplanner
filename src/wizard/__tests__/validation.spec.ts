@@ -29,7 +29,7 @@ describe('validateStep1', () => {
     it('requires program, daily schedule and location (funding data)', () => {
         const e = validateStep1({ ...base, description: '  ', dailySchedule: '', location: ' ' });
         expect(e.description).toBe('Bitte beschreibe, was beim Hajk gemacht wird.');
-        expect(e.dailySchedule).toBe('Bitte beschreibe den ungefähren Tagesablauf.');
+        expect(e.dailySchedule).toBe('Bitte beschreibe grob den Tagesablauf.');
         expect(e.location).toBe('Bitte gib den Ort bzw. Treffpunkt an.');
     });
     it('requires team and dates', () => {

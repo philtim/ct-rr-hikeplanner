@@ -1,7 +1,8 @@
 /**
- * Förderrelevante Angaben (Dauer, Ort, Programm, Tagesablauf) als fester
- * Textblock — landet in Gruppenbeschreibung und Kalendertermin, damit die
- * Stammleitung Förderanträge ohne Rückfragen daraus befüllen kann.
+ * Förderrelevante Angaben (Dauer, Ort, Programm, Tagesablauf) in fester
+ * Struktur, damit die Stammleitung Förderanträge ohne Rückfragen daraus
+ * befüllen kann. Die Gruppenbeschreibung rendert CT als Markdown (auch auf
+ * der öffentlichen Anmeldeseite); Kalendertermine bekommen Klartext.
  */
 import { countNights, formatDateRange } from './naming';
 import type { FormState } from './types';
@@ -24,7 +25,34 @@ export function buildEventText(
         'Programm:',
         f.description.trim(),
         '',
-        'Ungefährer Tagesablauf:',
+        'Tagesablauf:',
         f.dailySchedule.trim(),
+    ].join('\n');
+}
+
+/** Einzelne Zeilenumbrüche des Leiters erhalten (Markdown würde sie zusammenziehen). */
+function hardBreaks(text: string): string {
+    const lines = text
+        .trim()
+        .split('\n')
+        .map((l) => l.trimEnd());
+    return lines.map((line, i) => (line && lines[i + 1] ? `${line}  ` : line)).join('\n');
+}
+
+export function buildGroupNote(
+    f: Pick<FormState, 'dateFrom' | 'dateTo' | 'location' | 'description' | 'dailySchedule'>,
+): string {
+    return [
+        '### Wann & Wo',
+        `**Zeitraum:** ${formatDateRange(f.dateFrom, f.dateTo)} · ${formatDuration(f.dateFrom, f.dateTo)}  `,
+        `**Ort / Treffpunkt:** ${f.location.trim()}`,
+        '',
+        '---',
+        '',
+        '### Programm',
+        hardBreaks(f.description),
+        '',
+        '### Tagesablauf',
+        hardBreaks(f.dailySchedule),
     ].join('\n');
 }

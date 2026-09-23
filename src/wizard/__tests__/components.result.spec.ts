@@ -56,6 +56,12 @@ describe('ResultView', () => {
         expect(makeWrapper().find('[data-testid="signup-link"]').exists()).toBe(false);
     });
 
+    it('tells the leader that description and image can be adjusted in the group', () => {
+        expect(makeWrapper().find('[data-testid="edit-hint"]').text()).toContain(
+            'jederzeit in der Gruppe anpassen',
+        );
+    });
+
     it('explains that organisators are set even when member lists hide them', () => {
         expect(makeWrapper().find('[data-testid="org-hint"]').text()).toContain(
             'eingetragen sind sie auf jeden Fall',

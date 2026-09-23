@@ -79,6 +79,11 @@ async function copySignupUrl(url: string) {
             </div>
         </div>
 
+        <p class="hp-hint" data-testid="edit-hint">
+            ⓘ Beschreibung und Gruppenbild kannst du jederzeit in der Gruppe anpassen — z. B. ein
+            Foto vom letzten Hajk als Gruppenbild hinterlegen.
+        </p>
+
         <div class="hp-result-actions">
             <a class="hp-btn hp-btn--primary" :href="groupHref">Zur Gruppe in ChurchTools →</a>
             <button

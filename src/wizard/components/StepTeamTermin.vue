@@ -119,11 +119,11 @@ const singleTeamName = computed(
         </div>
 
         <div class="hp-field" :class="{ 'hp-field--invalid': errors.dailySchedule }">
-            <label for="hp-daily-schedule">Ungefährer Tagesablauf *</label>
+            <label for="hp-daily-schedule">Tagesablauf *</label>
             <textarea
                 id="hp-daily-schedule"
                 v-model="form.dailySchedule"
-                placeholder="z. B. 8 Uhr Frühstück, 9 Uhr Aufbruch, mittags Rast, 17 Uhr Lageraufbau, abends Lagerfeuer"
+                placeholder="Grob reicht, z. B.&#10;8 Uhr Frühstück&#10;9 Uhr Aufbruch zur Wanderung&#10;17 Uhr Lageraufbau&#10;abends Lagerfeuer"
                 :aria-describedby="errors.dailySchedule ? 'hp-daily-schedule-error' : undefined"
             ></textarea>
             <p v-if="errors.dailySchedule" id="hp-daily-schedule-error" class="hp-error-text">

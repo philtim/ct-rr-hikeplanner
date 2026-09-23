@@ -11,7 +11,7 @@ import { apiDelete, apiGet, apiPatch, apiPost, apiPut, fetchAllPages } from '@/s
 import { CALENDAR_NAME, TEMPLATE_GROUP_NAME } from './config';
 import { loadSettings } from './settings.api';
 import type { ExtensionSettings } from './settings.api';
-import { buildEventText } from './eventText';
+import { buildGroupNote } from './eventText';
 import { deriveLeaderContext } from './leaderContext';
 import type { HierarchyIn, MembershipIn, RoleIn } from './leaderContext';
 import type { FormState, TemplateField, WizardContext } from './types';
@@ -226,7 +226,7 @@ export const provisionApi: ProvisionApi = {
     },
 
     async configureGroup(groupId, form) {
-        const note = buildEventText(form);
+        const note = buildGroupNote(form);
         // Flache Top-Level-Keys — verschachtelte settings/information ignoriert
         // die API stillschweigend (docs/NOTES-api-spike.md §1).
         await apiPatch(`/groups/${groupId}`, {
