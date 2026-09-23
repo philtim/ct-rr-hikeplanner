@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.2.0...v0.2.1) (2026-09-23)
+
+
+### Features
+
+* require funding data at creation ([f38ea06](https://github.com/philtim/ct-rr-hikeplanner/commit/f38ea062b3fb537c2e195d4f13a5a67cdb17610a))
+
 ## [0.2.0](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.1.17...v0.2.0) (2026-09-22)
 
 
