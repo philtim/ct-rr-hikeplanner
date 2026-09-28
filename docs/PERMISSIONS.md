@@ -14,7 +14,7 @@ sind für Leiter unantastbar. Auch Vorlage und Sammelgruppen haben diesen Typ.
 | Gruppen → „Gruppen eines Gruppentyps sehen" → RR Veranstaltung | Vorlage + Sammelgruppen finden | ✅ |
 | Gruppen → „Gruppen eines Gruppentyps erstellen" → RR Veranstaltung | Vorlage duplizieren | ✅ |
 | Gruppen → „Gruppen eines Gruppentyps bearbeiten" → RR Veranstaltung | Eckdaten setzen, Ablage einhängen | ✅ |
-| Gruppen → „Gruppen eines Gruppentyps löschen" → RR Veranstaltung | automatischer Rollback bei Fehlern | ✅ |
+| Gruppen → „Gruppen eines Gruppentyps löschen" → RR Veranstaltung | — **bewusst NICHT** (seit 28.09.2026 nur „RR Gesamt-Stammleitung“) | ❌ |
 | Gruppen → „Gruppenmitgliedschaften von Gruppen eines Gruppentyps bearbeiten" → RR Veranstaltung | sich selbst als Leiter eintragen | ✅ |
 | Kalender → Termine erstellen im Kalender „Royal Rangers" | Hajk-Termin anlegen | ✅ |
 | Alles andere (andere Gruppentypen, Personen-Admin, andere Kalender) | — | ➖ nicht nötig |
@@ -54,8 +54,15 @@ Login-Token liegt in den GitHub-Secrets (`CT_DEMO_LOGIN_TOKEN` / `CT_LIVE_LOGIN_
 
 ## Bewusst akzeptierte Restrisiken
 
-- Leiter können RR-Veranstaltungsgruppen auch manuell (am Assistenten vorbei) anlegen,
-  bearbeiten und löschen — inklusive fremder RR-Hajks und der Sammelgruppen (gleicher
-  Typ). Konvention + Stammleitungs-Blick statt technischer Sperre (PDR-Entscheidung).
+- **Löschen** von RR-Veranstaltungsgruppen darf nur „RR Gesamt-Stammleitung“ (seit
+  28.09.2026). Grund: Vorlage und Sammelgruppen haben denselben Typ — mit dem Löschrecht
+  hätte jeder Leiter sie entfernen können. Folgen für Leiter: eigene Hajks löschen/absagen
+  läuft über die Stammleitung; scheitert ein Wizard-Schritt nach dem Duplizieren, kann der
+  Rollback die halbfertige Gruppe nicht löschen — der Wizard zeigt dann „Bitte melde das
+  der Stammleitung“ mit Link zur Gruppe.
+- Leiter können RR-Veranstaltungsgruppen weiterhin manuell (am Assistenten vorbei)
+  anlegen und bearbeiten — inklusive fremder RR-Hajks und der Sammelgruppen (gleicher
+  Typ; CT kann Typ-Rechte nicht auf eigene Gruppen begrenzen). Konvention +
+  Stammleitungs-Blick statt technischer Sperre.
 - Die Rollenprüfung im Wizard (wer welche Teams sieht) ist UI-Komfort; die Absicherung
   sind die CT-Rechte oben.
