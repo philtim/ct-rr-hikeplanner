@@ -19,27 +19,29 @@ sind für Leiter unantastbar. Auch Vorlage und Sammelgruppen haben diesen Typ.
 | Kalender → Termine erstellen im Kalender „Royal Rangers" | Hajk-Termin anlegen | ✅ |
 | Alles andere (andere Gruppentypen, Personen-Admin, andere Kalender) | — | ➖ nicht nötig |
 
-### Bekannte, akzeptierte Lücke: Anmeldefelder (final untersucht 22.09.2026)
+## Rollenrechte des Gruppentyps „RR Veranstaltung“ (verifiziert 28.09.2026)
 
-**Alle Schreiboperationen auf Gruppen-Anmeldefeldern (POST/PUT/DELETE
-`…/memberfields/group/…`) liefern für Leiter 403** mit der generischen Meldung
-„Forbidden to update groupMemberFields[{groupId}]" — auch als Gruppenleiter der frisch
-erstellten Gruppe. Erschöpfend getestet und wirkungslos:
+Neben den globalen Rechten oben braucht jede Rolle des Gruppentyps **gruppeninterne
+Rollenrechte** (im Rechtekatalog die Rechte mit „+“; gelten nur in der Gruppe, in der
+man die Rolle hat). Beim Anlegen des Typs waren alle Rollen **leer** — Folge: Leiter
+konnten Hajks anlegen, aber die Teilnehmer ihres eigenen Hajks nicht sehen, und
+Anmeldefelder nicht verwalten. **Keine globalen Rechte an diese Rollen hängen**
+(sonst erhält sie jeder, der irgendwo Leiter/Organisator eines RR-Hajks ist).
 
-- churchdb „Sicherheitslevel Gruppe" Stufe 1 UND Stufe 4 (je mit frischer Session)
-- Gruppenleiter-Rolle, Typ-Rechte sehen/erstellen/bearbeiten/löschen/Mitgliedschaften
+| Rolle | gruppeninterne Rechte |
+|---|---|
+| Leiter (52), Co-Leiter (55) | Gruppenmitglieder sehen **Stufe 4** · Gruppeninfos sehen · Mitglieder hinzufügen/entfernen/kontaktieren · Mitgliedschaften bearbeiten · Gruppeninfos + Grundeinstellungen bearbeiten · **Gruppenmitgliedsfelder verwalten** · Gruppenmitgliedsfelder sehen/bearbeiten · Personenfelder von Mitgliedern bearbeiten · E-Mails bei Änderungen |
+| Organisator (58) | Gruppenmitglieder sehen Stufe 4 · Gruppeninfos sehen · Mitglieder hinzufügen/entfernen/kontaktieren · Mitgliedschaften bearbeiten · Personenfelder bearbeiten · E-Mails bei Änderungen |
+| Teilnehmer (49) | keine |
 
-Der churchdb-Rechtekatalog kennt kein eigenes Memberfield-Recht; der Zugriff ist
-faktisch an **„Gruppen verwalten (administer groups)"** gebunden (global — bewusst
-nicht vergeben). Auch der Umweg „Felder frisch anlegen statt löschen" scheitert am
-selben Check (POST ebenfalls 403; Validierung läuft vor der Rechteprüfung, daher
-täuscht ein 400 bei unvollständigem Payload Schreibrecht nur vor).
-
-**Konsequenz (Produktentscheidung 22.09.2026):** Der Wizard bietet keine Feld-Auswahl
-mehr an und fasst Felder gar nicht an — jede neue Veranstaltung übernimmt alle
-Vorlagen-Felder; Schritt 2 zeigt sie nur noch als Info-Liste. Ausnahmen je Event
-entfernt die Stammleitung nachträglich in der Gruppe. Ggf. als Feature-Wunsch an
-ChurchTools: feingranulares Recht für Gruppen-Anmeldefelder.
+- **Stufe 4** bei „Gruppenmitglieder sehen“, weil Personen mit Status „Gemeindemitglied“
+  Personen-Sicherheitslevel 4 haben (u. a. die Organisatorinnen) — gilt nur für Mitglieder
+  der eigenen Gruppe.
+- **„Gruppenmitgliedsfelder verwalten“** ist das Recht für POST/PUT/DELETE auf
+  `…/memberfields/group/…` (Leiter-Test in Gruppe 2769: 201/204). Die frühere Annahme,
+  dafür sei „Gruppen verwalten (administer groups)“ nötig, war falsch; Sicherheitslevel
+  Gruppe Stufe 1/4 in der Rechtegruppe hatten keinen Effekt.
+- Prüfen per API: `GET /api/permissions/group_type_role/{rollenId}` (leere Liste = keine Rechte).
 
 ## Deploy-Dienstkonto „RR CICD" (je Instanz; verifiziert 22.09.2026)
 
