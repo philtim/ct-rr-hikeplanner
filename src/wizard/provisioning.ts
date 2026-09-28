@@ -90,9 +90,8 @@ export async function executeProvisioning(
 
         await run('configure', () => api.configureGroup(newGroupId, form));
 
-        // Anmeldefelder werden bewusst NICHT angefasst: Das Duplikat übernimmt
-        // immer alle Vorlagen-Felder. CT erlaubt Leitern keinerlei Schreiben an
-        // Gruppen-Anmeldefeldern (docs/PERMISSIONS.md, final untersucht 22.09.).
+        // Anmeldefelder werden bewusst NICHT angefasst: Jede Veranstaltung
+        // übernimmt alle Vorlagen-Felder (PRD US-3).
 
         await run('parents', async () => {
             // Geerbte Eltern (konventionsgemäß keine — die Vorlage hängt

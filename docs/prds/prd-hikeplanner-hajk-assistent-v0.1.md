@@ -165,12 +165,11 @@ Ein einzelnes Formular erfasst alle Angaben: Datum von/bis, Anmeldemodus, Anmeld
 
 ### US-3: Anmeldefelder aus der Vorlage übernehmen
 
-> **Geändert 22.09.2026:** Ursprünglich war eine An-/Abwahl der Felder pro Hajk
-> vorgesehen. ChurchTools erlaubt Leitern jedoch keinerlei Schreiboperationen an
-> Gruppen-Anmeldefeldern (siehe docs/PERMISSIONS.md, final untersucht) — eine
-> Abwahl konnte daher nie wirken. Entscheidung mit Phil: Der Assistent übernimmt
-> IMMER alle Vorlagen-Felder und zeigt sie nur noch an; Ausnahmen macht die
-> Stammleitung nachträglich in der Gruppe.
+> **Geändert 22.09.2026, Begründung korrigiert 28.09.2026:** Ursprünglich war eine
+> An-/Abwahl der Felder pro Hajk vorgesehen. Sie scheiterte zunächst an fehlenden
+> Rollenrechten des Gruppentyps (siehe docs/PERMISSIONS.md). Nach deren Korrektur wäre
+> sie technisch möglich; Phil hat entschieden, bei „immer alle Vorlagen-Felder“ zu
+> bleiben. Unpassende Felder entfernt der Leiter bei Bedarf selbst in der Gruppe.
 
 **Priorität:** P0
 **Story:** Als Team-Leiter möchte ich sehen, welche Angaben von Teilnehmern erhoben werden (z. B. Vegetarisch, Allergien), damit ich weiß, welche Daten die Anmeldung liefert.
