@@ -21,6 +21,10 @@ ChurchTools-Extension „HikePlanner“: 3-Schritte-Wizard, mit dem Royal-Ranger
   Rollen über Flags/Namen aus `/group/roles` auflösen, Felder über Namen/referenceName
 - Entwicklung und alle Schreibtests NUR gegen https://rr-demo.church.tools (`.env`), nie live
 - TDD: Fachlogik framework-frei in `src/wizard/*.ts`, Komponenten dünn
+- Keine deprecated CT-APIs: ChurchTools meldet deren Nutzung per Mail. Insbesondere
+  `PUT /groups/{groupId}/members/{personId}` NUR zum Anlegen, Änderungen per `PATCH`
+  (Upsert: PATCH, bei 404 PUT — siehe `putMember` in `wizard.api.ts`, NOTES-api-spike §8).
+  Vor neuen Endpunkten im OpenAPI-Schema `deprecated` prüfen.
 
 ## Kommandos
 

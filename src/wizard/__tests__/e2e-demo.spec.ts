@@ -33,7 +33,12 @@ async function call<T>(method: string, endpoint: string, body?: unknown): Promis
         cookies.set(pair.slice(0, pair.indexOf('=')), pair);
     }
     const text = await res.text();
-    if (!res.ok) throw new Error(`${method} ${endpoint} -> ${res.status}: ${text.slice(0, 200)}`);
+    if (!res.ok) {
+        throw Object.assign(
+            new Error(`${method} ${endpoint} -> ${res.status}: ${text.slice(0, 200)}`),
+            { status: res.status },
+        );
+    }
     return (text ? JSON.parse(text).data : undefined) as T;
 }
 
