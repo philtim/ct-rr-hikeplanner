@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.3](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.2.2...v0.2.3) (2026-10-03)
+
+
+### Bug Fixes
+
+* update group memberships via PATCH instead of deprecated PUT ([#22](https://github.com/philtim/ct-rr-hikeplanner/issues/22)) ([7c77609](https://github.com/philtim/ct-rr-hikeplanner/commit/7c77609f3a09a176896d375401a5c10e1b060f92))
+
 ## [0.2.2](https://github.com/philtim/ct-rr-hikeplanner/compare/v0.2.1...v0.2.2) (2026-09-23)
 
 
