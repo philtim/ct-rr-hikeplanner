@@ -375,6 +375,30 @@ describe('provisionApi', () => {
         expect(body.groupStatusId).toBeUndefined();
     });
 
+    it('putMember updates an existing membership via PATCH (PUT-as-update is deprecated)', async () => {
+        (api.apiPatch as Mock).mockResolvedValue({});
+        await provisionApi.putMember(99, 42, 23);
+        expect(api.apiPatch).toHaveBeenCalledWith('/groups/99/members/42', { groupTypeRoleId: 23 });
+        expect(api.apiPut).not.toHaveBeenCalled();
+    });
+
+    it('putMember falls back to PUT only when the person is not yet a member', async () => {
+        (api.apiPatch as Mock).mockRejectedValue(
+            Object.assign(new Error('not found'), { status: 404 }),
+        );
+        (api.apiPut as Mock).mockResolvedValue({});
+        await provisionApi.putMember(99, 42, 23);
+        expect(api.apiPut).toHaveBeenCalledWith('/groups/99/members/42', { groupTypeRoleId: 23 });
+    });
+
+    it('putMember does not mask other PATCH errors', async () => {
+        (api.apiPatch as Mock).mockRejectedValue(
+            Object.assign(new Error('forbidden'), { status: 403 }),
+        );
+        await expect(provisionApi.putMember(99, 42, 23)).rejects.toThrow('forbidden');
+        expect(api.apiPut).not.toHaveBeenCalled();
+    });
+
     it('listParentIds parses domainIdentifier strings', async () => {
         (api.apiGet as Mock).mockResolvedValue([
             { domainIdentifier: '2612', title: 'A' },

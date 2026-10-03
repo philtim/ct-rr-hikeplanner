@@ -265,7 +265,16 @@ export const provisionApi: ProvisionApi = {
     },
 
     async putMember(groupId, personId, roleId) {
-        await apiPut(`/groups/${groupId}/members/${personId}`, { groupTypeRoleId: roleId });
+        // PUT on an existing membership is deprecated by ChurchTools — updates
+        // must use PATCH. PATCH 404s for non-members, so only then create via PUT.
+        const endpoint = `/groups/${groupId}/members/${personId}`;
+        const data = { groupTypeRoleId: roleId };
+        try {
+            await apiPatch(endpoint, data);
+        } catch (e) {
+            if ((e as { status?: unknown }).status !== 404) throw e;
+            await apiPut(endpoint, data);
+        }
     },
 
     async createAppointment(calendarId, a) {

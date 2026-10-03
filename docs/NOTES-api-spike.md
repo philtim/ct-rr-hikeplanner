@@ -79,6 +79,16 @@ Minimal funktionierender Payload:
 - `useInRegistrationForm: false` blendet das Feld aus dem Anmeldeformular aus →
   Fallback des Wizards, wenn `DELETE …/memberfields/group/{id}` an Rechten scheitert.
 
+## 8. Gruppenmitglieder: PUT nur zum Anlegen, Änderungen per PATCH (03.10.2026, rr-demo)
+
+- ChurchTools hat `PUT /groups/{gid}/members/{pid}` **als Update** deprecated und meldet
+  die Nutzung per Mail („Alt: PUT … / Neu: PATCH …“, gezählt pro UserAgent/Referrer).
+- `PATCH /groups/{gid}/members/{pid}` aktualisiert nur — für Nicht-Mitglieder kommt
+  **404** (`DoctrineGroupMember [gid, pid] not found`). Anlegen geht weiterhin nur per `PUT`.
+- Muster daher: **Upsert = PATCH, bei 404 PUT.** Umgesetzt in `putMember`
+  (`src/wizard/wizard.api.ts`) und `upsertMember` (`scripts/seed-demo.mjs`).
+  Nie mehr blind `PUT` auf eine evtl. bestehende Mitgliedschaft.
+
 ## Noch offen (Task 16 / E2E)
 
 - CT-Theme-Klasse für Dark-Mode aus dem DOM der Demo-Instanz ablesen (für `wizard.css`).

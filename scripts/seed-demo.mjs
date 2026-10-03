@@ -43,13 +43,31 @@ async function call(method, path, body) {
     const text = await res.text();
     const json = text ? JSON.parse(text) : {};
     if (!res.ok) {
-        throw new Error(`${method} ${path} -> ${res.status}: ${text.slice(0, 300)}`);
+        throw Object.assign(
+            new Error(`${method} ${path} -> ${res.status}: ${text.slice(0, 300)}`),
+            {
+                status: res.status,
+            },
+        );
     }
     return json.data;
 }
 const get = (p) => call('GET', p);
 const post = (p, b) => call('POST', p, b);
 const put = (p, b) => call('PUT', p, b);
+const patch = (p, b) => call('PATCH', p, b);
+
+// PUT on an existing group membership is deprecated by ChurchTools — updates
+// must use PATCH. PATCH 404s for non-members, so only then create via PUT.
+async function upsertMember(groupId, personId, body) {
+    const path = `/groups/${groupId}/members/${personId}`;
+    try {
+        return await patch(path, body);
+    } catch (e) {
+        if (e.status !== 404) throw e;
+        return put(path, body);
+    }
+}
 
 async function findGroupByName(name) {
     const groups = await get(`/groups?query=${encodeURIComponent(name)}&limit=200`);
@@ -155,10 +173,10 @@ await ensureField(templateId, {
 });
 
 console.log('Mitgliedschaften:');
-await put(`/groups/${teamId}/members/${myId}`, { groupTypeRoleId: teamLeaderRole });
-await put(`/groups/${team2Id}/members/${myId}`, { groupTypeRoleId: teamLeaderRole });
+await upsertMember(teamId, myId, { groupTypeRoleId: teamLeaderRole });
+await upsertMember(team2Id, myId, { groupTypeRoleId: teamLeaderRole });
 console.log(`  Person ${myId} ist Leiter in beiden Testteams (→ Team-Dropdown im Wizard)`);
-await put(`/groups/${templateId}/members/${myId}`, { groupTypeRoleId: eventOrganisatorRole });
+await upsertMember(templateId, myId, { groupTypeRoleId: eventOrganisatorRole });
 console.log(`  Person ${myId} ist Organisator der Vorlage`);
 
 console.log('Kalender:');
